@@ -19,14 +19,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "cajas_tlb")
+@Table(name = "cajas_tbl")
 public class Caja {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     @Column(name = "CajaID")
-    private Long cajaId;
+    private Long id;
 
     @Column(name = "NoEconomico")
     private String noEconomico;

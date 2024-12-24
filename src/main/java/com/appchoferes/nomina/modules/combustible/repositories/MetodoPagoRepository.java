@@ -6,12 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.appchoferes.nomina.modules.combustible.models.Caja;
+import com.appchoferes.nomina.models.MetodosPago;
 
 @Repository
-public interface CajaRepository extends JpaRepository<Caja, Long> {
+public interface MetodoPagoRepository extends JpaRepository<MetodosPago, Integer> {
 
-    @Query(value = "call com_getCajasDiesel()", nativeQuery = true)
-    List<Object[]> getCajasConCargasRaw();
-    
+    @Query(value = "call getMetodosPago()", nativeQuery = true)
+    List<Object[]> getMetodosPagoRaw();
+
 }
