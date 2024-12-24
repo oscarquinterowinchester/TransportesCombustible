@@ -13,17 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ReflectionUtils;
 
-import com.appchoferes.nomina.modules.combustible.models.CargaDieselEntity;
-import com.appchoferes.nomina.repositories.CargasDieselReporsitory;
+import com.appchoferes.nomina.dtos.CargaDieselEntity;
+import com.appchoferes.nomina.dtos.CargasDieselEntityOld;
+import com.appchoferes.nomina.repositories.CargasDieselRepository;
 import com.appchoferes.nomina.validators.Validador;
 
 public class UtilsCarga {
     @Autowired
-    static CargasDieselReporsitory cargasDieselReporsitory;
-
-    
-
-    
+    static CargasDieselRepository cargasDieselRepository;
 
     public static CargaDieselEntity asignarDatosDeCarga(Map<String, Object> campos, CargaDieselEntity cargaExistente){
 
@@ -62,80 +59,80 @@ public class UtilsCarga {
         return valorRetorno;
     }
 
-    public static Map<String,Object> datosCargaSonValidos(CargaDieselEntity carga,CargasDieselReporsitory repo,int tipoOperacion){
+    /*public static Map<String,Object> datosCargaSonValidos(CargaDieselEntity cargaExistente,CargasDieselRepository repo,int tipoOperacion){
         
         Map<String,Object> errores = new HashMap<>();
-        if(carga == null){
+        if(cargaExistente == null){
             errores.put("campoErroneo", "Carga invalida");
             errores.put("esValido", false);
             return errores;
         }
-        if(Validador.validarInteger(carga.getTipo()) > 1 || Validador.validarInteger(carga.getTipo()) < 0){
-            errores.put("campoErroneo", "Tipo unidad invalido: " + carga.getTipo());
+        if(Validador.validarInteger(cargaExistente.getTipo()) > 1 || Validador.validarInteger(cargaExistente.getTipo()) < 0){
+            errores.put("campoErroneo", "Tipo unidad invalido: " + cargaExistente.getTipo());
             errores.put("esValido", false);
             return errores;
         }
-        if(Validador.validarInteger(carga.getUnidadId()) <= 0)
+        if(Validador.validarInteger(cargaExistente.getUnidadId()) <= 0)
         {
-            errores.put("campoErroneo", "UnidadID: " + carga.getUnidadId());
+            errores.put("campoErroneo", "UnidadID: " + cargaExistente.getUnidadId());
             errores.put("esValido", false);
             return errores; 
         }
-        if(Validador.validarInteger(carga.getTipoCombustible()) <= 0 ){
-            errores.put("campoErroneo", "Tipo de combustible no valido: " + carga.getTipoCombustible());
+        if(Validador.validarInteger(cargaExistente.getTipoCombustible()) <= 0 ){
+            errores.put("campoErroneo", "Tipo de combustible no valido: " + cargaExistente.getTipoCombustible());
             errores.put("esValido", false);    
             return errores;
         }
-        if(Validador.validarInteger(carga.getUsuarioId()) <= 0)
+        if(Validador.validarInteger(cargaExistente.getUsuarioId()) <= 0)
         {
-            errores.put("campoErroneo", "UsuarioID no puede ser 0: " + carga.getUsuarioId());
+            errores.put("campoErroneo", "UsuarioID no puede ser 0: " + cargaExistente.getUsuarioId());
             errores.put("esValido", false);
             return errores;      
         }
-        if(Validador.validarInteger(carga.getMonedaCarga()) > 1 || Validador.validarInteger(carga.getMonedaCarga()) < 0){
-            errores.put("campoErroneo", "Moneda carga solo acepta 1 o 0: " + carga.getMonedaCarga());
+        if(Validador.validarInteger(cargaExistente.getMonedaCarga()) > 1 || Validador.validarInteger(cargaExistente.getMonedaCarga()) < 0){
+            errores.put("campoErroneo", "Moneda carga solo acepta 1 o 0: " + cargaExistente.getMonedaCarga());
             errores.put("esValido", false);
             return errores;
         }
-        if(Validador.validarDouble(carga.getLitros()) <= 0.0)
+        if(Validador.validarDouble(cargaExistente.getLitros()) <= 0.0)
         {
-            errores.put("campoErroneo", "Litros no validos; no puede ser 0 y no numerico: " + carga.getLitros());
+            errores.put("campoErroneo", "Litros no validos; no puede ser 0 y no numerico: " + cargaExistente.getLitros());
             errores.put("esValido", false);
             return errores;      
         }
-        if(Validador.validarDouble(carga.getPrecioTotal()) <= 0.0)
+        if(Validador.validarDouble(cargaExistente.getPrecioTotal()) <= 0.0)
         {
-            errores.put("campoErroneo", "Precio total no puede ser 0: " + carga.getPrecioTotal());
+            errores.put("campoErroneo", "Precio total no puede ser 0: " + cargaExistente.getPrecioTotal());
             errores.put("esValido", false);
             return errores;      
         }
-        if(distanciaNoEsValida(carga,repo,tipoOperacion))
+        if(distanciaNoEsValida(cargaExistente,repo,tipoOperacion))
         {
-            errores.put("campoErroneo", "Odometro no valido; no puede ser 0, menor o mayor a 4000 del ultimo: " + carga.getOdometroCarga());
+            errores.put("campoErroneo", "Odometro no valido; no puede ser 0, menor o mayor a 4000 del ultimo: " + cargaExistente.getOdometroCarga());
             errores.put("esValido", false);
             return errores;
         }
-        if(fechaNoEsValida(carga,repo,tipoOperacion))
+        if(fechaNoEsValida(cargaExistente,repo,tipoOperacion))
         {
-            errores.put("campoErroneo", "Fecha no puede ser menor a la ultima: " + carga.getFecha());
+            errores.put("campoErroneo", "Fecha no puede ser menor a la ultima: " + cargaExistente.getFecha());
             errores.put("esValido", false);   
             return errores;
         }
-        if(Validador.validarTime(String.valueOf(carga.getHora())) == null)
+        if(Validador.validarTime(String.valueOf(cargaExistente.getHora())) == null)
         {
-            System.out.println("HoraRaw: " + carga.getHora());
-            errores.put("campoErroneo", "Hora no valida: " + carga.getHora());
+            System.out.println("HoraRaw: " + cargaExistente.getHora());
+            errores.put("campoErroneo", "Hora no valida: " + cargaExistente.getHora());
             errores.put("esValido", false);   
             return errores;
         }
         errores.put("campoErroneo", "");
         errores.put("esValido", true); 
         return errores;
-    }
+    }*/
 
 
 
-    public static boolean fechaNoEsValida(CargaDieselEntity carga,CargasDieselReporsitory repo,int tipoOperacion){
+    public static boolean fechaNoEsValida(CargaDieselEntity carga,CargasDieselRepository repo,int tipoOperacion){
 
         boolean esPrimerRegistro = repo.esPrimerRegistro(carga.getUnidadId(), carga.getTipo());
         boolean esFechaNula = (Validador.validarDate(String.valueOf(carga.getFecha())) == null);
@@ -158,7 +155,7 @@ public class UtilsCarga {
         return fechaEsValida;
     }
 
-    private static String obtenerUltimaFecha(CargaDieselEntity carga,CargasDieselReporsitory repo,int tipoOperacion){
+    public static String obtenerUltimaFecha(CargaDieselEntity carga,CargasDieselRepository repo,int tipoOperacion){
 
         String unidadId = String.valueOf(carga.getUnidadId());
         int tipoUnidad = carga.getTipo();
@@ -168,7 +165,7 @@ public class UtilsCarga {
         return ultimaFecha;
     }
 
-    public static boolean distanciaNoEsValida(CargaDieselEntity carga,CargasDieselReporsitory repo,int tipoOperacion){
+    public static boolean distanciaNoEsValida(CargaDieselEntity carga,CargasDieselRepository repo,int tipoOperacion){
         boolean esPrimerRegistro = repo.esPrimerRegistro(carga.getUnidadId(), carga.getTipo());
         boolean esOdoCargaInvalido  = Validador.validarDouble(carga.getOdometroCarga()) <= 0;
         
@@ -187,7 +184,7 @@ public class UtilsCarga {
         return recorridoEsValido;
     }
 
-    public static String obtenerUltimoOdometro(CargaDieselEntity carga,CargasDieselReporsitory repo,int tipoOperacion){
+    public static String obtenerUltimoOdometro(CargasDieselEntityOld carga,CargasDieselRepository repo,int tipoOperacion){
 
         String unidadId = String.valueOf(carga.getUnidadId());
         int tipoUnidad = carga.getTipo();
@@ -226,12 +223,12 @@ public class UtilsCarga {
         return rendimiento;
     }
 
-    public static ResponseEntity<String> revisarCampos(CargaDieselEntity carga,CargasDieselReporsitory cargasDieselReporsitory2,int tipoOperacion) {
+    public static ResponseEntity<String> revisarCampos(CargasDieselEntityOld carga,CargasDieselRepository cargasDieselRepository2,int tipoOperacion) {
         
         Map<String,Object> errores = null;
         Boolean campoEsValido = false; // Declaracion
 
-        errores = UtilsCarga.datosCargaSonValidos(carga,cargasDieselReporsitory2,tipoOperacion);
+        errores = UtilsCarga.datosCargaSonValidos(carga,cargasDieselRepository2,tipoOperacion);
         campoEsValido = Validador.validarBoolean(String.valueOf(errores.get("esValido")));
 
         if(campoEsValido == false){
@@ -239,6 +236,12 @@ public class UtilsCarga {
         } // Validacion de datos
 
         return ResponseEntity.ok("guardado con exito!");
+    }
+
+    public static Map<String, Object> datosCargaSonValidos(CargaDieselEntity cargaExistente,
+            CargasDieselRepository cargasDieselRepository2, int operacionActualizar) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'datosCargaSonValidos'");
     }
 
     

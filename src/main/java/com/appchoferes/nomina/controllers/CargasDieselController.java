@@ -7,17 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.appchoferes.nomina.dtos.VistaCargaCamion;
-import com.appchoferes.nomina.modules.combustible.models.CargaDieselEntity;
+//import com.appchoferes.nomina.modules.combustible.models.CargaDieselEntity;
 import com.appchoferes.nomina.services.CamionCargaService;
 import com.appchoferes.nomina.services.CargaDieselService;
 import com.appchoferes.nomina.services.MetodosPagoService;
 import com.appchoferes.nomina.services.ProveedoresService;
 import com.appchoferes.nomina.services.TiposCombustibleService;
 import com.appchoferes.nomina.services.VistaCargaCamionService;
-
-
-
-
 
 
 @RestController
@@ -51,7 +47,7 @@ public class CargasDieselController {
     }
 
     // Obtener info de una carga por Id
-    @GetMapping("/cargarPorId")
+    /*@GetMapping("/cargarPorId")
     public CargaDieselEntity getCargaPorId(@RequestParam String cargaId,@RequestParam String dbType) {
         return cargasDieselService.obtenerCargaPorId(cargaId, dbType);
     }
@@ -60,7 +56,7 @@ public class CargasDieselController {
     @PostMapping("/insertarCarga")
     public ResponseEntity<String> insertarCarga(@RequestBody CargaDieselEntity entity,String dbType) {
         return cargasDieselService.procesarCarga(entity, dbType);
-    }
+    }*/
 
     // Actualizar un solo campo
     @PatchMapping("/cargas/{cargaId}")

@@ -1,6 +1,6 @@
-    package com.appchoferes.nomina.modules.itinerario.models;
+package com.appchoferes.nomina.modules.itinerario.models;
 
-    import java.util.List;
+import java.util.List;
 
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
