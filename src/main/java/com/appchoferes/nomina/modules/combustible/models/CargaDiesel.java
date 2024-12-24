@@ -25,9 +25,40 @@ public class CargaDiesel{
     @Column(name = "UnidadID")
     private long unidadId;
 
+    @Column(name = "Litros")
+    private double litros;
+
+    @Column(name = "Tipo")
+    private Integer tipo;
+
     @Column(name = "RendimientoCarga")
     private double rendimientoCarga;
 
+    @Column(name = "RendimientoECM")
+    private double rendimientoECM;
+
+    @Column(name = "RendimientoRutas")
+    private double rendimientoRuta;
+
+    @Column(name = "Sellos")
+    private String sellos;
+
+    @Column(name = "FotoSello")
+    private String fotoSello;
+
+    @Column(name = "Nota")
+    private String nota;
+
+    @Column(name = "FechayHora")
+    private String fechayHora;
+    
+    @Column(name = "Folio")
+    private String folio;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ProveedorID", referencedColumnName = "ProveedorID")
+    private Proveedor proveedor;
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "unidadID", referencedColumnName = "CamionID")
     private Camion camion;

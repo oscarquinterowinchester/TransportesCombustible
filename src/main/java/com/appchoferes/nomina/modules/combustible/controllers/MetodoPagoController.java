@@ -7,21 +7,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.appchoferes.nomina.modules.combustible.dtos.CajaConCargaDTO;
-import com.appchoferes.nomina.modules.combustible.services.CajaService;
+import com.appchoferes.nomina.modules.combustible.dtos.MetodoPagoDTO;
+import com.appchoferes.nomina.modules.combustible.services.MetodoPagoService;
 
 @RestController
 @RequestMapping("/api/combustible")
-public class CajaController {
-
-    @Autowired
-    private CajaService cajaService;
-
-    @GetMapping("/cajas-cargas")
-    public List<CajaConCargaDTO> getAllCajasConCarga() {
-        return cajaService.getAllCajasConCarga();
-    }
-
+public class MetodoPagoController {
     
-}
+    @Autowired
+    private MetodoPagoService metodoPagoService;
 
+    @GetMapping("/metodos-pago")
+    public List<MetodoPagoDTO> getMetodosPago(){
+        return metodoPagoService.getMetodosPago();
+    }
+}

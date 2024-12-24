@@ -25,7 +25,7 @@ public class Camion{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     @Column(name = "CamionID")
-    private Long camionId;
+    private Long id;
 
     @Column(name = "NoEconomico")
     private String noEconomico;

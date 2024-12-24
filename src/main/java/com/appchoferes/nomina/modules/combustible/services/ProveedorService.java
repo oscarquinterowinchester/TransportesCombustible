@@ -1,14 +1,13 @@
 package com.appchoferes.nomina.modules.combustible.services;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.appchoferes.nomina.config.DatabaseContextHolder;
 import com.appchoferes.nomina.modules.combustible.dtos.ProveedorDTO;
-import com.appchoferes.nomina.modules.combustible.models.Proveedor;
 import com.appchoferes.nomina.modules.combustible.repositories.ProveedorRepository;
 
 @Service
@@ -18,24 +17,25 @@ public class ProveedorService {
     private ProveedorRepository proveedorRepository;
 
     public List<ProveedorDTO> getProveedores(){
-
         DatabaseContextHolder.setDatabaseType("lorasdb");
 
-        List<ProveedorDTO> proveedores = proveedorRepository.getProveedores()
-                .stream()
-                .map(this::convertEntityToDto)
-                .collect(Collectors.toList());
+        List<Object[]> proveedorRaw = proveedorRepository.getProveedoresRaw();
 
         DatabaseContextHolder.clearDatabaseType();
 
-        return proveedores;
-    }
+        List<ProveedorDTO> proveedores = new ArrayList<>();
+        for (Object [] result : proveedorRaw) {
+            ProveedorDTO proveedor = new ProveedorDTO();
 
-    public ProveedorDTO convertEntityToDto(Proveedor proveedor) {
-        ProveedorDTO proveedorDTO = new ProveedorDTO();
-        proveedorDTO.setProveedorID(proveedor.getProveedorID());
-        proveedorDTO.setNombre(proveedor.getNombre());
-        return proveedorDTO;
+            proveedor.setProveedorId(((Number) result[0]).longValue());
+            proveedor.setNombre(result[1] != null ? result[1].toString() : null);
+
+            proveedores.add(proveedor);
+
+        }
+
+
+        return proveedores;
     }
 
 }
