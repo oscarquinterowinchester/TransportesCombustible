@@ -169,14 +169,19 @@ public class CargasDieselEntityOld {
 
     @Column(name = "esChofer")
     private Boolean esChofer;
+
+    public void calcularRecorridoyRendimiento(String ultimoOdometro) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'calcularRecorridoyRendimiento'");
+    }
    
-    // public void calcularRecorridoyRendimiento(String ultimoOdometro){
-    //     double recorrido = UtilsCarga.calcularRecorrido(this, ultimoOdometro);
-    //     this.setRecorridoCarga(recorrido);
+    /*public void calcularRecorridoyRendimiento(String ultimoOdometro){
+         double recorrido = UtilsCarga.calcularRecorrido(this, ultimoOdometro);
+         this.setRecorridoCarga(recorrido);
 
-    //     double rendimiento = UtilsCarga.calcularRendimiento(recorrido, this.getLitros());
-    //     this.setRendimientoCarga(rendimiento);
+        double rendimiento = UtilsCarga.calcularRendimiento(recorrido, this.getLitros());
+         this.setRendimientoCarga(rendimiento);
 
-    // }
+    }*/
 
 }

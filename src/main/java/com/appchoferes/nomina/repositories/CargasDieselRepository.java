@@ -4,11 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.appchoferes.nomina.modules.combustible.models.CargaDieselEntity;
-
+import com.appchoferes.nomina.dtos.CargaDieselEntity;
+import com.appchoferes.nomina.dtos.CargasDieselEntityOld;
 
 @Repository
-public interface CargasDieselReporsitory extends JpaRepository<CargaDieselEntity,Long> {
+public interface CargasDieselRepository extends JpaRepository<CargaDieselEntity,Long> {
     public  CargaDieselEntity findByCargaId(Integer cargaId);
 
     @Query(value = "SELECT obtenerUltimoOdometroCarga(:unidadId, :tipoUnidad, :tipoOperacion) FROM dual", nativeQuery = true)
@@ -20,5 +20,7 @@ public interface CargasDieselReporsitory extends JpaRepository<CargaDieselEntity
 
     @Query(value = "SELECT esPrimerRegistro_Combustible(:unidadId, :tipo) FROM dual", nativeQuery = true)
     public boolean esPrimerRegistro(Integer unidadId, Integer tipo);
+
+    public void save(CargasDieselEntityOld carga);
     
 }

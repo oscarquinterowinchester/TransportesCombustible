@@ -18,5 +18,4 @@ public class CargasDieselService {
         DatabaseContextHolder.setDatabaseType(dbType);
         return (ArrayList<CargasDiesel>) cargasDieselRepository.getCargasDiesel(choferId);
     }
-
 }
