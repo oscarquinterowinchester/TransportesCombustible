@@ -1,8 +1,10 @@
 package com.appchoferes.nomina.modules.combustible.dtos;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class CargasDieselDTO {
     private Long cargaId;
     private Long unidadId;

@@ -2,6 +2,7 @@ package com.appchoferes.nomina.modules.combustible.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,13 +25,10 @@ public class CamionesConCargaService {
 
         DatabaseContextHolder.clearDatabaseType();
 
-        List<CamionesConCargaDTO> camiones = new ArrayList<>();
+        return camionesRaw.stream()
+                .map(this :: mapToDTO)
+                .collect(Collectors.toList());
 
-        for (Object[] result : camionesRaw) {
-            CamionesConCargaDTO camion = mapToDTO(result);
-            camiones.add(camion);
-        }
-        return camiones;
     }
 
     public CamionesConCargaDTO getCamion(Long id) {
@@ -46,17 +44,26 @@ public class CamionesConCargaService {
 
 
     private CamionesConCargaDTO mapToDTO(Object[] result) {
+        return CamionesConCargaDTO.builder()
+        .id(getLong(result[0]))
+        .noEconomico(getString(result[1]))
+        .rendimientoCamion(getDouble(result[2]))
+        .tanquePorcentajeLleno(getDouble(result[3]))
+        .tanqueCapacidad(getDouble(result[4]))
+        .tanqueActual(getDouble(result[5]))
+        .build();
+    }
 
-        CamionesConCargaDTO camion = new CamionesConCargaDTO();
+    private Long getLong(Object obj){
+        return obj instanceof Number ? ((Number) obj).longValue() : null;
+    }
 
-        camion.setId(result[0] instanceof Number ? ((Number) result[0]).longValue() : null);
-        camion.setNoEconomico(result[1] != null ? result[1].toString() : null);
-        camion.setRendimientoCamion(result[2] instanceof Number ? ((Number) result[2]).doubleValue() : 0.0);
-        camion.setTanquePorcentajeLleno(result[3] instanceof Number ? ((Number) result[3]).doubleValue() : 0.0);
-        camion.setTanqueCapacidad(result[4] instanceof Number ? ((Number) result[4]).doubleValue() : 0.0);
-        camion.setTanqueActual(result[5] instanceof Number ? ((Number) result[5]).doubleValue() : 0.0);
+    private Double getDouble(Object obj){
+        return obj instanceof Number ? ((Number) obj).doubleValue() : 0.0;
+    }
 
-        return camion;
+    private String getString(Object obj){
+        return obj != null ? obj.toString() : null;
     }
 
 } 

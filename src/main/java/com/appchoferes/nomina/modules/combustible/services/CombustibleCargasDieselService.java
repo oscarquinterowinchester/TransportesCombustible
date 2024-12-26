@@ -1,13 +1,14 @@
 package com.appchoferes.nomina.modules.combustible.services;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.appchoferes.nomina.config.DatabaseContextHolder;
 import com.appchoferes.nomina.modules.combustible.dtos.CargasDieselDTO;
+import com.appchoferes.nomina.modules.combustible.dtos.HistorialAnteriorDTO;
 import com.appchoferes.nomina.modules.combustible.repositories.CombustibleCargasDieselRepository;
 
 @Service
@@ -19,36 +20,61 @@ public class CombustibleCargasDieselService {
     public List<CargasDieselDTO> getHistorialCargas(Long id, Integer tipo) {
         DatabaseContextHolder.setDatabaseType("lorasdb");
 
-        List<Object[]> historialCargasRaw = combustibleCargasDieselRepository.getHistorialCargasRaw(id, tipo);
+        List<Object[]> historialCargas = combustibleCargasDieselRepository.getHistorialCargas(id, tipo);
 
         DatabaseContextHolder.clearDatabaseType();
 
-        List<CargasDieselDTO> hCargas = new ArrayList<>();
+        return historialCargas.stream()
+                .map(this :: mapToDTO)
+                .collect(Collectors.toList());
+    }
 
-        for (Object[] result : historialCargasRaw) {
-            CargasDieselDTO historial = mapToDTO(result);
-            hCargas.add(historial);
-        }
-       return hCargas;
+    public List<HistorialAnteriorDTO> getHistorialAnterior(Long id, String fechaActual) {
 
+        DatabaseContextHolder.setDatabaseType("lorasdb");
+
+        List<Object[]> historialAnterior = combustibleCargasDieselRepository.getHistorialAnterior(id, fechaActual);
+
+        DatabaseContextHolder.clearDatabaseType();
+
+        return historialAnterior.stream()
+                .map(this :: mapToDTOHistorialAnterior)
+                .collect(Collectors.toList());
+    }
+
+    private HistorialAnteriorDTO mapToDTOHistorialAnterior(Object[] result) {
+        return HistorialAnteriorDTO.builder()
+                .cargaId(getLong(result[0]))
+                .fechayHora(getString(result[1]))
+                .odometroCarga(getDouble(result[2]))
+                .build();
     }
 
     private CargasDieselDTO mapToDTO(Object[] result) {
-        CargasDieselDTO cargaDiesel = new CargasDieselDTO();
-
-        cargaDiesel.setCargaId(result[0] instanceof Number ? ((Number) result[0]).longValue() : null);
-        cargaDiesel.setNombreProveedor(result[1] != null ? result[1].toString() : null);
-        cargaDiesel.setLitros(result[2] instanceof Number ? ((Number) result[2]).doubleValue() : null);
-        cargaDiesel.setNota(result[3] != null ? result[3].toString() : null);
-        cargaDiesel.setSellos(result[4] != null ? result[4].toString() : null);
-        cargaDiesel.setFotoSello(result[5] != null ? result[5].toString() : null);
-        cargaDiesel.setFechayHora(result[6] != null ? result[6].toString() : null);
-        cargaDiesel.setFolio(result[7] != null ? result[7].toString() : null);
-        cargaDiesel.setRendimientoCarga(result[8] instanceof Number ? ((Number) result[8]).doubleValue() : 0.0);
-        cargaDiesel.setRendimientoECM(result[9] instanceof Number ? ((Number) result[9]).doubleValue() : 0.0);
-        cargaDiesel.setRendimientoCarga(result[10] instanceof Number ? ((Number) result[10]).doubleValue() : 0.0);
-
-        return cargaDiesel;
+        return CargasDieselDTO.builder()
+                .cargaId(getLong(result[0]))
+                .nombreProveedor(getString(result[1]))
+                .litros(getDouble(result[2]))
+                .nota(getString(result[3]))
+                .sellos(getString(result[4]))
+                .fotoSello(getString(result[5]))
+                .fechayHora(getString(result[6]))
+                .folio(getString(result[7]))
+                .rendimientoCarga(getDouble(result[8]))
+                .rendimientoECM(getDouble(result[9]))
+                .rendimientoRutas(getDouble(result[10]))
+                .build();
     }
 
+    private Long getLong(Object obj){
+        return obj instanceof Number ? ((Number) obj).longValue() : null;
+    }
+
+    private Double getDouble(Object obj){
+        return obj instanceof Number ? ((Number) obj).doubleValue() : null;
+    }
+
+    private String getString(Object obj){
+        return obj != null ? obj.toString() : null;
+    }
 }

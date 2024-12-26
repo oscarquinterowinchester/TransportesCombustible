@@ -39,4 +39,5 @@ public class Caja {
 
     @OneToMany(mappedBy = "caja", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CargaDiesel> cargas;
+
 }

@@ -55,6 +55,9 @@ public class CargaDiesel{
     @Column(name = "Folio")
     private String folio;
 
+    @Column(name = "OdometroCarga")
+    private Double dometroCarga;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ProveedorID", referencedColumnName = "ProveedorID")
     private Proveedor proveedor;
