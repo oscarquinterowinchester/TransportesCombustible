@@ -11,18 +11,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "proveedores_tbl")
-public class Proveedor {
+@Table(name = "usuarios_tbl")
+public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ProveedorID")
-    private Long proveedorId;
+    @Column(name = "UsuarioID")
+    private Long usuarioId;
 
-    @Column(name = "NComercial")
+    @Column(name = "Nombre")
     private String nombre;
+
+    @Column(name = "Usuario")
+    private String usuario;
 
 }

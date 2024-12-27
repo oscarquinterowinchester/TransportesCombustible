@@ -14,15 +14,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "proveedores_tbl")
-public class Proveedor {
+@Table(name = "facturas_tbl")
+public class Factura {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ProveedorID")
-    private Long proveedorId;
+    @Column(name = "FacturaID")
+    private Long facturaId;
 
-    @Column(name = "NComercial")
-    private String nombre;
+    @Column(name = "Folio")
+    private Long folio;
+
+    @Column(name = "Monto")
+    private Double monto;
+
+    @Column(name = "TotalFactua")
+    private Double totalFactura;
 
 }

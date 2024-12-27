@@ -30,13 +30,14 @@ public class Caja {
 
     @Column(name = "NoEconomico")
     private String noEconomico;
-    
+
     @Column(name = "TanqueActual")
     private double tanqueActual;
 
     @Column(name = "Tanques")
     private double tanqueCapacidad;
 
-    @OneToMany(mappedBy = "caja", cascade = CascadeType.ALL, fetch = FetchType.LAZY)    private List<CargaDiesel> cargas;
+    @OneToMany(mappedBy = "caja", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CargaDiesel> cargas;
 
 }

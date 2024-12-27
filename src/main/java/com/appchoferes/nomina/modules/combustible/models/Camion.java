@@ -2,8 +2,6 @@ package com.appchoferes.nomina.modules.combustible.models;
 
 import java.util.List;
 
-import com.appchoferes.nomina.modules.itinerario.models.Itinerario;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "camiones_tbl")
-public class Camion{
+public class Camion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -45,8 +43,8 @@ public class Camion{
     @OneToMany(mappedBy = "camion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CargaDiesel> cargas;
 
-    //Relacion 1:N con Itinerario
+    // Relacion 1:N con Itinerario
     @OneToMany(mappedBy = "camion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CombustibleItinerario> itinerarios;
-    
+
 }
