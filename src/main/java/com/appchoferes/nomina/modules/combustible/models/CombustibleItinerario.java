@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "itinerarios_tbl")
-public class CombustibleItinerario{
+public class CombustibleItinerario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
