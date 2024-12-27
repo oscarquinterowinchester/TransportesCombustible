@@ -37,7 +37,6 @@ public class Caja {
     @Column(name = "Tanques")
     private double tanqueCapacidad;
 
-    @OneToMany(mappedBy = "caja", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CargaDiesel> cargas;
+    @OneToMany(mappedBy = "caja", cascade = CascadeType.ALL, fetch = FetchType.LAZY)    private List<CargaDiesel> cargas;
 
 }
