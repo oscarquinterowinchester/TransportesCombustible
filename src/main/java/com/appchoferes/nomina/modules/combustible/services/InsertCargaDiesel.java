@@ -32,13 +32,12 @@ public class InsertCargaDiesel {
 
     public CargaDiesel insertarCargaDiesel(ComCargaDieselDTO comCargaDieselDTO) {
         CargaDiesel cargaDiesel = mapToEntity(comCargaDieselDTO);
-        combustibleCargasDieselRepository.insertarCargaDiesel(cargaDiesel);
-        return cargaDiesel;
+        CargaDiesel insertedCarga = combustibleCargasDieselRepository.insertarCargaDiesel(cargaDiesel);
+        return insertedCarga;
     }
 
     private CargaDiesel mapToEntity(ComCargaDieselDTO comCargaDieselDTO) {
         CargaDiesel cargaDiesel = new CargaDiesel();
-        cargaDiesel.setCargaId(comCargaDieselDTO.getCargaId());
         cargaDiesel.setTipo(comCargaDieselDTO.getTipo());
         cargaDiesel.setLitrosECM(comCargaDieselDTO.getLitrosECM());
         cargaDiesel.setLitros(comCargaDieselDTO.getLitros());
