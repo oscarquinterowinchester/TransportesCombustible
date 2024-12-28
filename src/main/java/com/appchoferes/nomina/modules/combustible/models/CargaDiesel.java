@@ -148,7 +148,7 @@ public class CargaDiesel {
     private Double odometroAjustado;
 
     @Column(name = "UsuarioAjuste")
-    private Integer usuarioAjuste;
+    private String usuarioAjuste;
 
     @Column(name = "FechaAjuste")
     private String fechaAjuste;

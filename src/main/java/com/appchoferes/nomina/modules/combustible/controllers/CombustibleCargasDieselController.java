@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.appchoferes.nomina.modules.combustible.dtos.CargasDieselDTO;
 import com.appchoferes.nomina.modules.combustible.dtos.ComCargaDieselDTO;
 import com.appchoferes.nomina.modules.combustible.dtos.HistorialAnteriorDTO;
+import com.appchoferes.nomina.modules.combustible.models.CargaDiesel;
 import com.appchoferes.nomina.modules.combustible.services.CombustibleCargasDieselService;
 import com.appchoferes.nomina.modules.combustible.services.InsertCargaDiesel;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/api/combustible")
@@ -24,9 +27,9 @@ public class CombustibleCargasDieselController {
 
     @Autowired
     private CombustibleCargasDieselService combustibleCargasDieselService;
-    
+
     @Autowired
-    private InsertCargaDiesel insertCargaDiesel; 
+    private InsertCargaDiesel insertCargaDiesel;
 
     @GetMapping("/historial-cargas")
     public List<CargasDieselDTO> getHistorial(
@@ -43,15 +46,23 @@ public class CombustibleCargasDieselController {
     }
 
     @PostMapping("/insertar")
-    public ResponseEntity<String> insertarCargaDiesel(@RequestBody ComCargaDieselDTO comCargaDieselDTO) {
+    public ResponseEntity<CargaDiesel> insertarCargaDiesel(@RequestBody ComCargaDieselDTO comCargaDieselDTO) {
 
         try {
-            insertCargaDiesel.insertarCargaDiesel(comCargaDieselDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body("carga disel insertada correctamente");
+            CargaDiesel cargaDiesel = insertCargaDiesel.insertarCargaDiesel(comCargaDieselDTO);
 
+            if (cargaDiesel != null) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(cargaDiesel);
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
+
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("error al insertar la carga: " + e.getMessage());
+                    .body(null);
         }
     }
 

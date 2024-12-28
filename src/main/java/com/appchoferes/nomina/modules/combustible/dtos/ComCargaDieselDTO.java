@@ -5,7 +5,6 @@ import lombok.Data;
 @Data
 public class ComCargaDieselDTO {
 
-    private Long cargaId;
     private Integer tipo;
     private Long unidadId;
     private Long choferId;
@@ -43,7 +42,7 @@ public class ComCargaDieselDTO {
     private Integer fromWS;
     private Double recorridoRutas;
     private Double odometroAjustado;
-    private Integer usuarioAjuste;
+    private String usuarioAjuste;
     private String fechaAjuste;
     private String motivoAjuste;
     private Long estadoId;

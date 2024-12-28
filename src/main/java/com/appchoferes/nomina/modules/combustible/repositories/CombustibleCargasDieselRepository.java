@@ -21,8 +21,8 @@ public interface CombustibleCargasDieselRepository extends JpaRepository<CargaDi
     @Query(value = "call com_getHistorialAnterior(:id, :fechaActual)", nativeQuery = true)
     List<Object []> getHistorialAnterior(Long id, String fechaActual);
 
-    @Query(value = "call com_insertarCargaDiesel(:cargaDiesel)", nativeQuery = true)
+    @Query(value = "call com_insertarCargaDiesel(:cargaDiesel); select * from cargasdiesel_tbl where CargaID = LAST_INSERT_ID();", nativeQuery = true)
     @Modifying
     @Transactional
-    void insertarCargaDiesel(@Param("cargaDiesel") CargaDiesel cargaDiesel);
+    CargaDiesel insertarCargaDiesel(@Param("cargaDiesel") CargaDiesel cargaDiesel);
 }
