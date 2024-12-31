@@ -16,8 +16,8 @@ public class ProveedorService {
     @Autowired
     private ProveedorRepository proveedorRepository;
 
-    public List<ProveedorDTO> getProveedores(){
-        DatabaseContextHolder.setDatabaseType("lorasdb");
+    public List<ProveedorDTO> getProveedores(String databaseName){
+        DatabaseContextHolder.setDatabaseType(databaseName);
 
         List<Object[]> proveedorRaw = proveedorRepository.getProveedoresRaw();
 
