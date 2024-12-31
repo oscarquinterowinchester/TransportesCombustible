@@ -1,6 +1,5 @@
 package com.appchoferes.nomina.modules.combustible.services;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,9 +16,9 @@ public class CamionesConCargaService {
     @Autowired
     private CamionesConCargaRepository camionesConCargaRepository;
 
-    public List<CamionesConCargaDTO> getAllCamionesConCargas(){
+    public List<CamionesConCargaDTO> getAllCamionesConCargas(String databaseName){
 
-        DatabaseContextHolder.setDatabaseType("lorasdb");
+        DatabaseContextHolder.setDatabaseType(databaseName);
 
         List<Object[]> camionesRaw = camionesConCargaRepository.getCamionesConCargasRaw();
 
@@ -31,9 +30,9 @@ public class CamionesConCargaService {
 
     }
 
-    public CamionesConCargaDTO getCamion(Long id) {
+    public CamionesConCargaDTO getCamion(Long id, String databaseName) {
 
-        DatabaseContextHolder.setDatabaseType("lorasdb");
+        DatabaseContextHolder.setDatabaseType(databaseName);
 
         List<Object[]> result = camionesConCargaRepository.getCamionRaw(id);
 

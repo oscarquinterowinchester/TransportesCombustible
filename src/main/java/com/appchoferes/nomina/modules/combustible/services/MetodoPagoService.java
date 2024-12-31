@@ -16,8 +16,8 @@ public class MetodoPagoService {
     @Autowired
     private MetodoPagoRepository metodoPagoRepository;
 
-    public List<MetodoPagoDTO> getMetodosPago(){
-        DatabaseContextHolder.setDatabaseType("lorasdb");
+    public List<MetodoPagoDTO> getMetodosPago(String databaseName){
+        DatabaseContextHolder.setDatabaseType(databaseName);
 
         List<Object[]> mPagoRaw = metodoPagoRepository.getMetodosPagoRaw();
 
