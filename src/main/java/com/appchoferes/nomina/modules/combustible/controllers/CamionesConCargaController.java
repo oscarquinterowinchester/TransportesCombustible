@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.appchoferes.nomina.modules.combustible.dtos.CamionesConCargaDTO;
 import com.appchoferes.nomina.modules.combustible.services.CamionesConCargaService;
-import com.appchoferes.nomina.security.dtos.LoginDTO;
-import com.appchoferes.nomina.security.dtos.UsuarioDBDTO;
-import com.appchoferes.nomina.security.services.UsuarioDBService;
 
 @RestController
 @RequestMapping("/api/combustible")
@@ -22,22 +19,17 @@ public class CamionesConCargaController{
     @Autowired
     private CamionesConCargaService camionesConCargaService;
 
-    private UsuarioDBService usuarioDBService;
 
     @GetMapping("/camiones-cargas")
-    public List<CamionesConCargaDTO> getAllCamionesConCargas(@RequestParam String username){
-        LoginDTO loginDTO = new LoginDTO(username, "password_placeholder");
-        UsuarioDBDTO usuarioAutenticado = usuarioDBService.authenticationUsuario(loginDTO);
-        String databaseName = usuarioAutenticado.getDatabase_name();
+    public List<CamionesConCargaDTO> getAllCamionesConCargas(){
+        String databaseName = "lorasdb";
         return camionesConCargaService.getAllCamionesConCargas(databaseName);
     }
 
 
     @GetMapping("/camiones-cargas/{id}")
-    public CamionesConCargaDTO getCamion(@PathVariable Long id, @RequestParam String username){
-        LoginDTO loginDTO = new LoginDTO(username, "password_placeholder");
-        UsuarioDBDTO usuarioAutenticado = usuarioDBService.authenticationUsuario(loginDTO);
-        String databaseName = usuarioAutenticado.getDatabase_name();
+    public CamionesConCargaDTO getCamion(@PathVariable Long id){
+        String databaseName = "lorasdb";
         return camionesConCargaService.getCamion(id, databaseName);
     }
 
