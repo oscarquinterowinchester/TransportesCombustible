@@ -165,7 +165,7 @@ public class UtilsCarga {
         return ultimaFecha;
     }
 
-    public static boolean distanciaNoEsValida(CargaDieselEntity carga,CargasDieselRepository repo,int tipoOperacion){
+    /*public static boolean distanciaNoEsValida(CargaDieselEntity carga,CargasDieselRepository repo,int tipoOperacion){
         boolean esPrimerRegistro = repo.esPrimerRegistro(carga.getUnidadId(), carga.getTipo());
         boolean esOdoCargaInvalido  = Validador.validarDouble(carga.getOdometroCarga()) <= 0;
         
@@ -182,7 +182,7 @@ public class UtilsCarga {
         boolean recorridoEsValido = !(recorrido <= Globals.MAX_DISTANCIA && recorrido > 0);
         
         return recorridoEsValido;
-    }
+    }*/
 
     public static String obtenerUltimoOdometro(CargasDieselEntityOld carga,CargasDieselRepository repo,int tipoOperacion){
 
@@ -223,7 +223,7 @@ public class UtilsCarga {
         return rendimiento;
     }
 
-    public static ResponseEntity<String> revisarCampos(CargasDieselEntityOld carga,CargasDieselRepository cargasDieselRepository2,int tipoOperacion) {
+    /*public static ResponseEntity<String> revisarCampos(CargasDieselEntityOld carga,CargasDieselRepository cargasDieselRepository2,int tipoOperacion) {
         
         Map<String,Object> errores = null;
         Boolean campoEsValido = false; // Declaracion
@@ -236,7 +236,7 @@ public class UtilsCarga {
         } // Validacion de datos
 
         return ResponseEntity.ok("guardado con exito!");
-    }
+    }*/
 
     public static Map<String, Object> datosCargaSonValidos(CargaDieselEntity cargaExistente,
             CargasDieselRepository cargasDieselRepository2, int operacionActualizar) {
