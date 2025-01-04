@@ -38,7 +38,7 @@ public class CargaDieselService {
         return cargasDieselRepository.findByCargaId(Integer.parseInt(cargaId));
             }
 
-    public ResponseEntity<String> procesarCarga(CargasDieselEntityOld carga,String dbType)
+  /*  public ResponseEntity<String> procesarCarga(CargasDieselEntityOld carga,String dbType)
     {
         HttpStatusCode codigoFormatoIncorrecto = HttpStatusCode.valueOf(400);
         int operacionInsercion = 0;
@@ -57,7 +57,7 @@ public class CargaDieselService {
         cargasDieselRepository.save(carga);
 
         return respuestaCamposValidos;
-    }
+    }*/
     
 
     public ResponseEntity<String> actualizarCargaPorCampos(String cargaId, Map<String, Object> campos, String dbType) {
