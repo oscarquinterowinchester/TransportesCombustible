@@ -4,16 +4,15 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
 
-import com.appchoferes.nomina.config.DatabaseContextHolder;
 import com.appchoferes.nomina.shared.context.UserContextHolder;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
-public class DynamicRoutingDataSource extends AbastractRoutingDataSource {
+public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
 
     private final Map<Object, Object> dataSourceMap = new ConcurrentHashMap<>();
 
-    public void addDataSource(String dbName, String ds) {
+    public void addDataSource(String dbName, DataSource ds) {
         dataSourceMap.put(dbName, ds);
         super.setTargetDataSources(dataSourceMap);
         super.afterPropertiesSet();
@@ -33,6 +32,8 @@ public class DynamicRoutingDataSource extends AbastractRoutingDataSource {
         return new ConcurrentHashMap<>(dataSourceMap);
     }
 
+
+    @Override
     protected Object determineCurrentLookupKey() {
         String dbName = UserContextHolder.getDatabaseName();
         if (dbName == null) {
