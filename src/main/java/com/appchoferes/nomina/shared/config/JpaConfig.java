@@ -25,7 +25,7 @@ public class JpaConfig {
         Map<String, String> jpaProperties = new HashMap<>();
         jpaProperties.put("hibernate.hbm2ddl.auto", "none");
         jpaProperties.put("hibernate.show_sql", "true");
-        jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
+        jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 
         return builder
                 .dataSource(dataSource) // Aqui usa el DynamicRoutingSource

@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.appchoferes.nomina.config.DatabaseContextHolder;
 import com.appchoferes.nomina.modules.combustible.dtos.KmCamionDTO;
 import com.appchoferes.nomina.modules.combustible.repositories.KmCamionRepository;
 
@@ -17,12 +16,7 @@ public class kmCamionService {
     private KmCamionRepository kmCamionRepository;
 
     public List<KmCamionDTO> getKmCamion(Long camionId, String fechaAnterior, String fechaActual) {
-
-        DatabaseContextHolder.setDatabaseType("lorasdb");
-
         List<Object[]> kmCamion = kmCamionRepository.getKmCamion(camionId, fechaAnterior, fechaActual);
-
-        DatabaseContextHolder.clearDatabaseType();
 
         return kmCamion.stream()
                 .map(this::mapToDTO)

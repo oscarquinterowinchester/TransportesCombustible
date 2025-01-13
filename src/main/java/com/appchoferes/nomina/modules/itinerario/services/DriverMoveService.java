@@ -9,7 +9,7 @@ import com.appchoferes.nomina.modules.itinerario.models.DriverMoveEntity;
 import com.appchoferes.nomina.modules.itinerario.models.Itinerario;
 import com.appchoferes.nomina.modules.itinerario.repositories.ContenedorRepository;
 import com.appchoferes.nomina.modules.itinerario.repositories.DriveMoveRepository;
-import com.appchoferes.nomina.operaciones.Utils;
+//import com.appchoferes.nomina.operaciones.Utils;
 
 @Service
 public class DriverMoveService implements IDriverMoveService{
@@ -23,7 +23,7 @@ public class DriverMoveService implements IDriverMoveService{
     @Override
     public int setItinerarioAsVisto(String itinerarioId,String dbType)
     {
-        Utils.establecerBaseDatos(dbType);
+   //     Utils.establecerBaseDatos(dbType);
 
         return driverMoveRepository.setItinerarioAsVisto(itinerarioId);
         
@@ -33,7 +33,7 @@ public class DriverMoveService implements IDriverMoveService{
     public Itinerario getItinerario(String choferId,String dbType)
     {
 
-        Utils.establecerBaseDatos(dbType);
+ //       Utils.establecerBaseDatos(dbType);
 
         Itinerario data = getInformacionItinerario(choferId);
         
@@ -52,8 +52,8 @@ public class DriverMoveService implements IDriverMoveService{
 
             for(DriverMoveEntity iti : itinerarioChofer.getData()){
 
-                List<ContenedorEntity> contenedores = contenedorRepository.getContenedores(Utils.toStr(iti.getId()));
-                iti.setContenedores(contenedores);
+  //              List<ContenedorEntity> contenedores = contenedorRepository.getContenedores(Utils.toStr(iti.getId()));
+//            iti.setContenedores(contenedores);
 
                 }
 

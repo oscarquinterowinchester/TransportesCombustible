@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.appchoferes.nomina.config.DatabaseContextHolder;
 import com.appchoferes.nomina.modules.combustible.dtos.CajasConCargaDTO;
 import com.appchoferes.nomina.modules.combustible.repositories.CajasConCargaRepository;
 
@@ -17,12 +16,7 @@ public class CajasConCargaService {
     private CajasConCargaRepository cajasConCargaRepository;
 
     public List<CajasConCargaDTO> getAllCajasConCarga(){
-
-        DatabaseContextHolder.setDatabaseType("lorasdb");
-
         List<Object[]> cajasRaw = cajasConCargaRepository.getCajasConCargasRaw();
-
-        DatabaseContextHolder.clearDatabaseType();
 
         List<CajasConCargaDTO> cajas = new ArrayList<>();
 
@@ -37,11 +31,7 @@ public class CajasConCargaService {
 
     public CajasConCargaDTO getCaja(Long id) {
 
-        DatabaseContextHolder.setDatabaseType("lorasdb");
-
         List<Object[]> result = cajasConCargaRepository.getCajaRaw(id);
-
-        DatabaseContextHolder.clearDatabaseType();
 
         //recupera el primer dato de la lista
         return mapToDTO(result.get(0));

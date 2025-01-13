@@ -1,12 +1,12 @@
 package com.appchoferes.nomina.shared.config;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 import javax.sql.DataSource;
 
-import com.appchoferes.nomina.shared.context.UserContextHolder;
-
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
+
+import com.appchoferes.nomina.shared.context.UserContextHolder;
 
 public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
 
@@ -15,13 +15,13 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
     public void addDataSource(String dbName, DataSource ds) {
         dataSourceMap.put(dbName, ds);
         super.setTargetDataSources(dataSourceMap);
-        super.afterPropertiesSet();
+        super.afterPropertiesSet(); // Refresca la configuración del AbstractRoutingDataSource
     }
 
     public void removeDataSource(String dbName) {
         dataSourceMap.remove(dbName);
         super.setTargetDataSources(dataSourceMap);
-        super.afterPropertiesSet();
+        super.afterPropertiesSet(); // Refresca la configuración
     }
 
     public boolean hasDataSource(String dbName) {
@@ -32,14 +32,12 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
         return new ConcurrentHashMap<>(dataSourceMap);
     }
 
-
     @Override
     protected Object determineCurrentLookupKey() {
-        String dbName = UserContextHolder.getDatabaseName();
-        if (dbName == null) {
-            throw new IllegalStateException("No se encontro un contexto de base de datos valido");
+        if (UserContextHolder.getUserContext() == null ||
+                UserContextHolder.getUserContext().getDatabaseName() == null) {
+            throw new IllegalStateException("No se encontró un contexto de base de datos válido.");
         }
-        return dbName;
+        return UserContextHolder.getUserContext().getDatabaseName();
     }
-
 }

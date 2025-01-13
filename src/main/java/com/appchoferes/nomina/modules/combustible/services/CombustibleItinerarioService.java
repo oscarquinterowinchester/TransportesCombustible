@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.appchoferes.nomina.config.DatabaseContextHolder;
 import com.appchoferes.nomina.modules.combustible.dtos.ItinerarioDTO;
 import com.appchoferes.nomina.modules.combustible.repositories.CombustibleItinerarioRepository;
 
@@ -20,13 +19,9 @@ public class CombustibleItinerarioService {
                 Long camionId, 
                 String fechaAnterior, 
                 String fechaActual){
-            
-        DatabaseContextHolder.setDatabaseType("lorasdb");
 
         List<Object[]> itinerarioCamion = combustibleItinerarioRepository
                 .getItinetariosCamion(camionId, fechaAnterior, fechaActual);
-
-        DatabaseContextHolder.clearDatabaseType();
 
         return itinerarioCamion.stream()
                 .map(this :: mapToDTO)

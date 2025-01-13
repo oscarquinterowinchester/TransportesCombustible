@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.appchoferes.nomina.config.DatabaseContextHolder;
 import com.appchoferes.nomina.modules.combustible.dtos.MetodoPagoDTO;
 import com.appchoferes.nomina.modules.combustible.repositories.MetodoPagoRepository;
 
@@ -17,11 +16,7 @@ public class MetodoPagoService {
     private MetodoPagoRepository metodoPagoRepository;
 
     public List<MetodoPagoDTO> getMetodosPago(String databaseName){
-        DatabaseContextHolder.setDatabaseType(databaseName);
-
         List<Object[]> mPagoRaw = metodoPagoRepository.getMetodosPagoRaw();
-
-        DatabaseContextHolder.clearDatabaseType();
 
         List<MetodoPagoDTO> metodosPago = new ArrayList<>();
         for (Object [] result : mPagoRaw) {

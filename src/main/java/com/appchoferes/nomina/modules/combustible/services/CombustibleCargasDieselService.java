@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.appchoferes.nomina.config.DatabaseContextHolder;
 import com.appchoferes.nomina.modules.combustible.dtos.CargasDieselDTO;
 import com.appchoferes.nomina.modules.combustible.dtos.HistorialAnteriorDTO;
 import com.appchoferes.nomina.modules.combustible.repositories.CombustibleCargasDieselRepository;
@@ -18,11 +17,7 @@ public class CombustibleCargasDieselService {
     private CombustibleCargasDieselRepository combustibleCargasDieselRepository;
 
     public List<CargasDieselDTO> getHistorialCargas(Long id, Integer tipo) {
-        DatabaseContextHolder.setDatabaseType("lorasdb");
-
         List<Object[]> historialCargas = combustibleCargasDieselRepository.getHistorialCargas(id, tipo);
-
-        DatabaseContextHolder.clearDatabaseType();
 
         return historialCargas.stream()
                 .map(this :: mapToDTO)
@@ -30,12 +25,7 @@ public class CombustibleCargasDieselService {
     }
 
     public List<HistorialAnteriorDTO> getHistorialAnterior(Long id, String fechaActual) {
-
-        DatabaseContextHolder.setDatabaseType("lorasdb");
-
         List<Object[]> historialAnterior = combustibleCargasDieselRepository.getHistorialAnterior(id, fechaActual);
-
-        DatabaseContextHolder.clearDatabaseType();
 
         return historialAnterior.stream()
                 .map(this :: mapToDTOHistorialAnterior)
