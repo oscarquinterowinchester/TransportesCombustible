@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.appchoferes.nomina.config.DatabaseContextHolder;
 import com.appchoferes.nomina.modules.combustible.dtos.CamionesConCargaDTO;
 import com.appchoferes.nomina.modules.combustible.repositories.CamionesConCargaRepository;
 
@@ -17,12 +16,7 @@ public class CamionesConCargaService {
     private CamionesConCargaRepository camionesConCargaRepository;
 
     public List<CamionesConCargaDTO> getAllCamionesConCargas(String databaseName){
-
-        DatabaseContextHolder.setDatabaseType(databaseName);
-
         List<Object[]> camionesRaw = camionesConCargaRepository.getCamionesConCargasRaw();
-
-        DatabaseContextHolder.clearDatabaseType();
 
         return camionesRaw.stream()
                 .map(this :: mapToDTO)
@@ -31,12 +25,7 @@ public class CamionesConCargaService {
     }
 
     public CamionesConCargaDTO getCamion(Long id, String databaseName) {
-
-        DatabaseContextHolder.setDatabaseType(databaseName);
-
         List<Object[]> result = camionesConCargaRepository.getCamionRaw(id);
-
-        DatabaseContextHolder.clearDatabaseType();
 
         return mapToDTO(result.get(0)); //Recuperamos el primer registro
     }

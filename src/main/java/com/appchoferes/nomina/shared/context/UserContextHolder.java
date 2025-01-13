@@ -12,8 +12,8 @@ public class UserContextHolder {
         return userContext.get();
     }
 
-    public static UserContext clear(){
-        return userContext.get();
+    public static void clear(){
+        userContext.remove();
     }
 
     public static String getDatabaseName (){

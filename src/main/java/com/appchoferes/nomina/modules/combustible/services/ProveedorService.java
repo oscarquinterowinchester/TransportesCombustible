@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.appchoferes.nomina.config.DatabaseContextHolder;
 import com.appchoferes.nomina.modules.combustible.dtos.ProveedorDTO;
 import com.appchoferes.nomina.modules.combustible.repositories.ProveedorRepository;
 
@@ -17,11 +16,7 @@ public class ProveedorService {
     private ProveedorRepository proveedorRepository;
 
     public List<ProveedorDTO> getProveedores(String databaseName){
-        DatabaseContextHolder.setDatabaseType(databaseName);
-
         List<Object[]> proveedorRaw = proveedorRepository.getProveedoresRaw();
-
-        DatabaseContextHolder.clearDatabaseType();
 
         List<ProveedorDTO> proveedores = new ArrayList<>();
         for (Object [] result : proveedorRaw) {

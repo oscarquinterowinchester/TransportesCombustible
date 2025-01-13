@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.appchoferes.nomina.models.MetodosPago;
+import com.appchoferes.nomina.modules.combustible.models.MetodoPago;
 
 @Repository
-public interface MetodoPagoRepository extends JpaRepository<MetodosPago, Integer> {
+public interface MetodoPagoRepository extends JpaRepository<MetodoPago, Integer> {
 
     @Query(value = "call getMetodosPago()", nativeQuery = true)
     List<Object[]> getMetodosPagoRaw();
