@@ -1,0 +1,31 @@
+package com.appchoferes.nomina.models.lorasdb;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "rutas_tbl")
+public class Ruta {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "RutaID")
+    private Long rutaId;
+
+    @Column(name = "Nombre")
+    private String nombre;
+
+    @Column(name = "KM")
+    private Double km;
+
+}
