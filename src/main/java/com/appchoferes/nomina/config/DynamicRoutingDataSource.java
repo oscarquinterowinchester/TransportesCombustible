@@ -6,7 +6,7 @@ import javax.sql.DataSource;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
-import com.appchoferes.nomina.services.durandb.UserContextHolder;
+import com.appchoferes.nomina.services.lorasdb.UserContextHolder;
 
 public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
 

@@ -22,9 +22,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.appchoferes.nomina.config.DynamicRoutingDataSource;
-import com.appchoferes.nomina.services.durandb.UserContext;
-import com.appchoferes.nomina.services.durandb.UserContextHolder;
-
+import com.appchoferes.nomina.services.lorasdb.UserContext;
+import com.appchoferes.nomina.services.lorasdb.UserContextHolder;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
