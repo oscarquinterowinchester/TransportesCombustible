@@ -23,7 +23,7 @@ public class JpaConfig {
     @Bean(name = "entityManagerFactory")
     @Primary
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-            @Qualifier("durandbDataSource") DataSource dataSource,
+            @Qualifier("lorasdbDataSource") DataSource dataSource,
             EntityManagerFactoryBuilder builder) {
 
         Map<String, String> jpaProperties = new HashMap<>();
@@ -33,7 +33,7 @@ public class JpaConfig {
 
         return builder
                 .dataSource(dataSource) // Aquí usa el DynamicRoutingDataSource
-                .packages("com.appchoferes.nomina.models.durandb", "com.appchoferes.nomina.models.lorasdb") // Ajusta al paquete de tus entidades
+                .packages("com.appchoferes.nomina.models.lorasdb") // Ajusta al paquete de tus entidades
                 .properties(jpaProperties)
                 .persistenceUnit("dynamicPU") // Nombre del Persistence Unit
                 .build();

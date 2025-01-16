@@ -7,10 +7,12 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
+@Configuration
 public class lorasdb {
 
     @Bean(name = "lorasdbDataSource")
@@ -47,7 +49,7 @@ public class lorasdb {
             userDataSource.setDriverClass((Class<? extends Driver>) Class.forName(driverClassName));
             userDataSource.setUrl(url);
             userDataSource.setUsername(username);
-            userDataSource.setUsername(password);
+            userDataSource.setPassword(password);
             return userDataSource;
 
         } catch (ClassNotFoundException e) {
