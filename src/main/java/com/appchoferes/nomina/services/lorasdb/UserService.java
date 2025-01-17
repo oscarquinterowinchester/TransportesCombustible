@@ -55,7 +55,7 @@ public class UserService {
 
         String dbName = (String) resultempresa.get("nombre_db");
         String dbUser = (String) resultempresa.get("usuario_db");
-        String dbPass = (String) resultempresa.get("usuario_db");
+        String dbPass = (String) resultempresa.get("password_db");
         String dbHost = (String) resultempresa.get("direccion_db");
         String dbEmpresa = (String) result.get("empresaID").toString();
         String dbNombreUsuario = (String) result.get("nombreUsuario");
