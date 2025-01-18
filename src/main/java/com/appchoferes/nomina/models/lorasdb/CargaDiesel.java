@@ -1,5 +1,9 @@
 package com.appchoferes.nomina.models.lorasdb;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,9 +34,13 @@ public class CargaDiesel {
     @JoinColumn(name = "UnidadID", referencedColumnName = "CamionID")
     private Camion camion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UnidadID", referencedColumnName = "CajaID", insertable = false, updatable = false)
-    private Caja caja;
+    /*
+     * @ManyToOne(fetch = FetchType.LAZY)
+     * 
+     * @JoinColumn(name = "UnidadID", referencedColumnName = "CajaID", insertable =
+     * false, updatable = false)
+     * private Caja caja;
+     */
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ChoferID", referencedColumnName = "ChoferID")
@@ -45,13 +53,13 @@ public class CargaDiesel {
     private double litros;
 
     @Column(name = "Fecha")
-    private String fecha;
+    private java.sql.Date fecha;
 
     @Column(name = "Hora")
-    private String hora;
+    private java.sql.Time hora;
 
     @Column(name = "FechayHora")
-    private String fechayHora;
+    private java.sql.Timestamp fechayHora;
 
     @Column(name = "Folio")
     private String folio;
@@ -60,7 +68,7 @@ public class CargaDiesel {
     private String nota;
 
     @Column(name = "FechaRegistro")
-    private String fechaRegistro;
+    private java.sql.Timestamp fechaRegistro;
 
     @Column(name = "Status")
     private Integer status;
@@ -83,6 +91,7 @@ public class CargaDiesel {
     // revisar si no se relaciona con otra tabla
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MetodoPago", referencedColumnName = "MetodoID")
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private MetodoPago metodoPago;
 
     @Column(name = "SerieBomba")

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.appchoferes.nomina.models.lorasdb.CargaDiesel;
 import com.appchoferes.nomina.models.lorasdb.dtos.CargasDieselDTO;
-import com.appchoferes.nomina.models.lorasdb.dtos.ComCargaDieselDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.HistorialAnteriorDTO;
 import com.appchoferes.nomina.services.lorasdb.CombustibleCargasDieselService;
 import com.appchoferes.nomina.services.lorasdb.InsertCargaDiesel;
@@ -46,21 +45,31 @@ public class CombustibleCargasDieselController {
     }
 
     @PostMapping("/insertar")
-    public ResponseEntity<CargaDiesel> insertarCargaDiesel(@RequestBody ComCargaDieselDTO comCargaDieselDTO) {
+    public ResponseEntity<?> insertarCargaDiesel(@RequestBody CargaDiesel cargaDiesel) {
 
         try {
-            CargaDiesel cargaDiesel = insertCargaDiesel.insertarCargaDiesel(comCargaDieselDTO);
+            System.out.println("Datos recibidos en el controlador: " + cargaDiesel);
+
+            // Llamada al servicio
+            insertCargaDiesel.insertarCargaDiesel(cargaDiesel);
+
+            //System.out.println("CargaDiesel devuelta por el servicio: " + cargaDiesel);
 
             if (cargaDiesel != null) {
                 return ResponseEntity.status(HttpStatus.CREATED).body(cargaDiesel);
             } else {
+                System.out.println("El servicio devolvió un valor nulo");
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             }
 
         } catch (EntityNotFoundException e) {
+            System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(null);
         } catch (Exception e) {
+            System.err.println("Excepción no manejada: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);
         }
