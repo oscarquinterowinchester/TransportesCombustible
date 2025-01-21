@@ -18,18 +18,13 @@ public class CamionesConCargaController{
     @Autowired
     private CamionesConCargaService camionesConCargaService;
 
-
     @GetMapping("/camiones-cargas")
     public List<CamionesConCargaDTO> getAllCamionesConCargas(){
         return camionesConCargaService.getAllCamionesConCargas();
     }
 
-
     @GetMapping("/camiones-cargas/{id}")
     public CamionesConCargaDTO getCamion(@PathVariable Long id){
         return camionesConCargaService.getCamion(id);
     }
-
-    
-
 }
