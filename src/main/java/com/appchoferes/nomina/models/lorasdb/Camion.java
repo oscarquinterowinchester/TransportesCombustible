@@ -40,8 +40,11 @@ public class Camion {
     private double tanqueCapacidad;
 
     // Relacion 1:N con CargaDiesel
-    @OneToMany(mappedBy = "camion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CargaDiesel> cargas;
+    /*
+     * @OneToMany(mappedBy = "camion", cascade = CascadeType.ALL, fetch =
+     * FetchType.LAZY)
+     * private List<CargaDiesel> cargas;
+     */
 
     // Relacion 1:N con Itinerario
     @OneToMany(mappedBy = "camion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
