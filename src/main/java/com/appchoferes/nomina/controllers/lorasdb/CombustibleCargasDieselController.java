@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.appchoferes.nomina.models.lorasdb.CargaDiesel;
 import com.appchoferes.nomina.models.lorasdb.dtos.CargasDieselDTO;
+import com.appchoferes.nomina.models.lorasdb.dtos.ComCargaDieselDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.HistorialAnteriorDTO;
 import com.appchoferes.nomina.services.lorasdb.CombustibleCargasDieselService;
 import com.appchoferes.nomina.services.lorasdb.InsertCargaDiesel;
@@ -53,7 +54,7 @@ public class CombustibleCargasDieselController {
             // Llamada al servicio
             insertCargaDiesel.insertarCargaDiesel(cargaDiesel);
 
-            //System.out.println("CargaDiesel devuelta por el servicio: " + cargaDiesel);
+            System.out.println("CargaDiesel devuelta por el servicio: " + cargaDiesel);
 
             if (cargaDiesel != null) {
                 return ResponseEntity.status(HttpStatus.CREATED).body(cargaDiesel);
