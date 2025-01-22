@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.appchoferes.nomina.models.lorasdb.CargaDiesel;
 import com.appchoferes.nomina.models.lorasdb.dtos.CargasDieselDTO;
-import com.appchoferes.nomina.models.lorasdb.dtos.ComCargaDieselDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.HistorialAnteriorDTO;
 import com.appchoferes.nomina.services.lorasdb.CombustibleCargasDieselService;
 import com.appchoferes.nomina.services.lorasdb.InsertCargaDiesel;
@@ -52,16 +51,11 @@ public class CombustibleCargasDieselController {
             System.out.println("Datos recibidos en el controlador: " + cargaDiesel);
 
             // Llamada al servicio
-            insertCargaDiesel.insertarCargaDiesel(cargaDiesel);
+            CargaDiesel resultado = insertCargaDiesel.insertarCargaDiesel(cargaDiesel);
 
             System.out.println("CargaDiesel devuelta por el servicio: " + cargaDiesel);
 
-            if (cargaDiesel != null) {
-                return ResponseEntity.status(HttpStatus.CREATED).body(cargaDiesel);
-            } else {
-                System.out.println("El servicio devolvió un valor nulo");
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-            }
+            return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
 
         } catch (EntityNotFoundException e) {
             System.err.println("Error: " + e.getMessage());

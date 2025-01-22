@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 public class Chofer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     @Column(name = "ChoferID")
     private long id;
 
