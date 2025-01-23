@@ -1,5 +1,8 @@
 package com.appchoferes.nomina.models.lorasdb;
 
+import com.fasterxml.jackson.annotation.JsonKey;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +28,7 @@ public class Ticket {
     private Long CargaID;
 
     @Column(name = "Foto")
+    @JsonProperty("Foto")
     private String Foto;
 
 }

@@ -53,18 +53,17 @@ public class InsertCargaDiesel {
         // Guarda carga principal
         CargaDiesel saveCargaDiesel = combustibleCargasDieselRepository.save(cargaDiesel);
 
-        // Inserta los tickets asociados 
-        if(cargaDiesel.getTickets() != null && !cargaDiesel.getTickets().isEmpty()){
-            for (Ticket ticket : cargaDiesel.getTickets()) {
-                
-                // Guardamos la imagen en el path especificado
-                if(ticket.getFoto() != null){
-                    String path = ImageUtil.saveImage(ticket.getFoto(), "Ticket", BASE_DIRECTORY + "tickets/");
-                    ticket.setFoto(path);
-                }
+        // Inserta los tickets asociados
+        if (cargaDiesel.getTickets() != null && !cargaDiesel.getTickets().isEmpty()) {
+            // Recibe la imagen en Base64
+            for (String ticketBase64 : cargaDiesel.getTickets()) {
+                Ticket ticket = new Ticket();
 
-                ticket.setCargaID(cargaDiesel.getCargaId()); // Asocia el ticket con el id de la cargaDiesel 
-                ticketRepository.save(ticket); // Guarda el ticket
+                String path = ImageUtil.saveImage(ticketBase64, "Ticket", BASE_DIRECTORY + "tickets/");
+                ticket.setFoto(path);
+
+                ticket.setCargaID(cargaDiesel.getCargaId());
+                ticketRepository.save(ticket);
             }
         }
 
