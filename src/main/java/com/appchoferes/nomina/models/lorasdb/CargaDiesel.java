@@ -153,7 +153,7 @@ public class CargaDiesel {
 
     @Transient
     @JsonProperty("tickets")
-    private List<Ticket> tickets;
+    private List<String> tickets;
 
     // Datos mapeados de la base de datos pero no utilizados en la insercion de
     // cargaId
