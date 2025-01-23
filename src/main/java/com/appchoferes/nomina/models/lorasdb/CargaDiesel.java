@@ -1,23 +1,17 @@
 package com.appchoferes.nomina.models.lorasdb;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
-import org.hibernate.annotations.JavaType;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
@@ -48,12 +42,6 @@ public class CargaDiesel {
     @JsonProperty("UnidadID")
     private Integer UnidadID;
 
-    /*
-     * @ManyToOne(fetch = FetchType.LAZY)
-     * 
-     * @JoinColumn(name = "ProveedorID", referencedColumnName = "ProveedorID")
-     * private Proveedor proveedor;
-     */
     @Column(name = "ProveedorID")
     @JsonProperty("ProveedorID")
     private Integer ProveedorID;
@@ -134,41 +122,8 @@ public class CargaDiesel {
     @JsonProperty("esChofer")
     private Integer esChofer;
 
-    /*
-     * @ManyToOne(fetch = FetchType.LAZY)
-     * 
-     * @JoinColumn(name = "UnidadID", referencedColumnName = "CamionID")
-     * private Camion camion;
-     */
-
-    /*
-     * @ManyToOne(fetch = FetchType.LAZY)
-     * 
-     * @JoinColumn(name = "UnidadID", referencedColumnName = "CajaID", insertable =
-     * false, updatable = false)
-     * private Caja caja;
-     */
-
-    /*
-     * @ManyToOne(fetch = FetchType.LAZY)
-     * 
-     * @JoinColumn(name = "ChoferID", referencedColumnName = "ChoferID")
-     * private Chofer chofer;
-     */
-
-    // revisar la relacion con la tabla usuarios_tbl
-    /*
-     * @ManyToOne(fetch = FetchType.LAZY)
-     * 
-     * @JoinColumn(name = "UsuarioID", referencedColumnName = "UsuarioID")
-     * private Usuario usuario;
-     */
-
     @Transient
     private String fechaString;
-
-    @Transient
-    private String horaString;
 
     @Column(name = "Fecha")
     // Especificamos el formato en que jackson recibira la fecha
@@ -177,82 +132,71 @@ public class CargaDiesel {
     private LocalDate Fecha;
 
     @Column(name = "Hora")
-    @JsonFormat(pattern = "HH:mm:ss")
-    @JsonProperty("Hora")
-    private LocalTime Hora;
-
-    @Column(name = "Status")
-    @JsonProperty("Status")
-    private Integer status;
+    @JsonProperty("HoraTransformada")
+    private String Hora;
 
     @Column(name = "AjusteOdometro")
     @JsonProperty("AjusteOdometro")
     private Integer ajusteOdometro;
-
-    @Column(name = "FacturaID")
-    @JsonProperty("FacturaID")
-    private Integer FacturaID;
-    // Revisar si no se relaciona con otra tabla
-    /*
-     * @OneToOne(fetch = FetchType.LAZY)
-     * 
-     * @JoinColumn(name = "FacturaID", referencedColumnName = "FacturaID")
-     * private Factura factura;
-     */
-
-    @Column(name = "CantidadActual")
-    private Double cantidadActual;
-
-    @Column(name = "MetodoPago")
-    @JsonProperty("MetodoPago")
-    private Integer MetodoPago;
-    // revisar si no se relaciona con otra tabla
-    /*
-     * @ManyToOne(fetch = FetchType.LAZY)
-     * 
-     * @JoinColumn(name = "MetodoPago", referencedColumnName = "MetodoID")
-     * 
-     * @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-     * private MetodoPago metodoPago;
-     */
 
     @Column(name = "RendimientoCarga")
     @JsonProperty("RendimientoCarga")
     private Double rendimientoCarga;
 
     @Column(name = "RendimientoRutas")
-    private Double rendimientoRuta;
-
-    @Column(name = "OdometroECM")
-    @JsonProperty("OdometroECM")
-    private Double odometroECM;
+    @JsonProperty("RendimientoRutas")
+    private Double rendimientoRutas;
 
     @Column(name = "RecorridoCarga")
+    @JsonProperty("RecorridoCarga")
     private Double recorridoCarga;
 
-    @Column(name = "FromWS")
-    @JsonProperty("FromWS")
-    private Integer fromWS;
+    @Transient
+    @JsonProperty("tickets")
+    private List<Ticket> tickets;
 
-    @Column(name = "RecorridoRutas")
-    private Double recorridoRutas;
+    // Datos mapeados de la base de datos pero no utilizados en la insercion de
+    // cargaId
 
-    @Column(name = "OdometroAjustado")
-    @JsonProperty("OdometroAjustado")
-    private Double odometroAjustado;
-
-    @Column(name = "UsuarioAjuste")
-    private String usuarioAjuste;
-
-    @Column(name = "FechaAjuste")
-    private String fechaAjuste;
-
-    @Column(name = "MotivoAjuste")
-    private String motivoAjuste;
-
-    // revisar si no hace referencia a otra tabla
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "EstadoID", referencedColumnName = "EstadoID")
-    private Estado estado;
-
+    /*
+     * @Column(name = "Status")
+     * private Integer status;
+     * 
+     * @Column(name = "FacturaID")
+     * private Integer FacturaID;
+     * 
+     * @Column(name = "CantidadActual")
+     * private Double cantidadActual;
+     * 
+     * @Column(name = "MetodoPago")
+     * private Integer MetodoPago;
+     * 
+     * @Column(name = "FromWS")
+     * private Integer fromWS;
+     * 
+     * @Column(name = "RecorridoRutas")
+     * private Double recorridoRutas;
+     * 
+     * @Column(name = "OdometroAjustado")
+     * private Double odometroAjustado;
+     * 
+     * @Column(name = "UsuarioAjuste")
+     * private String usuarioAjuste;
+     * 
+     * @Column(name = "FechaAjuste")
+     * private String fechaAjuste;
+     * 
+     * @Column(name = "MotivoAjuste")
+     * private String motivoAjuste;
+     * 
+     * // revisar si no hace referencia a otra tabla
+     * 
+     * @OneToOne(fetch = FetchType.LAZY)
+     * 
+     * @JoinColumn(name = "EstadoID", referencedColumnName = "EstadoID")
+     * private Estado estado;
+     * 
+     * @Column(name = "OdometroECM")
+     * private Double odometroECM;
+     */
 }
