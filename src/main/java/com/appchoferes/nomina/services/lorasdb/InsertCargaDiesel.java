@@ -1,15 +1,12 @@
 package com.appchoferes.nomina.services.lorasdb;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.appchoferes.nomina.models.lorasdb.CargaDiesel;
+import com.appchoferes.nomina.models.lorasdb.Ticket;
 import com.appchoferes.nomina.repositories.lorasdb.CombustibleCargasDieselRepository;
-import com.appchoferes.nomina.utils.DateUtil;
-import com.appchoferes.nomina.utils.HoraUtil;
+import com.appchoferes.nomina.repositories.lorasdb.TicketRepository;
 import com.appchoferes.nomina.utils.ImageUtil;
 
 @Service
@@ -18,10 +15,13 @@ public class InsertCargaDiesel {
     @Autowired
     private CombustibleCargasDieselRepository combustibleCargasDieselRepository;
 
+    @Autowired
+    private TicketRepository ticketRepository;
+
     public static final String BASE_DIRECTORY = "/home/drago/work/lorasImagenes/";
 
     public CargaDiesel insertarCargaDiesel(CargaDiesel cargaDiesel) throws Exception {
-        
+
         // Procesamos las imagenes antes de guardarlas
         if (cargaDiesel.getFotoTanque1() != null) {
             String path = ImageUtil.saveImage(cargaDiesel.getFotoTanque1(), "FotoTanque1",
@@ -50,19 +50,25 @@ public class InsertCargaDiesel {
             cargaDiesel.setFotoSello(path);
         }
 
-        if (cargaDiesel.getHoraString() != null) {
-            LocalTime hora = HoraUtil.convertHora12a24(cargaDiesel.getHoraString());
-            cargaDiesel.setHora(hora);
+        // Guarda carga principal
+        CargaDiesel saveCargaDiesel = combustibleCargasDieselRepository.save(cargaDiesel);
+
+        // Inserta los tickets asociados 
+        if(cargaDiesel.getTickets() != null && !cargaDiesel.getTickets().isEmpty()){
+            for (Ticket ticket : cargaDiesel.getTickets()) {
+                
+                // Guardamos la imagen en el path especificado
+                if(ticket.getFoto() != null){
+                    String path = ImageUtil.saveImage(ticket.getFoto(), "Ticket", BASE_DIRECTORY + "tickets/");
+                    ticket.setFoto(path);
+                }
+
+                ticket.setCargaID(cargaDiesel.getCargaId()); // Asocia el ticket con el id de la cargaDiesel 
+                ticketRepository.save(ticket); // Guarda el ticket
+            }
         }
 
-        // pasar la Fecha de string a localDate para almacenar en la base de datos
-        if (cargaDiesel.getFechaString() != null && !cargaDiesel.getFechaString().isEmpty()) {
-            LocalDate fecha = DateUtil.convertStringToLocalDate(cargaDiesel.getFechaString());
-            cargaDiesel.setFecha(fecha);
-        }
-
-        // validarCargaDiesel(cargaDiesel);
-        return combustibleCargasDieselRepository.save(cargaDiesel);
+        return saveCargaDiesel;
     }
 
 }
