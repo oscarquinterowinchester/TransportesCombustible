@@ -7,19 +7,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.appchoferes.nomina.models.lorasdb.dtos.ChoferDTO;
-import com.appchoferes.nomina.services.lorasdb.ChoferService;
+import com.appchoferes.nomina.models.lorasdb.Sizes;
+import com.appchoferes.nomina.services.lorasdb.SizesServ;
 
 @RestController
-@RequestMapping("/combustible")
-public class ChoferController {
+@RequestMapping("/patios")
+public class SizesController {
 
     @Autowired
-    private ChoferService choferService;
+    private SizesServ sizesServ;
 
-    @GetMapping("/choferes")
-    public List<ChoferDTO> getAllChoferes() {
-        return choferService.getAllChoferes();
+    @GetMapping("/sizes-patios")
+    public List<Sizes> getSizes() {
+        return sizesServ.getSizes();
     }
 
 }
