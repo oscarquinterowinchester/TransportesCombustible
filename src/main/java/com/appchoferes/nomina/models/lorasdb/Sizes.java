@@ -14,16 +14,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "choferes_tbl")
-public class Chofer {
+@Table(name = "tamanoremo_tbl")
+public class Sizes {
 
-    // Se definen las variables de esa manera para evitar conflictos
-    // a la hora de mandar los choferes para el modulo de patios
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ChoferID")
-    private long id;
+    @Column(name = "TamanoID")
+    private Integer id;
 
-    @Column(name = "Nombre")
+    @Column(name = "Tamano")
     private String nombre;
+
 }
