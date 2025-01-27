@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.appchoferes.nomina.models.lorasdb.Camion;
-import com.appchoferes.nomina.models.lorasdb.dtos.CamionesPatios;
 
 @Repository
 public interface CamionesConCargaRepository extends JpaRepository<Camion, Long> {
@@ -22,6 +21,5 @@ public interface CamionesConCargaRepository extends JpaRepository<Camion, Long> 
     // Metodo para recuperar camiones del modulo de combustible
     // recuperacion de datos se hace con id y noEconomico
     @Query(value = "SELECT CamionID, NoEconomico FROM camiones_tbl WHERE Status = 1 ORDER BY NoEconomico", nativeQuery = true)
-    List<CamionesPatios> getCamionesPatios();
-
+    List<Object[]> getCamionesPatiosRaw();
 }
