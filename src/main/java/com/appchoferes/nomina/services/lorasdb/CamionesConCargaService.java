@@ -18,7 +18,12 @@ public class CamionesConCargaService {
 
     // Metodo para recuperar camiones del modulo Patios
     public List<CamionesPatios> getCamionesDePatios() {
-        return camionesConCargaRepository.getCamionesPatios();
+        List<Object[]> resultados = camionesConCargaRepository.getCamionesPatiosRaw();
+
+        // Mapeo manual de los resultados al DTO
+        return resultados.stream()
+                .map(obj -> new CamionesPatios(((Number) obj[0]).longValue(), (String) obj[1]))
+                .collect(Collectors.toList());
     }
 
     public List<CamionesConCargaDTO> getAllCamionesConCargas() {
