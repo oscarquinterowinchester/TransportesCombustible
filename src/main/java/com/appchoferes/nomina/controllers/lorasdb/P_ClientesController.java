@@ -10,7 +10,7 @@ import com.appchoferes.nomina.services.lorasdb.ClientesServ;
 
 @RestController
 @RequestMapping("/patios")
-public class ClientesController {
+public class P_ClientesController {
 
     @Autowired
     private ClientesServ clientesServ;

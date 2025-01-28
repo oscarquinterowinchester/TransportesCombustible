@@ -12,7 +12,7 @@ import com.appchoferes.nomina.services.lorasdb.TipoCorrespondeciaServ;
 
 @RestController
 @RequestMapping("/patios")
-public class TipoCorrespondenciaController {
+public class P_TipoCorrespondenciaController {
 
     @Autowired
     private TipoCorrespondeciaServ tipoCorrespondeciaServ;

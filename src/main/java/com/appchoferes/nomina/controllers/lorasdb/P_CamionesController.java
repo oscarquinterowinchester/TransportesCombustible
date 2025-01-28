@@ -12,7 +12,7 @@ import com.appchoferes.nomina.services.lorasdb.CamionesConCargaService;
 
 @RestController
 @RequestMapping("/patios")
-public class PCamionesController {
+public class P_CamionesController {
 
     @Autowired
     private CamionesConCargaService camionesService;
