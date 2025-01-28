@@ -11,24 +11,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "rutas_tbl")
-public class Ruta {
+@Table(name = "estados_tbl")
+public class EstadosPais {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RutaID")
-    private Long rutaId;
+    @Column(name = "EstadoID")
+    private Integer EstadoID;
 
     @Column(name = "Nombre")
-    private String nombre;
-
-    @Column(name = "KM")
-    private Double km;
-
-    @Column(name = "Status")
-    private Boolean status;
+    private String Nombre;
 
 }

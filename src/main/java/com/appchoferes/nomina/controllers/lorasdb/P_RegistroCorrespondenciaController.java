@@ -12,7 +12,7 @@ import com.appchoferes.nomina.services.lorasdb.RegistroCorrespondenciaServ;
 
 @RestController
 @RequestMapping("/patios")
-public class RegistroCorrespondenciaController {
+public class P_RegistroCorrespondenciaController {
 
     @Autowired
     private RegistroCorrespondenciaServ rCserv;

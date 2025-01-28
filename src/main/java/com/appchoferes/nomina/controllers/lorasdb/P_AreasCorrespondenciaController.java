@@ -12,7 +12,7 @@ import com.appchoferes.nomina.services.lorasdb.AreaCorrespondenciaServ;
 
 @RestController
 @RequestMapping("/patios")
-public class AreasCorrespondenciaController {
+public class P_AreasCorrespondenciaController {
 
     @Autowired
     private AreaCorrespondenciaServ areaCorrespondenciaServ;
