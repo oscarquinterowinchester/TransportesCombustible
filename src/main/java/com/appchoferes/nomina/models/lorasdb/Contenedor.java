@@ -10,28 +10,24 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "cajas_tbl")
-public class Caja {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "inventarioexterno_tbl")
+public class Contenedor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CajaID")
-    private Long id;
+    @Column(name = "InventarioID")
+    private Integer inventarioID;
 
-    @Column(name = "NoEconomico")
-    private String noEconomico;
+    @Column(name = "WContenedorID")
+    private String wContenedorID;
 
-    @Column(name = "TanqueActual")
-    private double tanqueActual;
+    @Column(name = "ItinerarioID")
+    private Integer itinerarioID;
 
-    @Column(name = "Tanques")
-    private double tanqueCapacidad;
-
-    /*@OneToMany(mappedBy = "caja", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CargaDiesel> cargas;*/
-
+    @Column(name = "Status")
+    private Boolean status;
 }
