@@ -1,6 +1,5 @@
 package com.appchoferes.nomina.models.lorasdb;
 
-import com.fasterxml.jackson.annotation.JsonKey;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
