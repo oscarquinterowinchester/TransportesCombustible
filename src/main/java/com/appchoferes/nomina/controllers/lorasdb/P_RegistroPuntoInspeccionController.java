@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/patios")
-public class RegistroPuntoInspeccionController {
+public class P_RegistroPuntoInspeccionController {
 
     @Autowired
     private RegistroPuntoInspeccionServ registroPuntoInspeccionService;
