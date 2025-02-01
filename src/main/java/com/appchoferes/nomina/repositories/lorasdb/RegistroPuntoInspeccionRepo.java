@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.appchoferes.nomina.models.lorasdb.RegistroPuntoInspeccion;
@@ -30,4 +31,16 @@ public interface RegistroPuntoInspeccionRepo extends JpaRepository<RegistroPunto
             dia_semana, hora
         """, nativeQuery = true)
     List<PuntosSemanalProjection> findPuntosGuardadosSemanal();
+
+    @Query(value = """
+            SELECT 
+                DISTINCT(:id_guardia) as id, Nombre as nombre
+            FROM 
+                registros_puntos_inspeccion_tbl, usuarios_tbl
+            WHERE 
+                fecha_registro >= CURDATE() - INTERVAL (DAYOFWEEK(CURDATE()) - 2) DAY -- Obtener el lunes de esta semana
+                AND fecha_registro < CURDATE() + INTERVAL (8 - DAYOFWEEK(CURDATE())) DAY -- Obtener el domingo de esta semana
+                AND usuarios_tbl.UsuarioID = :id_guardia;
+        """, nativeQuery = true)
+    List<Object[]> findGuardiasConRegistroEnLaSemana(@Param("id_guardia") Integer id_guardia);
 }

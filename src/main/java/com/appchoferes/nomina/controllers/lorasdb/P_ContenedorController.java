@@ -21,4 +21,14 @@ public class P_ContenedorController {
     public Map<String, Object> getContenedores(@RequestParam int patioId, @RequestParam int usuarioId) {
         return service.obtenerContenedores(patioId, usuarioId);
     }
+
+    @GetMapping("/entrada")
+    public Object getContenedorEntrada(
+            @RequestParam(required = false) Long itinerarioId,
+            @RequestParam(required = false) String contenedor,
+            @RequestParam Integer tipo) {
+
+        return service.getContenedorEntrada(itinerarioId, contenedor, tipo);
+    }
+
 }
