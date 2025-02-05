@@ -3,14 +3,21 @@ package com.appchoferes.nomina.services.lorasdb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.appchoferes.nomina.models.lorasdb.Itinerario;
+import com.appchoferes.nomina.models.lorasdb.P_InventarioExterno;
 import com.appchoferes.nomina.models.lorasdb.dtos.ContenedorPatios;
+import com.appchoferes.nomina.models.lorasdb.dtos.ContenedorTipo1DTO;
+import com.appchoferes.nomina.models.lorasdb.dtos.ContenedorTipo2DTO;
 import com.appchoferes.nomina.repositories.lorasdb.ContenedorPatioRepo;
 import com.appchoferes.nomina.repositories.lorasdb.ContenedorRepo;
+import com.appchoferes.nomina.repositories.lorasdb.InventarioExternoRepository;
+import com.appchoferes.nomina.repositories.lorasdb.ItinerarioRepo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ContenedorPatioServ {
@@ -20,6 +27,12 @@ public class ContenedorPatioServ {
 
     @Autowired
     private ContenedorRepo contenedorRepo;
+
+    @Autowired
+    private InventarioExternoRepository inventarioExternoRepository;
+
+    @Autowired 
+    private ItinerarioRepo itinerarioRepo;
 
     public Map<String, Object> obtenerContenedores(int patioId, int usuarioId) {
         List<ContenedorPatios> contenedores = repository.obtenerContenedores(patioId, usuarioId);
@@ -106,5 +119,50 @@ public class ContenedorPatioServ {
 
     private Object crearRespuestaItinerarioEntrada() {
         return Map.of("status", "success", "message", "Itinerario encontrado");
+    }
+
+    // Métodos para tipo 1
+    public List<ContenedorTipo1DTO> getEntradasByContenedor(String contenedor) {
+        List<P_InventarioExterno> entradas = inventarioExternoRepository.findByContenedorAndTipoEvento(contenedor, 1);
+        return entradas.stream()
+                .map(this::mapToContenedorTipo1DTO)
+                .collect(Collectors.toList());
+    }
+
+    private ContenedorTipo1DTO mapToContenedorTipo1DTO(P_InventarioExterno entrada) {
+        ContenedorTipo1DTO dto = new ContenedorTipo1DTO();
+        dto.setInventarioID(entrada.getInventarioID());
+        dto.setContenedor(entrada.getContenedor());
+        // Mapear otros campos según sea necesario
+        return dto;
+    }
+
+    public List<Itinerario> getItinerariosByContenedor(String contenedor) {
+        return itinerarioRepo.findByContenedor(contenedor);
+    }
+
+    // Métodos para tipo 2
+    public List<ContenedorTipo2DTO> getEntradaByItinerarioID(int itinerarioID) {
+        List<P_InventarioExterno> entradas = inventarioExternoRepository.findEntradaByItinerarioID(itinerarioID);
+        return entradas.stream()
+                .map(this::mapToContenedorTipo2DTO)
+                .collect(Collectors.toList());
+    }
+
+    private ContenedorTipo2DTO mapToContenedorTipo2DTO(P_InventarioExterno entrada) {
+        ContenedorTipo2DTO dto = new ContenedorTipo2DTO();
+        dto.setItinerarioID(entrada.getInventarioID());
+        dto.setContenedor(entrada.getContenedor());
+        dto.setInventarioID(entrada.getInventarioID()); // Campo adicional para el tipo 2
+        // Mapear otros campos según sea necesario
+        return dto;
+    }
+
+    public List<P_InventarioExterno> getSalidaByAnteriorID(int anteriorID) {
+        return inventarioExternoRepository.findSalidaByAnteriorID(anteriorID);
+    }
+
+    public List<Object[]> getContenedorByItinerarioID(int itinerarioID, int inventarioID) {
+        return itinerarioRepo.findContenedorByItinerarioID(itinerarioID, inventarioID);
     }
 }
