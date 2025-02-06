@@ -11,21 +11,27 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "usuarios_tbl")
-public class Usuario {
+@Table(name = "llaves_tbl")
+public class Llaves {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "UsuarioID")
-    private Integer usuarioId;
+    @Column(name = "id")
+    private Integer id;  
 
-    @Column(name = "Nombre")
-    private String nombre;
+    @Column(name = "tipo")
+    private Integer tipo;
 
-    @Column(name = "Usuario")
-    private String usuario;
+    @Column(name = "ChoferID")
+    private Integer choferID;
 
+    @Column(name = "CamionID")
+    private Integer camionID;
+
+    @Column(name = "fecha")
+    private String fecha;
+    
 }

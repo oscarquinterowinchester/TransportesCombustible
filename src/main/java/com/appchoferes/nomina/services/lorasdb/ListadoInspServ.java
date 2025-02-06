@@ -14,7 +14,7 @@ public class ListadoInspServ {
     @Autowired
     private ListadoInspRepo listadoInspRepo;
 
-    public List<ListadoInspeccion> getListadoInspeccion(int itinerarioID) {
+    public List<ListadoInspeccion> getListadoInspeccion(Integer itinerarioID) {
         return listadoInspRepo.obtieneListadoInspeccion(itinerarioID);
     }
 }

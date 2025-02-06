@@ -19,9 +19,8 @@ public class P_UserInfoController {
 
     @Autowired
     private UserPatiosServ userPatiosServ;
-
-    @GetMapping("/user-info")
-    public ResponseEntity<?> getNombreUsuario(@RequestParam("usuarioId") Long usuarioId) {
+    @GetMapping("/getInformationUser")
+    public ResponseEntity<?> getNombreUsuario(@RequestParam("id") Integer usuarioId) {
         Optional<String> nombre = userPatiosServ.getUsuarioNombre(usuarioId);
         if (nombre.isPresent()) {
             return ResponseEntity.ok(Map.of("nombre", nombre.get()));

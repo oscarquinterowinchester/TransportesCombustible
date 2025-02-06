@@ -18,7 +18,7 @@ public class P_RegistroPuntoInspeccionController {
     @Autowired
     private RegistroPuntoInspeccionServ registroPuntoInspeccionService;
 
-    @GetMapping("/puntos-semanal")
+    @GetMapping("/getListaPuntosGuardadosSemanal")
     public ResponseEntity<List<PuntosSemanalProjection>> getListaPuntosGuardadosSemanal() {
         List<PuntosSemanalProjection> puntos = registroPuntoInspeccionService.getListaPuntosGuardadosSemanal();
         return ResponseEntity.ok(puntos);

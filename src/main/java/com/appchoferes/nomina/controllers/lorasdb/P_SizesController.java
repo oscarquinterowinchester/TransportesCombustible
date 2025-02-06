@@ -17,7 +17,7 @@ public class P_SizesController {
     @Autowired
     private SizesServ sizesServ;
 
-    @GetMapping("/sizes-patios")
+    @GetMapping("/getSizes")
     public List<Sizes> getSizes() {
         return sizesServ.getSizes();
     }

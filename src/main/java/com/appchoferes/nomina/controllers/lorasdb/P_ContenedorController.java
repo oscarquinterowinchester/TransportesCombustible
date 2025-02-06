@@ -22,12 +22,12 @@ public class P_ContenedorController {
     @Autowired
     private ContenedorPatioServ service;
 
-    @GetMapping("/contenedores-patio")
+    @GetMapping("/getContenedoresPatio")
     public Map<String, Object> getContenedores(@RequestParam int patioId, @RequestParam int usuarioId) {
         return service.obtenerContenedores(patioId, usuarioId);
     }
 
-    @GetMapping("/entrada")
+    @GetMapping("/getContenedorEntrada")
     public Object getContenedorEntrada(
             @RequestParam(required = false) Long itinerarioId,
             @RequestParam(required = false) String contenedor,

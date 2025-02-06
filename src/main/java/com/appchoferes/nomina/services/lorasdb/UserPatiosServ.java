@@ -13,7 +13,7 @@ public class UserPatiosServ {
     @Autowired
     private UserPatiosRepo userPatiosRepo;
 
-    public Optional<String> getUsuarioNombre(Long usuarioId) {
+    public Optional<String> getUsuarioNombre(Integer usuarioId) {
         return userPatiosRepo.findNombreByUsuarioId(usuarioId);
     }
 }
