@@ -18,8 +18,8 @@ public class P_GuardiaController {
     @Autowired
     private GuardiaService guardiaService;
 
-    @GetMapping("/guardias-registro-semana")
-    public List<GuardiaConRegistroDTO> getGuardiasConRegistroEnLaSemana(@RequestParam int id_guardia) {
-        return guardiaService.getGuardiasConRegistroEnLaSemana(id_guardia);
+    @GetMapping("/getGuardiasConRegistroEnLaSemana")
+    public List<GuardiaConRegistroDTO> getGuardiasConRegistroEnLaSemana(@RequestParam Integer id) {
+        return guardiaService.getGuardiasConRegistroEnLaSemana(id);
     }
 }

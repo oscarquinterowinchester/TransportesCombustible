@@ -1,5 +1,8 @@
 package com.appchoferes.nomina.controllers.lorasdb;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,13 +20,21 @@ public class P_InspeccionFisicaController {
     @Autowired
     private InspeccionFisicaServ inspeccionFisicaService;
 
-    @PostMapping("/save-listaInspeccion")
-    public ResponseEntity<?> saveListaInspeccion(@RequestBody ListaInspeccionRequest request) {
-        try {
-            inspeccionFisicaService.saveListaInspeccion(request);
-            return ResponseEntity.ok("Inspección guardada exitosamente.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error en el servidor: " + e.getMessage());
-        }
+@PostMapping("/saveListaInspeccion")
+public ResponseEntity<?> saveListaInspeccion(@RequestBody ListaInspeccionRequest request) {
+    try {
+        inspeccionFisicaService.saveListaInspeccion(request);
+        
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Inspección guardada exitosamente.");
+        return ResponseEntity.ok(response);  // Respuesta JSON
+        
+    } catch (Exception e) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", "Error en el servidor: " + e.getMessage());
+        return ResponseEntity.status(500).body(errorResponse);
     }
+}
+
+    
 }

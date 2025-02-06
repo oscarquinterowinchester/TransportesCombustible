@@ -17,7 +17,7 @@ public class P_AreasCorrespondenciaController {
     @Autowired
     private AreaCorrespondenciaServ areaCorrespondenciaServ;
 
-    @GetMapping("/areas-correspondencia")
+    @GetMapping("/getAreasCorrespondencias")
     public List<AreaCorrespondencia> getAllAreas() {
         return areaCorrespondenciaServ.getAllAreasCorrespondencia();
     }

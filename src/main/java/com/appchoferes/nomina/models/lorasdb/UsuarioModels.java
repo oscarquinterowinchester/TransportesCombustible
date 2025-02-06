@@ -17,7 +17,23 @@ public class UsuarioModels {
     @Column(name = "IDUsuarioIntegranet")
     private Integer IDUsuarioIntegranet;
 
+    @Column(name = "PatioID")
+    private Integer PatioID;
+
     // getters and setters
+    /**
+     * @return Integer return the PatioID
+     */
+    public Integer getPatioID() {
+        return PatioID;
+    }
+
+    /**
+     * @param PatioID the PatioID to set
+     */
+    public void setPatioID(Integer PatioID) {
+        this.PatioID = PatioID;
+    }
 
     /**
      * @return Integer return the UsuarioID

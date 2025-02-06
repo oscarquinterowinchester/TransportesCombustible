@@ -17,7 +17,7 @@ public class P_TipoCorrespondenciaController {
     @Autowired
     private TipoCorrespondeciaServ tipoCorrespondeciaServ;
 
-    @GetMapping("/tipos-correspondencia")
+    @GetMapping("/getTiposCorrespondencias")
     public List<TipoCorrespondencia> getAllTipoCorrespondencia() {
         return tipoCorrespondeciaServ.getAllTiposCorrespondencia();
     }

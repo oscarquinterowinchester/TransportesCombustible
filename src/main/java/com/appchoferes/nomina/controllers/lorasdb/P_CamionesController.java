@@ -17,7 +17,7 @@ public class P_CamionesController {
     @Autowired
     private CamionesConCargaService camionesService;
 
-    @GetMapping("/camiones-patios")
+    @GetMapping("/getCamiones")
     public List<CamionesPatios> getCamiones() {
         return camionesService.getCamionesDePatios();
     }

@@ -14,7 +14,7 @@ public interface ListadoInspRepo extends JpaRepository<ListadoInspeccion, Intege
 
     @Query(value = "SELECT Nombre, ListadoID, 0 as Entrada, :itinerarioID as ItinerarioID, NULL as ComentarioEntrada, "
             + "NULL as FotoEntrada FROM listadoinspecciones_tbl WHERE Status = 1", nativeQuery = true)
-    List<ListadoInspeccion> obtieneListadoInspeccion(@Param("itinerarioID") int itinerarioID);
+    List<ListadoInspeccion> obtieneListadoInspeccion(@Param("itinerarioID") Integer itinerarioID);
 
 }
 

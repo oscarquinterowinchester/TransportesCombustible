@@ -22,7 +22,7 @@ public class P_RegistroCorrespondenciaController {
     @Autowired
     private RegistroCorrespondenciaServ rCserv;
 
-    @GetMapping("/registros-correspondencia")
+    @GetMapping("/getRegistrosCorrespondenciaPendientes")
     public List<RegistroCorrespondencia> getRegistrosC() {
         return rCserv.getRegistrosC();
     }
@@ -46,7 +46,7 @@ public class P_RegistroCorrespondenciaController {
         }
     }
 
-    @PostMapping("/save-entregado")
+    @PostMapping("/saveRegistrosCorrespondencia")
     public ResponseEntity<?> saveEntregado(@RequestBody RegistroCorrespondencia registro) {
         try {
             String mensaje = rCserv.saveFirma(registro);

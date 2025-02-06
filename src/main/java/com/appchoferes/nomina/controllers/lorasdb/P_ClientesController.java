@@ -15,7 +15,7 @@ public class P_ClientesController {
     @Autowired
     private ClientesServ clientesServ;
 
-    @GetMapping("/clientes-patios")
+    @GetMapping("/getClientes")
     public ClientesResponse getClientesPatio() {
         return clientesServ.getClientesPatios();
     }

@@ -13,5 +13,5 @@ import com.appchoferes.nomina.models.lorasdb.Usuario;
 public interface UserPatiosRepo extends JpaRepository<Usuario, Long> {
 
     @Query("SELECT u.nombre FROM Usuario u WHERE u.usuarioId = :usuarioId")
-    Optional<String> findNombreByUsuarioId(@Param("usuarioId") Long usuarioId);
+    Optional<String> findNombreByUsuarioId(@Param("usuarioId") Integer usuarioId);
 }

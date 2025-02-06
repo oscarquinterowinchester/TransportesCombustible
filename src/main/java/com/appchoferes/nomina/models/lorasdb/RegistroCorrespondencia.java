@@ -37,7 +37,7 @@ public class RegistroCorrespondencia {
     @Column(name = "fechaEntrega")
     private String fechaEntrega;
 
-    @Column(name = "firma")
+    @Column(name = "firma", nullable = true)
     private String firma;
 
     @Column(name = "areaCorrespondencia")

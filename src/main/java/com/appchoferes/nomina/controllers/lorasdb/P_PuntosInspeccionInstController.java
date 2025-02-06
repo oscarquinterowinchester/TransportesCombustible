@@ -17,7 +17,7 @@ public class P_PuntosInspeccionInstController {
     @Autowired
     private PuntosInspeccionInstServ piiServ;
 
-    @GetMapping("/puntos-inspeccion")
+    @GetMapping("/getListaPuntosInspeccion")
     public List<PuntosInspeccionInstalaciones> getPuntosInspeccionInstalaciones() {
         return piiServ.getPuntosInspeccionInstalaciones();
     }

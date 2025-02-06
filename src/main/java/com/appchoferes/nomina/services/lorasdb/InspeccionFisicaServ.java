@@ -22,10 +22,14 @@ public class InspeccionFisicaServ {
     @Autowired
     private RegistroPuntoInspeccionRepo regPuntoInsRepo;
 
-    public void saveListaInspeccion(ListaInspeccionRequest request){
+    public void saveListaInspeccion(ListaInspeccionRequest request) {
         Integer guardia = request.getGuardia();
         String nota = request.getNota();
-
+    
+        if (guardia == null) {
+            throw new IllegalArgumentException("El campo 'guardia' no puede ser null");
+        }
+    
         // Obtener solo la parte de la fecha sin la hora
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -33,12 +37,12 @@ public class InspeccionFisicaServ {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         Date fechaActual = calendar.getTime();
-
+    
         // Buscar inspecciones en la misma fecha y guardia
         List<InspeccionFisica> result = inspFisicaRepo.findByGuardiaAndFecha(guardia, fechaActual);
         Integer tipo;
         Integer idInspeccion;
-
+    
         if (result.isEmpty()) {
             tipo = 1;
             InspeccionFisica nuevaInspeccionFisica = new InspeccionFisica();
@@ -51,8 +55,9 @@ public class InspeccionFisicaServ {
             tipo = 2;
             idInspeccion = result.get(0).getId();
         }
-
-        if(idInspeccion != null) {
+    
+        // Verificar si 'listaPuntos' es null o está vacía
+        if (request.getListaPuntos() != null) {
             request.getListaPuntos().forEach(punto -> {
                 RegistroPuntoInspeccion registro = new RegistroPuntoInspeccion();
                 registro.setEstado(punto.getEstado());
@@ -61,6 +66,10 @@ public class InspeccionFisicaServ {
                 registro.setTipoInspeccion(tipo);
                 regPuntoInsRepo.save(registro);
             });
+        } else {
+            // Manejar el caso en que 'listaPuntos' sea null o vacía
+            throw new IllegalArgumentException("El campo 'listaPuntos' no puede ser null o vacío.");
         }
     }
+    
 }
