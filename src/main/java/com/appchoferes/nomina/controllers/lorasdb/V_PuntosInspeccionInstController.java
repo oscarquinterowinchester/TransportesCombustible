@@ -11,8 +11,8 @@ import com.appchoferes.nomina.models.lorasdb.PuntosInspeccionInstalaciones;
 import com.appchoferes.nomina.services.lorasdb.PuntosInspeccionInstServ;
 
 @RestController
-@RequestMapping("/patios")
-public class P_PuntosInspeccionInstController {
+@RequestMapping("/visitantes")
+public class V_PuntosInspeccionInstController {
 
     @Autowired
     private PuntosInspeccionInstServ piiServ;

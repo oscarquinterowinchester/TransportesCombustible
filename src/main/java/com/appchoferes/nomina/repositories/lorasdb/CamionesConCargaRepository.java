@@ -1,6 +1,7 @@
 package com.appchoferes.nomina.repositories.lorasdb;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,4 +23,7 @@ public interface CamionesConCargaRepository extends JpaRepository<Camion, Long> 
     // recuperacion de datos se hace con id y noEconomico
     @Query(value = "SELECT CamionID, NoEconomico FROM camiones_tbl WHERE Status = 1 ORDER BY NoEconomico", nativeQuery = true)
     List<Object[]> getCamionesPatiosRaw();
+
+    @Query(value = "SELECT * FROM camiones_tbl WHERE CamionID = :camionId", nativeQuery = true)
+    Map<String, Object> findCamionById(@Param("camionId") Long camionId);
 }

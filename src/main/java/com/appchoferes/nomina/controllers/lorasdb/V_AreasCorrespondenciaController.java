@@ -11,8 +11,8 @@ import com.appchoferes.nomina.models.lorasdb.AreaCorrespondencia;
 import com.appchoferes.nomina.services.lorasdb.AreaCorrespondenciaServ;
 
 @RestController
-@RequestMapping("/patios")
-public class P_AreasCorrespondenciaController {
+@RequestMapping("/visitantes")
+public class V_AreasCorrespondenciaController {
 
     @Autowired
     private AreaCorrespondenciaServ areaCorrespondenciaServ;

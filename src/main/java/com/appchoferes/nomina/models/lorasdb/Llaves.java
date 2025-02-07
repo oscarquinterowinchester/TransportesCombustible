@@ -31,7 +31,8 @@ public class Llaves {
     @Column(name = "CamionID")
     private Integer camionID;
 
-    @Column(name = "fecha")
-    private String fecha;
+    // activar para recuperacion actualizada
+    /*@Column(name = "fecha")
+    private String fecha;*/
     
 }

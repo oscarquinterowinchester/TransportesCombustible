@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.appchoferes.nomina.services.lorasdb.UserPatiosServ;
 
 @RestController
-@RequestMapping("/patios")
-public class P_UserInfoController {
+@RequestMapping("/visitantes")
+public class V_UserInfoController {
 
     @Autowired
     private UserPatiosServ userPatiosServ;

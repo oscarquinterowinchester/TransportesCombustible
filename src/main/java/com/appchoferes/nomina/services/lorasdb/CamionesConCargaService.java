@@ -1,6 +1,7 @@
 package com.appchoferes.nomina.services.lorasdb;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,11 @@ public class CamionesConCargaService {
 
     @Autowired
     private CamionesConCargaRepository camionesConCargaRepository;
+
+    // Meotod para recuperar info de camion del modulo de Patios
+    public Map<String, Object> getInfoCamion(Long camionId) {
+        return camionesConCargaRepository.findCamionById(camionId);
+    }
 
     // Metodo para recuperar camiones del modulo Patios
     public List<CamionesPatios> getCamionesDePatios() {

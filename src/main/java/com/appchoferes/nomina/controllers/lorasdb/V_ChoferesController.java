@@ -11,8 +11,8 @@ import com.appchoferes.nomina.models.lorasdb.Chofer;
 import com.appchoferes.nomina.services.lorasdb.ChoferService;
 
 @RestController
-@RequestMapping("/patios")
-public class P_ChoferesController {
+@RequestMapping("/visitantes")
+public class V_ChoferesController {
 
     @Autowired
     private ChoferService choferService;

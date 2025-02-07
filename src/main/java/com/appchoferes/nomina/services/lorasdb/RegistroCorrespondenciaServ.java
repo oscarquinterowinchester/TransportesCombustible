@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.appchoferes.nomina.models.lorasdb.RegistroCorrespondencia;
+import com.appchoferes.nomina.models.lorasdb.dtos.RegistroFirmaDTO;
+import com.appchoferes.nomina.models.lorasdb.dtos.RegistroInicialDTO;
 import com.appchoferes.nomina.repositories.lorasdb.RegistroCorrespondenciaRepo;
 import com.appchoferes.nomina.utils.ImageUtil;
 
@@ -21,19 +23,36 @@ public class RegistroCorrespondenciaServ {
         return registrosC;
     }
 
-    public RegistroCorrespondencia saveRegistro(RegistroCorrespondencia registro) {
+        public RegistroCorrespondencia saveRegistro(RegistroInicialDTO registroInicial) {
+        // Mapear el DTO a la entidad
+        RegistroCorrespondencia registro = new RegistroCorrespondencia();
+        registro.setUsuario(registroInicial.getUsuario());
+        registro.setFechaRecibido(registroInicial.getFechaRecibido());
+        registro.setTipoCorrespondencia(registroInicial.getTipoCorrespondencia());
+        registro.setInspeccion(registroInicial.getInspeccion());
+        registro.setAreaCorrespondencia(registroInicial.getAreaCorrespondencia());
+        registro.setFirma(""); // Valor por defecto
+
+        // Guardar el registro
         return rCrepo.save(registro);
     }
 
-    public String saveFirma(RegistroCorrespondencia registro) throws Exception {
-        if (registro.getFirma() != null) {
-            String firmaPath = ImageUtil.saveImage(registro.getFirma(), "firma-entregado", "/home/drago/work/lorasImagenes/firmas/");
-            registro.setFirma(firmaPath);
+    public RegistroCorrespondencia saveFirma(RegistroFirmaDTO registroFirma) throws Exception {
+        // Buscar el registro existente
+        RegistroCorrespondencia registroExistente = rCrepo.findById(registroFirma.getId())
+            .orElseThrow(() -> new IllegalArgumentException("Registro no encontrado"));
+
+        // Guardar la firma, cambiar directorio por el del servidor
+        if (registroFirma.getFirma() != null) {
+            String firmaPath = ImageUtil.saveImage(registroFirma.getFirma(), "firma-entregado", "/home/drago/work/lorasImagenes/firmas/");
+            registroExistente.setFirma(firmaPath);
         }
 
-        // Actualizar el registro con la fecha de entrega y la firma
-        registro.setFechaEntrega(registro.getFechaEntrega());
-        rCrepo.save(registro);
-        return "Firma y fecha de entrega actualizadas correctamente";
+        if (registroFirma.getFecha() != null) {
+            registroExistente.setFechaEntrega(registroFirma.getFecha());
+        }
+
+        // Guardar el registro actualizado
+        return rCrepo.save(registroExistente);
     }
 }

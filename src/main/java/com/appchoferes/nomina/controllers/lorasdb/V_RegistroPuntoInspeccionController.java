@@ -12,8 +12,8 @@ import com.appchoferes.nomina.services.lorasdb.RegistroPuntoInspeccionServ;
 import java.util.List;
 
 @RestController
-@RequestMapping("/patios")
-public class P_RegistroPuntoInspeccionController {
+@RequestMapping("/visitantes")
+public class V_RegistroPuntoInspeccionController {
 
     @Autowired
     private RegistroPuntoInspeccionServ registroPuntoInspeccionService;

@@ -12,8 +12,8 @@ import com.appchoferes.nomina.services.lorasdb.GuardiaService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/patios")
-public class P_GuardiaController {
+@RequestMapping("/visitantes")
+public class V_GuardiaController {
 
     @Autowired
     private GuardiaService guardiaService;
