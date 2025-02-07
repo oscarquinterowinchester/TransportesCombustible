@@ -14,8 +14,8 @@ import com.appchoferes.nomina.models.lorasdb.dtos.ListaInspeccionRequest;
 import com.appchoferes.nomina.services.lorasdb.InspeccionFisicaServ;
 
 @RestController
-@RequestMapping("/patios")
-public class P_InspeccionFisicaController {
+@RequestMapping("/visitantes")
+public class V_InspeccionFisicaController {
 
     @Autowired
     private InspeccionFisicaServ inspeccionFisicaService;

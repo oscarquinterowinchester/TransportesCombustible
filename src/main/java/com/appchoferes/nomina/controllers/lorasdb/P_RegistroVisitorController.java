@@ -1,53 +1,46 @@
 package com.appchoferes.nomina.controllers.lorasdb;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.appchoferes.nomina.models.lorasdb.dtos.RegistroHistorialDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.RegistroPendientesDTO;
-import com.appchoferes.nomina.repositories.lorasdb.VisitorRegistroRepo;
 import com.appchoferes.nomina.services.lorasdb.RegistroVisitorServ;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/patios")
+@RequestMapping("/visitantes")
 public class P_RegistroVisitorController {
 
     @Autowired
     private RegistroVisitorServ registroService;
 
-    @Autowired
-    protected VisitorRegistroRepo visitorRegistroRepo;
-
     @GetMapping("/getRegistrosHistorial")
-    public List<RegistroHistorialDTO> getRegistrosHistorial(
-        @RequestParam(required = false) Integer id,
-        @RequestParam(required = false) String inicio,
-        @RequestParam(required = false) String fin
-    ) {
-        return registroService.getRegistrosHistorial(id, inicio, fin);
+    public ResponseEntity<List<RegistroHistorialDTO>> getRegistrosHistorial(
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String inicio,
+            @RequestParam(required = false) String finalDate) {
+        LocalDateTime inicioDateTime = inicio != null ? LocalDateTime.parse(inicio + "T00:00:00") : null;
+        LocalDateTime finalDateTime = finalDate != null ? LocalDateTime.parse(finalDate + "T23:59:59") : null;
+
+        List<RegistroHistorialDTO> registros = registroService.getRegistrosHistorial(id, inicioDateTime, finalDateTime);
+        return ResponseEntity.ok(registros);
     }
 
     @GetMapping("/getRegistrosPendientes")
-    public List<RegistroPendientesDTO> getRegistrosPendientes(
-            @RequestParam(value = "id", required = false) Long id,
-            @RequestParam(value = "inicio", required = false) String inicio,
-            @RequestParam(value = "final", required = false) String finalFecha) {
-    
-        // Si los parámetros de fecha son nulos, puedes asignar valores predeterminados o usar la lógica adecuada
-        if (inicio == null || inicio.isEmpty()) {
-            inicio = "1900-01-01"; // o algún valor por defecto
-        }
-        if (finalFecha == null || finalFecha.isEmpty()) {
-            finalFecha = "2100-01-01"; // o algún valor por defecto
-        }
-    
-        System.out.println("id: " + id);
-        System.out.println("inicio: " + inicio);
-        System.out.println("final: " + finalFecha);
-    
-        return visitorRegistroRepo.findRegistrosPendientes(inicio, finalFecha, id);
+    public ResponseEntity<List<RegistroPendientesDTO>> getRegistrosPendientes(
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String inicio,
+            @RequestParam(required = false) String finalDate) {
+        LocalDateTime inicioDateTime = inicio != null ? LocalDateTime.parse(inicio) : null;
+        LocalDateTime finalDateTime = finalDate != null ? LocalDateTime.parse(finalDate) : null;
+
+        List<RegistroPendientesDTO> registros = registroService.getRegistrosPendientes(id, inicioDateTime,
+                finalDateTime);
+        return ResponseEntity.ok(registros);
     }
-    
+
 }

@@ -1,35 +1,21 @@
 package com.appchoferes.nomina.models.lorasdb.dtos;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
-import jakarta.persistence.criteria.CriteriaBuilder.In;
-
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegistroHistorialDTO {
-
-    private Integer id;
-    private LocalDateTime entrada;
-    private Integer visitanteId;
-    private String nombre;
-    private String empresa;
-    private String asunto;
-    private String empleado;
-    private String identificacion;
-    private String gafete;
-    private String vehiculo;
-    private LocalDateTime salida;
-    private String duracion;
-    private byte[] firma;
+    private Long id;
     private LocalDateTime fecha;
-    private Long empresaId;
-    private Boolean archivoGenerado;
-    private Long gafeteId;
-    private Integer patioId;
     private String foto;
-    private String firmaVisitante;
-    private String identificacionVisitante;
-    private String identificacion2Visitante;
+    private String firma;
+    private String identificacion;
+    private String identificacion2;
     private String compania;
-    private Boolean completado;
+    private Integer completado;
 }

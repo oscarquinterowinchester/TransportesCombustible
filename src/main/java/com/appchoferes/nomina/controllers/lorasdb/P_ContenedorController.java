@@ -38,12 +38,12 @@ public class P_ContenedorController {
 
     @GetMapping("/getContenedorPatio")
     public ResponseEntity<?> buscarContenedor(
-            @RequestParam(required = false) Integer itinerarioId,
+            @RequestParam(required = false) Integer patioID,
             @RequestParam(required = false) String contenedor,
             @RequestParam int tipo) {
 
         // Validación de datos
-        if ((itinerarioId == null && tipo == 2) || (contenedor == null && tipo == 1)) {
+        if ((patioID == null && tipo == 2) || (contenedor == null && tipo == 1)) {
             return ResponseEntity.badRequest().body("Datos inválidos");
         }
 
@@ -57,14 +57,14 @@ public class P_ContenedorController {
             return ResponseEntity.ok(entradas);
         } else if (tipo == 2) {
             // Lógica para tipo 2
-            if (itinerarioId == null) {
+            if (patioID == null) {
                 return ResponseEntity.badRequest().body("ItinerarioID es requerido para el tipo 2");
             }
 
             // Obtener la entrada
-            List<ContenedorTipo2DTO> entradas = service.getEntradaByItinerarioID(itinerarioId);
+            List<ContenedorTipo2DTO> entradas = service.getEntradaByItinerarioID(patioID);
             if (entradas.isEmpty()) {
-                return ResponseEntity.ok("No se encontró una entrada para el itinerario: " + itinerarioId);
+                return ResponseEntity.ok("No se encontró una entrada para el itinerario: " + patioID);
             }
 
             int inventarioID = entradas.get(0).getInventarioID();
@@ -72,13 +72,13 @@ public class P_ContenedorController {
             // Verificar si hay una salida
             List<P_InventarioExterno> salidas = service.getSalidaByAnteriorID(inventarioID);
             if (!salidas.isEmpty()) {
-                return ResponseEntity.ok("No se encontraron datos para el itinerario: " + itinerarioId);
+                return ResponseEntity.ok("No se encontraron datos para el itinerario: " + patioID);
             }
 
             // Obtener los datos del contenedor
-            List<Object[]> contenedorData = service.getContenedorByItinerarioID(itinerarioId, inventarioID);
+            List<Object[]> contenedorData = service.getContenedorByItinerarioID(patioID, inventarioID);
             if (contenedorData.isEmpty()) {
-                return ResponseEntity.ok("No se encontraron datos para el itinerario: " + itinerarioId);
+                return ResponseEntity.ok("No se encontraron datos para el itinerario: " + patioID);
             }
 
             return ResponseEntity.ok(contenedorData);
