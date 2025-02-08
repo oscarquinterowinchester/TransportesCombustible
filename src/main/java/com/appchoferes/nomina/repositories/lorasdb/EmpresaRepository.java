@@ -12,4 +12,6 @@ public interface EmpresaRepository extends JpaRepository<EmpresaModel, Integer> 
     @Query(value = "SELECT * FROM empresas_tbl WHERE EmpresaID = :id", nativeQuery = true)
     EmpresaModel seleccionarEmpresa(Integer id);
 
+    
+
 }
