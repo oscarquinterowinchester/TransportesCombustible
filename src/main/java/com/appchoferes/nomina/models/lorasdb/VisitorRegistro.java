@@ -11,13 +11,13 @@ public class VisitorRegistro {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "entrada")
     private LocalDateTime entrada;
 
     @Column(name = "visitanteID")
-    private Long visitanteId; 
+    private Integer visitanteId; 
 
     @Column(name = "nombre")
     private String nombre;
@@ -53,7 +53,7 @@ public class VisitorRegistro {
     private LocalDateTime fecha;
 
     @Column(name = "empresaID")
-    private Long empresaId;
+    private Integer empresaId;
 
     @Column(name = "ArchivoGenerado")
     private Boolean archivoGenerado;
@@ -62,5 +62,5 @@ public class VisitorRegistro {
     private Long gafeteId;
 
     @Column(name = "PatioID")
-    private Long patioId;
+    private Integer patioId;
 }
