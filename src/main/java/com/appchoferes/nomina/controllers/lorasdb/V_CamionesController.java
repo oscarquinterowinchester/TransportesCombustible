@@ -13,7 +13,7 @@ import com.appchoferes.nomina.models.lorasdb.dtos.CamionesPatios;
 import com.appchoferes.nomina.services.lorasdb.CamionesConCargaService;
 
 @RestController
-@RequestMapping("/visitantes")
+@RequestMapping("/patios")
 public class V_CamionesController {
 
     @Autowired
@@ -24,6 +24,7 @@ public class V_CamionesController {
         return camionesService.getCamionesDePatios();
     }
 
+    // endpoint de visitiantes
     @GetMapping("/getInfoCamion")
     public Map<String, Object> getInfoCamion(@RequestParam Long id) {
         return camionesService.getInfoCamion(id);

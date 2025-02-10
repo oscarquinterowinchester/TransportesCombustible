@@ -1,5 +1,9 @@
 package com.appchoferes.nomina.models.lorasdb;
 
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,4 +37,8 @@ public class Vehiculo {
 
     @Column(name = "visitante")
     private Integer visitante;
+
+    @Column(name = "fecha")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime fecha;
 }

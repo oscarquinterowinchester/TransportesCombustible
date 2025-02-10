@@ -14,7 +14,7 @@ import com.appchoferes.nomina.services.lorasdb.ChoferService;
 import com.appchoferes.nomina.services.lorasdb.RawQueryService;
 
 @RestController
-@RequestMapping("/visitantes")
+@RequestMapping("/patios")
 public class V_ChoferesController {
 
     @Autowired
@@ -28,6 +28,7 @@ public class V_ChoferesController {
         return choferService.getChoferesPatios();
     }
 
+    //enpoint de visitantes
     @GetMapping("/getEmpleados")
     public ResponseEntity<List<EmpleadoDTO>> getEmpleados() {
         List<EmpleadoDTO> empleados = rawQueryService.getEmpleados();

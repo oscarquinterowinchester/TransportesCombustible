@@ -64,11 +64,11 @@ public class V_VisitanteController {
     // guardar el visitante y el vehiculo
     @PostMapping("/saveVisitante")
     public ResponseEntity<Long> saveVisitanteAndVehiculo(@RequestBody VisitanteVehiculoRequest request) {
-        try {
-            Long idVisitante = visitorService.saveVisitanteAndVehiculo(request.getVisitante(), request.getVehiculo());
+        try{
+            Long idVisitante = visitorService.saveVisitanteAndVehiculo(request);
             return ResponseEntity.ok(idVisitante);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(500).body(null);
         }
     }
 
