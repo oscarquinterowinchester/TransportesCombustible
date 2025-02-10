@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import com.appchoferes.nomina.models.lorasdb.VisitorVisitante;
 import com.appchoferes.nomina.models.lorasdb.dtos.EmpleadoVisitaDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.VehiculoDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.VisitanteDTO;
+import com.appchoferes.nomina.models.lorasdb.dtos.VisitanteVehiculoRequest;
 import com.appchoferes.nomina.repositories.lorasdb.VehiculoRepo;
 import com.appchoferes.nomina.repositories.lorasdb.VisitorVisitanteRepo;
 import com.appchoferes.nomina.utils.ImageUtil;
@@ -90,39 +90,42 @@ public class VisitorRegistroService {
         }
     }
 
-    @Transactional
-    public Long saveVisitanteAndVehiculo(VisitorVisitante visitante, Vehiculo vehiculo) throws Exception {
-        // Procesar imágenes antes de guardar
-        if (visitante.getFoto() != null) {
-            String path = ImageUtil.saveImage(visitante.getFoto(), "Foto", BASE_DIRECTORY + "fotos/");
+    public Long saveVisitanteAndVehiculo(VisitanteVehiculoRequest request) throws Exception {
+        VisitorVisitante visitante = request.getVisitante();
+        Vehiculo vehiculo = request.getVehiculo();
+
+        // asiganamos la fecha actual
+        visitante.setFecha(LocalDateTime.now());
+
+        //guardamos visitante en la base de datos
+        visitante = visitanteRepo.save(visitante);
+        Long idVisitante = visitante.getId();
+
+        if(visitante.getFoto() != null){
+            String path = ImageUtil.saveImage(visitante.getFoto(), idVisitante + "_foto", BASE_DIRECTORY + "fotos/");
             visitante.setFoto(path);
         }
-
-        if (visitante.getFirma() != null) {
-            byte[] firmaBytes = Base64.getDecoder().decode(visitante.getFirma());
-            visitante.setFirma(firmaBytes);
+        if(visitante.getFirma() != null){
+            String path = ImageUtil.saveImage(visitante.getFirma(), idVisitante + "_firma", BASE_DIRECTORY + "frimas/");
+            visitante.setFirma(path);
         }
-
-        if (visitante.getIdentificacion() != null) {
-            String path = ImageUtil.saveImage(visitante.getIdentificacion(), "Identificacion",
-                    BASE_DIRECTORY + "identificaciones/");
+        if(visitante.getIdentificacion() != null){
+            String path = ImageUtil.saveImage(visitante.getIdentificacion(), idVisitante + "_identificacion", BASE_DIRECTORY + "identificaciones/");
             visitante.setIdentificacion(path);
         }
-
-        if (visitante.getIdentificacion2() != null) {
-            String path = ImageUtil.saveImage(visitante.getIdentificacion2(), "Identificacion2",
-                    BASE_DIRECTORY + "identificaciones/");
+        if(visitante.getIdentificacion2() != null){
+            String path = ImageUtil.saveImage(visitante.getIdentificacion2(), idVisitante + "_identificacion2", BASE_DIRECTORY + "identificaciones/");
             visitante.setIdentificacion2(path);
         }
+        
+        // Actualizamos el visitante con sus imagenes
+        visitanteRepo.save(visitante);
 
-        // Guarda el visitante en la base de datos
-        visitante = visitanteRepo.save(visitante);
-
-        // Guarda el vehículo asociado
-        vehiculo.setVisitante(visitante.getId().intValue());
+        // Insertar vehiculo con id del visitantes
+        vehiculo.setVisitante(idVisitante.intValue());
         vehiculoRepo.save(vehiculo);
 
-        return visitante.getId();
+        return idVisitante;
     }
 
     public byte[] getImage(Long id, String tipo) throws IOException {

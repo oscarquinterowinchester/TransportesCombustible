@@ -92,7 +92,6 @@ public class RawQueryService {
     public List<VisitorGafete> getGafetesDisponibles(Integer tipo) {
         String tipoQuery = (tipo != null) ? "AND tipo = :tipo" : "";
 
-        // Consulta SQL nativa
         String sql = """
                 SELECT * FROM visitor_gafetes
                 WHERE visitante IS NULL
@@ -100,12 +99,12 @@ public class RawQueryService {
 
         Query query = entityManager.createNativeQuery(sql, VisitorGafete.class); // Mapea a la entidad directamente
 
-        // Si se pasó el tipo, establecer el parámetro en la consulta
+      // Si se pasa el tipo, establecer el parametro en la consulta
         if (tipo != null) {
             query.setParameter("tipo", tipo);
         }
 
-        return query.getResultList(); // Devuelve una lista de objetos `VisitorGafete`
+        return query.getResultList(); // Devuelve una lista de objetos VisitorGafete
     }
 
     public List<EmpleadoDTO> getEmpleados() {
