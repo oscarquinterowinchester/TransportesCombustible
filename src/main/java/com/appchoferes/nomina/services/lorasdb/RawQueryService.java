@@ -11,6 +11,7 @@ import com.appchoferes.nomina.models.lorasdb.VisitorGafete;
 import com.appchoferes.nomina.models.lorasdb.dtos.BusquedaVisitanteDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.EmpleadoDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.EmpresaDTO;
+import com.appchoferes.nomina.models.lorasdb.dtos.PuntosCTPADSalidaDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.TipoVisitante2DTO;
 
 import jakarta.persistence.EntityManager;
@@ -99,7 +100,7 @@ public class RawQueryService {
 
         Query query = entityManager.createNativeQuery(sql, VisitorGafete.class); // Mapea a la entidad directamente
 
-      // Si se pasa el tipo, establecer el parametro en la consulta
+        // Si se pasa el tipo, establecer el parametro en la consulta
         if (tipo != null) {
             query.setParameter("tipo", tipo);
         }
@@ -147,6 +148,41 @@ public class RawQueryService {
                 ((Number) obj[0]).longValue(),
                 (String) obj[1],
                 ((Number) obj[2]).longValue())).collect(Collectors.toList());
+    }
+
+    public List<PuntosCTPADSalidaDTO> getPuntosCTPADSalida(Integer id) {
+
+        String sql = """
+                    SELECT i.InventarioID, i.ListadoID, 0 as Salida,
+                           (SELECT Nombre FROM listadoinspecciones_tbl WHERE ListadoID = i.ListadoID) as Nombre
+                    FROM inventarioexternoinspecciones_tbl i
+                    WHERE i.InventarioID = :id
+                """;
+
+        Query query = entityManager.createNativeQuery(sql);
+        query.setParameter("id", id);
+        List<Object[]> result = query.getResultList();
+
+        if (result.isEmpty()) {
+            String insertSql = """
+                        INSERT INTO inventarioexternoinspecciones_tbl (ListadoID, InventarioID, Entrada)
+                        SELECT ListadoID, :id, 0 FROM listadoinspecciones_tbl WHERE Status = 1
+                    """;
+
+            entityManager.createNativeQuery(insertSql).setParameter("id", id).executeUpdate();
+
+            query = entityManager.createNativeQuery(sql);
+            query.setParameter("id", id);
+            result = query.getResultList();
+        }
+
+        return result.stream()
+                    .map(obj -> new PuntosCTPADSalidaDTO(
+                            ((Number) obj[0]).intValue(),
+                            ((Number) obj[1]).intValue(),
+                            0,
+                            (String) obj[2]))
+                    .collect(Collectors.toList());
     }
 
 }
