@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -35,7 +35,7 @@ public class Contenedor {
     private Integer tipoEvento;
 
     @Column(name = "FechaEvento")
-    private Date fechaEvento;
+    private LocalDateTime fechaEvento;
 
     @Column(name = "PlacasUnidad")
     private String placasUnidad;
@@ -102,4 +102,5 @@ public class Contenedor {
 
     @Column(name = "Carrier")
     private String carrier;
+
 }

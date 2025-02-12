@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.appchoferes.nomina.models.lorasdb.dtos.RutasClientePatio;
@@ -18,8 +18,8 @@ public class P_RutasClienteController {
     @Autowired
     private RutasClienteServ rutasClienteServ;
 
-    @GetMapping("/rutas-clientes/{clienteID}")
-    public List<RutasClientePatio> getRutasClientePatios(@PathVariable Long clienteID){
+    @GetMapping("/getRutasCliente")
+    public List<RutasClientePatio> getRutasClientePatios(@RequestParam Long clienteID){
         return rutasClienteServ.getRutasClientesPatios(clienteID);
     }
     

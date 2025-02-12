@@ -1,6 +1,10 @@
 package com.appchoferes.nomina.controllers.lorasdb;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,15 +21,20 @@ public class P_SalidaContenedorController {
     @Autowired
     private SalidaContenedorServ salidaContenedorService;
 
-    @PostMapping("/salida-contenedor")
-    public ResponseEntity<?> saveSalidaContenedor(@RequestBody SalidaContenedorDTO salidaContenedorDTO) {
+    @PostMapping("/saveSalidaContenedor")
+    public ResponseEntity<Map<String, Object>> saveSalidaContenedor(@RequestBody SalidaContenedorDTO request) {
+        Map<String, Object> response = new HashMap<>();
+
         try {
-            salidaContenedorService.procesarSalidaContenedor(salidaContenedorDTO);
-            return ResponseEntity.ok("La salida del contenedor y los puntos se registraron correctamente.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            Integer idContenedor = salidaContenedorService.saveSalidaContenedor(request.getContenedor(),
+                    request.getPuntos());
+            response.put("data", true); // Puedes agregar un valor si la inserción fue exitosa
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error al procesar la salida del contenedor.");
+            response.put("data", false);
+            response.put("message", "Error al guardar el contenedor");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
 }
