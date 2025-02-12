@@ -16,6 +16,7 @@ import com.appchoferes.nomina.models.lorasdb.dtos.TipoVisitante2DTO;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 
 @Service
 public class RawQueryService {
@@ -150,6 +151,7 @@ public class RawQueryService {
                 ((Number) obj[2]).longValue())).collect(Collectors.toList());
     }
 
+    @Transactional
     public List<PuntosCTPADSalidaDTO> getPuntosCTPADSalida(Integer id) {
 
         String sql = """
@@ -181,7 +183,7 @@ public class RawQueryService {
                             ((Number) obj[0]).intValue(),
                             ((Number) obj[1]).intValue(),
                             0,
-                            (String) obj[2]))
+                            (String) obj[3]))
                     .collect(Collectors.toList());
     }
 

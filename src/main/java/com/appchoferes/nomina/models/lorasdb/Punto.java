@@ -26,5 +26,4 @@ public class Punto {
     @Column(name = "FechaSalida")
     private Date fechaSalida;
 
-    // Getters y Setters
 }

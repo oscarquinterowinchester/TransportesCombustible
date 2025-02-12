@@ -36,7 +36,7 @@ public class ContenedorPatioRepo {
             contenedor.setInventarioID(rs.getInt("InventarioID"));
             contenedor.setItinerarioID(rs.getInt("ItinerarioID"));
             contenedor.setAnteriorID(rs.getInt("AnteriorID"));
-            contenedor.setWContenedorID(rs.getInt("WContenedorID"));
+            contenedor.setWContenedorID(rs.getString("WContenedorID"));
             contenedor.setContenedor(rs.getString("Contenedor"));
             // ... Mapear el resto de los campos aquí
             contenedor.setEstado(rs.getString("estado"));
