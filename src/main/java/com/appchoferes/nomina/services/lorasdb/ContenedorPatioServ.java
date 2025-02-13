@@ -196,6 +196,7 @@ public class ContenedorPatioServ {
         }
 
         List<Map<String, Object>> contenedoresSEND = new ArrayList<>();
+        Map<String, Object> respuesta = new HashMap<>();
 
         if (tipo == 1) {
             if (contenedor != null && !contenedor.isEmpty()) {
@@ -203,7 +204,10 @@ public class ContenedorPatioServ {
                 List<Map<String, Object>> entradas = contenedorRepo.findInventarioIdByContenedor(contenedor);
 
                 if (!entradas.isEmpty()) {
-                    return crearRespuestaContenedorEntrada();
+                    respuesta.put("status", "success");
+                    respuesta.put("message", "Contenedor encontrado");
+                    respuesta.put("data", entradas); // Agregar los datos recuperados
+                    return respuesta;
                 } else {
                     // Buscar ItinerarioID por contenedor
                     List<Map<String, Object>> itinerarios = contenedorRepo.findItinerarioIdByContenedor(contenedor);
@@ -215,7 +219,10 @@ public class ContenedorPatioServ {
 
                             if (!contenedorInfo.isEmpty()) {
                                 contenedoresSEND.add(contenedorInfo.get(0));
-                                return contenedoresSEND;
+                                respuesta.put("status", "success");
+                                respuesta.put("message", "Contenedor encontrado");
+                                respuesta.put("data", contenedoresSEND); // Agregar los datos recuperados
+                                return respuesta;
                             }
                         }
                     } else {
@@ -232,11 +239,17 @@ public class ContenedorPatioServ {
                 List<Map<String, Object>> entrada = contenedorRepo.findInventarioIdByItinerarioId(itinerarioId);
 
                 if (!entrada.isEmpty()) {
-                    return crearRespuestaItinerarioEntrada();
+                    respuesta.put("status", "success");
+                    respuesta.put("message", "Itinerario encontrado");
+                    respuesta.put("data", entrada); // Agregar los datos recuperados
+                    return respuesta;
                 } else {
                     // Obtener información de entrada por ItinerarioID
                     List<Map<String, Object>> contenedorInfo = contenedorRepo.getInformacionEntrada(itinerarioId);
-                    return contenedorInfo;
+                    respuesta.put("status", "success");
+                    respuesta.put("message", "Itinerario encontrado");
+                    respuesta.put("data", contenedorInfo); // Agregar los datos recuperados
+                    return respuesta;
                 }
             }
         }
@@ -246,14 +259,6 @@ public class ContenedorPatioServ {
 
     private Object crearRespuestaDatosNoEncontrados() {
         return Map.of("status", "error", "message", "Datos no encontrados");
-    }
-
-    private Object crearRespuestaContenedorEntrada() {
-        return Map.of("status", "success", "message", "Contenedor encontrado");
-    }
-
-    private Object crearRespuestaItinerarioEntrada() {
-        return Map.of("status", "success", "message", "Itinerario encontrado");
     }
 
     // Métodos para tipo 1

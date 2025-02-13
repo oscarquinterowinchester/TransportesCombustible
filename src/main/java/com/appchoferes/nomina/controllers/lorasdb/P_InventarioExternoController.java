@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.appchoferes.nomina.models.lorasdb.InventarioExterno;
+import com.appchoferes.nomina.models.lorasdb.dtos.ContenedorEntradaDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.PuntosCTPADSalidaDTO;
 import com.appchoferes.nomina.services.lorasdb.InventarioExternoServ;
 import com.appchoferes.nomina.services.lorasdb.PV_RawQueryService;
@@ -20,7 +20,7 @@ import com.appchoferes.nomina.services.lorasdb.PV_RawQueryService;
 @RestController
 @RequestMapping("/patios")
 public class P_InventarioExternoController {
-    
+
     @Autowired
     private InventarioExternoServ invExtServ;
 
@@ -28,15 +28,23 @@ public class P_InventarioExternoController {
     private PV_RawQueryService rawQueryService;
 
     @PostMapping("/saveContenedorEntrada")
-    public ResponseEntity<?> saveContenedorEntrada(@RequestBody InventarioExterno contenedor){
+    public ResponseEntity<Map<String, Object>> saveContenedorEntrada(@RequestBody ContenedorEntradaDTO contenedor) {
         try {
-            Integer inventarioId = invExtServ.procesarInventarioExterno(contenedor);
-            return ResponseEntity.ok(inventarioId);
+            invExtServ.procesarInventarioExterno(contenedor);
 
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e){
-            return ResponseEntity.status(500).body("Error interno del servidor");
+            // ✅ Respuesta en formato JSON
+            Map<String, Object> response = Map.of(
+                    "status", "success",
+                    "message", "Contenedor insertado correctamente");
+
+            return ResponseEntity.ok().body(response);
+
+        } catch (Exception e) {
+            // ✅ Devolver error en JSON
+            Map<String, Object> errorResponse = Map.of(
+                    "status", "error",
+                    "message", e.getMessage());
+            return ResponseEntity.status(500).body(errorResponse);
         }
     }
 
