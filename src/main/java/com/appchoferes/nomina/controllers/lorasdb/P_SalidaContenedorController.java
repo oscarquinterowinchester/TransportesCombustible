@@ -28,7 +28,7 @@ public class P_SalidaContenedorController {
         try {
             Integer idContenedor = salidaContenedorService.saveSalidaContenedor(request.getContenedor(),
                     request.getPuntos());
-            response.put("data", true); // Puedes agregar un valor si la inserción fue exitosa
+            response.put("data", true); 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("data", false);

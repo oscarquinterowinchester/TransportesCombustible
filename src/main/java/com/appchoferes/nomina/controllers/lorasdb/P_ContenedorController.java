@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.appchoferes.nomina.models.lorasdb.dtos.ContenedorPatios;
 import com.appchoferes.nomina.models.lorasdb.dtos.ContenedorTipo1DTO;
 import com.appchoferes.nomina.services.lorasdb.ContenedorPatioServ;
 
@@ -21,7 +20,10 @@ public class P_ContenedorController {
     private ContenedorPatioServ service;
 
     @GetMapping("/getContenedoresPatio")
-    public Map<String, Object> getContenedores(@RequestParam int patioId, @RequestParam int usuarioId) {
+   public Map<String, Object> obtenerContenedores(
+            @RequestParam Integer patioId,
+            @RequestParam Integer usuarioId) {
+        
         return service.obtenerContenedores(patioId, usuarioId);
     }
 
@@ -34,6 +36,17 @@ public class P_ContenedorController {
         return service.getContenedorEntrada(itinerarioId, contenedor, tipo);
     }
 
+    /*
+     * endpoint para obtener salida de contenedores, se realiza la busqueda de dos
+     * maneras
+     * la primera (tipo 1) busca los datos en base al contenedor y la segunda (tipo
+     * 2)
+     * realiza la busqueda en base al itinerarioId, es por eso que
+     * 
+     * @RequestParam(required = false) Integer itinerarioId
+     * no siempre es requerido
+     */
+
     @GetMapping("/getContenedorPatio")
     public List<ContenedorTipo1DTO> getContenedorPatio(
             @RequestParam String contenedor,
@@ -41,91 +54,5 @@ public class P_ContenedorController {
             @RequestParam(required = false) Integer itinerarioId) {
         return service.getContenedorPatio(contenedor, tipo, itinerarioId);
     }
-
-    /*
-     * @GetMapping("/getContenedorPatio")
-     * public ResponseEntity<?> buscarContenedor(
-     * 
-     * @RequestParam(required = false) Integer patioID,
-     * 
-     * @RequestParam(required = false) String contenedor,
-     * 
-     * @RequestParam int tipo) {
-     * 
-     * Map<String, Object> response = new HashMap<>();
-     * 
-     * // Validación de datos
-     * if ((patioID == null && tipo == 2) || (contenedor == null && tipo == 1)) {
-     * response.put("success", false);
-     * response.put("message", "Datos inválidos");
-     * return ResponseEntity.badRequest().body(response);
-     * }
-     * 
-     * if (tipo == 1) {
-     * // Lógica para tipo 1
-     * List<ContenedorTipo1DTO> entradas =
-     * service.getEntradasByContenedor(contenedor);
-     * if (entradas.isEmpty()) {
-     * response.put("success", false);
-     * response.put("message", "No se encontraron entradas para el contenedor: " +
-     * contenedor);
-     * response.put("data", Collections.emptyList());
-     * return ResponseEntity.ok(response);
-     * }
-     * 
-     * response.put("success", true);
-     * response.put("data", entradas);
-     * return ResponseEntity.ok(response);
-     * 
-     * } else if (tipo == 2) {
-     * // Lógica para tipo 2
-     * if (patioID == null) {
-     * response.put("success", false);
-     * response.put("message", "ItinerarioID es requerido para el tipo 2");
-     * return ResponseEntity.badRequest().body(response);
-     * }
-     * 
-     * List<ContenedorTipo2DTO> entradas =
-     * service.getEntradaByItinerarioID(patioID);
-     * if (entradas.isEmpty()) {
-     * response.put("success", false);
-     * response.put("message", "No se encontró una entrada para el itinerario: " +
-     * patioID);
-     * response.put("data", Collections.emptyList());
-     * return ResponseEntity.ok(response);
-     * }
-     * 
-     * int inventarioID = entradas.get(0).getInventarioID();
-     * 
-     * List<P_InventarioExterno> salidas =
-     * service.getSalidaByAnteriorID(inventarioID);
-     * if (!salidas.isEmpty()) {
-     * response.put("success", false);
-     * response.put("message", "No se encontraron datos para el itinerario: " +
-     * patioID);
-     * response.put("data", Collections.emptyList());
-     * return ResponseEntity.ok(response);
-     * }
-     * 
-     * List<Object[]> contenedorData = service.getContenedorByItinerarioID(patioID,
-     * inventarioID);
-     * if (contenedorData.isEmpty()) {
-     * response.put("success", false);
-     * response.put("message", "No se encontraron datos para el itinerario: " +
-     * patioID);
-     * response.put("data", Collections.emptyList());
-     * return ResponseEntity.ok(response);
-     * }
-     * 
-     * response.put("success", true);
-     * response.put("data", contenedorData);
-     * return ResponseEntity.ok(response);
-     * } else {
-     * response.put("success", false);
-     * response.put("message", "Tipo inválido");
-     * return ResponseEntity.badRequest().body(response);
-     * }
-     * }
-     */
 
 }

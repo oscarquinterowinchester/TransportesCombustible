@@ -1,12 +1,14 @@
 package com.appchoferes.nomina.models.lorasdb.dtos;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ContenedorPatios {
     private Integer InventarioID;
     private Integer ItinerarioID;
@@ -28,13 +30,13 @@ public class ContenedorPatios {
     private String Nota;
     private Integer EstadoCarga;
     private Integer TipoEvento;
-    private String FechaEvento;
-    private String Fecha;
+    private LocalDateTime FechaEvento; // Definir como LocalDateTime
+    private LocalDateTime Fecha; // Definir como LocalDateTime
     private Integer PatioID;
     private Integer Tamano;
     private Integer Status;
     private Integer UsuarioEliminaID;
-    private String FechaElimina;
+    private LocalDateTime FechaElimina; // Definir como LocalDateTime
     private String Camion;
     private String EquipmentProvider;
     private String EquipmentProviderExt;
@@ -48,7 +50,7 @@ public class ContenedorPatios {
     private String Carrier;
     private String Grade;
     private String AssignedTo;
-    private String FechaEdicion;
+    private LocalDateTime FechaEdicion; // Definir como LocalDateTime
     private Integer IsCamion;
     private Integer PerfilCobroID;
     private Integer IsVirtual;
@@ -76,15 +78,15 @@ public class ContenedorPatios {
     private String Pais;
     private String Carga;
     private String Cliente;
-    private String OrigenData;
-    private String EstadoData;
+    //private String Origen;
+    //private String EstadoData;
     private Integer Dias;
     private Integer Flag;
 
     // Constructor solo con los campos para getContenedorPatio
     public ContenedorPatios(Integer inventarioID, Integer itinerarioID, String wContenedorID, String contenedor,
             String placasChasis, String sello, Integer paisID, Integer clienteID, Integer estadoCarga,
-            Integer tipoEvento, String fechaEvento, String camion, String origen,
+            Integer tipoEvento, LocalDateTime fechaEvento, String camion, String origen,
             String destino, String carrier) {
         this.InventarioID = inventarioID; // Mapea con inv.InventarioID
         this.ItinerarioID = itinerarioID; // Mapea con inv.ItinerarioID
@@ -102,5 +104,4 @@ public class ContenedorPatios {
         this.Destino = destino; // Mapea con ru.Destino
         this.Carrier = carrier; // Mapea con IF(inv.CamionID > 0, 'MX', '') AS Carrier
     }
-
 }

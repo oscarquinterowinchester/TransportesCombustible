@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.appchoferes.nomina.models.lorasdb.Chofer;
 import com.appchoferes.nomina.models.lorasdb.dtos.EmpleadoDTO;
 import com.appchoferes.nomina.services.lorasdb.ChoferService;
-import com.appchoferes.nomina.services.lorasdb.RawQueryService;
+import com.appchoferes.nomina.services.lorasdb.PV_RawQueryService;
 
 @RestController
 @RequestMapping("/patios")
@@ -21,7 +21,7 @@ public class V_ChoferesController {
     private ChoferService choferService;
 
     @Autowired
-    private RawQueryService rawQueryService;
+    private PV_RawQueryService rawQueryService;
 
     @GetMapping("/getChoferes")
     public List<Chofer> getChoferesPatios() {

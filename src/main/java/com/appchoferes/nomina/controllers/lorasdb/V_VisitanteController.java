@@ -20,7 +20,7 @@ import com.appchoferes.nomina.models.lorasdb.dtos.EmpresaDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.TipoVisitante2DTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.VisitanteVehiculoRequest;
 import com.appchoferes.nomina.models.lorasdb.dtos.VisitorRequest;
-import com.appchoferes.nomina.services.lorasdb.RawQueryService;
+import com.appchoferes.nomina.services.lorasdb.PV_RawQueryService;
 import com.appchoferes.nomina.services.lorasdb.VisitorRegistroService;
 
 @RestController
@@ -28,7 +28,7 @@ import com.appchoferes.nomina.services.lorasdb.VisitorRegistroService;
 public class V_VisitanteController {
 
     @Autowired
-    private RawQueryService rawQueryService;
+    private PV_RawQueryService rawQueryService;
 
     @Autowired
     private VisitorRegistroService visitorService;
