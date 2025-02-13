@@ -32,14 +32,6 @@ public class CamionesConCargaService {
                 .collect(Collectors.toList());
     }
 
-    public List<CamionesConCargaDTO> getAllCamionesConCargas() {
-
-        List<Object[]> camionesRaw = camionesConCargaRepository.getCamionesConCargasRaw();
-        return camionesRaw.stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
-    }
-
     public CamionesConCargaDTO getCamion(Long id) {
         List<Object[]> result = camionesConCargaRepository.getCamionRaw(id);
         return mapToDTO(result.get(0)); // Recuperamos el primer registro

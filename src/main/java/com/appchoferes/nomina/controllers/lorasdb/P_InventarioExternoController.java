@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.appchoferes.nomina.models.lorasdb.InventarioExterno;
 import com.appchoferes.nomina.models.lorasdb.dtos.PuntosCTPADSalidaDTO;
 import com.appchoferes.nomina.services.lorasdb.InventarioExternoServ;
-import com.appchoferes.nomina.services.lorasdb.RawQueryService;
+import com.appchoferes.nomina.services.lorasdb.PV_RawQueryService;
 
 @RestController
 @RequestMapping("/patios")
@@ -25,7 +25,7 @@ public class P_InventarioExternoController {
     private InventarioExternoServ invExtServ;
 
     @Autowired
-    private RawQueryService rawQueryService;
+    private PV_RawQueryService rawQueryService;
 
     @PostMapping("/saveContenedorEntrada")
     public ResponseEntity<?> saveContenedorEntrada(@RequestBody InventarioExterno contenedor){

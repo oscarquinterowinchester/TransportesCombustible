@@ -18,8 +18,10 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 
+// Este servicio contiene logica para los modulos de visitantes y patios
+// 
 @Service
-public class RawQueryService {
+public class PV_RawQueryService {
 
     @Autowired
     private EntityManager entityManager;

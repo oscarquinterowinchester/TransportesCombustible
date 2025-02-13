@@ -30,12 +30,12 @@ public class CombustibleCargasDieselController {
     @Autowired
     private InsertCargaDiesel insertCargaDiesel;
 
-    @GetMapping("/historial-cargas")
+    /*@GetMapping("/historial-cargas")
     public List<CargasDieselDTO> getHistorial(
             @RequestParam("id") Long id,
             @RequestParam("tipo") Integer tipo) {
         return combustibleCargasDieselService.getHistorialCargas(id, tipo);
-    }
+    }*/
 
     @GetMapping("/historial-anterior")
     public List<HistorialAnteriorDTO> getHistorialAnterior(

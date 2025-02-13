@@ -1,5 +1,8 @@
 package com.appchoferes.nomina.services.lorasdb;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +10,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 import com.appchoferes.nomina.models.lorasdb.Itinerario;
@@ -14,7 +19,6 @@ import com.appchoferes.nomina.models.lorasdb.P_InventarioExterno;
 import com.appchoferes.nomina.models.lorasdb.dtos.ContenedorPatios;
 import com.appchoferes.nomina.models.lorasdb.dtos.ContenedorTipo1DTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.ContenedorTipo2DTO;
-import com.appchoferes.nomina.repositories.lorasdb.ContenedorPatioRepo;
 import com.appchoferes.nomina.repositories.lorasdb.ContenedorRepo;
 import com.appchoferes.nomina.repositories.lorasdb.InventarioExternoRepository;
 import com.appchoferes.nomina.repositories.lorasdb.ItinerarioRepo;
@@ -28,9 +32,6 @@ import jakarta.transaction.Transactional;
 public class ContenedorPatioServ {
 
     @Autowired
-    private ContenedorPatioRepo repository;
-
-    @Autowired
     private ContenedorRepo contenedorRepo;
 
     @Autowired
@@ -39,12 +40,120 @@ public class ContenedorPatioServ {
     @Autowired
     private ItinerarioRepo itinerarioRepo;
 
+    private final JdbcTemplate jdbcTemplate;
+
+    public ContenedorPatioServ(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     @PersistenceContext
     private EntityManager entityManager;
 
     public Map<String, Object> obtenerContenedores(int patioId, int usuarioId) {
-        List<ContenedorPatios> contenedores = repository.obtenerContenedores(patioId, usuarioId);
+        String sql = """
+                    SELECT *,
+                        IF(PaisID = 1, 'México', 'Estados unidos') AS pais,
+                        IF(EstadoCarga = 0, 'Vacio', 'Cargado') AS carga,
+                        (SELECT NComercial FROM clientes_tbl WHERE clienteID = w.ClienteID LIMIT 1) AS cliente,
+                        (SELECT Origen FROM rutas_tbl WHERE rutas_tbl.RutaID = w.RutaID LIMIT 1) AS origen,
+                        (SELECT Nombre FROM estados_tbl WHERE EstadoID = w.EstadoID LIMIT 1) AS estado,
+                        DATEDIFF(NOW(), FechaEvento) AS dias,
+                        (SELECT InventarioID FROM inventarioexterno_tbl WHERE AnteriorID = w.InventarioID AND TipoEvento = 2 LIMIT 1) AS flag,
+                        IFNULL(sello, '') AS sello,
+                        IFNULL(FechaEvento, NULL) AS FechaEvento,
+                        IFNULL(Fecha, NULL) AS Fecha,
+                        IFNULL(FechaElimina, NULL) AS FechaElimina,
+                        IFNULL(FechaEdicion, NULL) AS FechaEdicion
+                    FROM inventarioexterno_tbl AS w
+                    WHERE PatioID = ?
+                    AND TipoEvento = 1
+                    AND UsuarioId = ?
+                """;
 
+        List<ContenedorPatios> contenedores = jdbcTemplate.query(sql, new Object[] { patioId, usuarioId },
+                new RowMapper<ContenedorPatios>() {
+                    @Override
+                    public ContenedorPatios mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        ContenedorPatios contenedor = new ContenedorPatios();
+                        contenedor.setInventarioID(rs.getInt("InventarioID"));
+                        contenedor.setItinerarioID(rs.getInt("ItinerarioID"));
+                        contenedor.setAnteriorID(rs.getInt("AnteriorID"));
+                        contenedor.setWContenedorID(rs.getString("WContenedorID"));
+                        contenedor.setContenedor(rs.getString("Contenedor"));
+                        contenedor.setPlacasChasis(rs.getString("PlacasChasis"));
+                        contenedor.setSello(rs.getString("Sello"));
+                        contenedor.setSelloDiesel(rs.getString("SelloDiesel"));
+                        contenedor.setPaisID(rs.getInt("PaisID"));
+                        contenedor.setEstadoID(rs.getInt("EstadoID"));
+                        contenedor.setChoferID(rs.getInt("ChoferID"));
+                        contenedor.setClienteID(rs.getInt("ClienteID"));
+                        contenedor.setUsuarioID(rs.getInt("UsuarioID"));
+                        contenedor.setRutaID(rs.getInt("RutaID"));
+                        contenedor.setNombreChofer(rs.getString("NombreChofer"));
+                        contenedor.setEmpresaChofer(rs.getString("EmpresaChofer"));
+                        contenedor.setUsuarioEventoID(rs.getInt("UsuarioEventoID"));
+                        contenedor.setNota(rs.getString("Nota"));
+                        contenedor.setEstadoCarga(rs.getInt("EstadoCarga"));
+                        contenedor.setTipoEvento(rs.getInt("TipoEvento"));
+                        contenedor.setFechaEvento(safeStringToDate(rs.getString("FechaEvento")));
+                        contenedor.setFecha(safeStringToDate(rs.getString("Fecha")));
+                        contenedor.setPatioID(rs.getInt("PatioID"));
+                        contenedor.setTamano(rs.getInt("Tamano"));
+                        contenedor.setStatus(rs.getInt("Status"));
+                        contenedor.setUsuarioEliminaID(rs.getInt("UsuarioEliminaID"));
+                        contenedor.setFechaElimina(safeStringToDate(rs.getString("FechaElimina")));
+                        contenedor.setCamion(rs.getString("Camion"));
+                        contenedor.setEquipmentProvider(rs.getString("EquipmentProvider"));
+                        contenedor.setEquipmentProviderExt(rs.getString("EquipmentProviderExt"));
+                        contenedor.setFirmak9(rs.getString("Firmak9"));
+                        contenedor.setBotando(rs.getInt("Botando"));
+                        contenedor.setOrigen(rs.getString("Origen"));
+                        contenedor.setCamionID(rs.getInt("CamionID"));
+                        contenedor.setDestino(rs.getString("Destino"));
+                        contenedor.setPlacasUnidad(rs.getString("PlacasUnidad"));
+                        contenedor.setNumeroChasis(rs.getString("NumeroChasis"));
+                        contenedor.setCarrier(rs.getString("Carrier"));
+                        contenedor.setGrade(rs.getString("Grade"));
+                        contenedor.setAssignedTo(rs.getString("AssignedTo"));
+                        contenedor.setFechaEdicion(safeStringToDate(rs.getString("FechaEdicion")));
+                        contenedor.setIsCamion(rs.getInt("IsCamion"));
+                        contenedor.setPerfilCobroID(rs.getInt("PerfilCobroID"));
+                        contenedor.setIsVirtual(rs.getInt("IsVirtual"));
+                        contenedor.setPlacasChasisUSA(rs.getString("PlacasChasisUSA"));
+                        contenedor.setEstadoUSAID(rs.getInt("EstadoUSAID"));
+                        contenedor.setPlacasUnidadUSA(rs.getString("PlacasUnidadUSA"));
+                        contenedor.setEstadoPlacasMex(rs.getString("EstadoPlacasMex"));
+                        contenedor.setEstadoPlacasUsa(rs.getString("EstadoPlacasUsa"));
+                        contenedor.setRemolqueEstado(rs.getString("RemolqueEstado"));
+                        contenedor.setRemolquePais(rs.getString("RemolquePais"));
+                        contenedor.setSoloChasis(rs.getInt("SoloChasis"));
+                        contenedor.setCreacionUsuarioEventoID(rs.getInt("CreacionUsuarioEventoID"));
+                        contenedor.setLicencia(rs.getString("Licencia"));
+                        contenedor.setCajaID(rs.getInt("CajaID"));
+                        contenedor.setChasis(rs.getString("Chasis"));
+                        contenedor.setIsFull(rs.getInt("IsFull"));
+                        contenedor.setFullItinerarioBase(rs.getInt("FullItinerarioBase"));
+                        contenedor.setSelloComplementario(rs.getString("SelloComplementario"));
+                        contenedor.setFotoSello(rs.getString("FotoSello"));
+                        contenedor.setFirmaGuardia(rs.getString("FirmaGuardia"));
+                        contenedor.setFirmaChofer(rs.getString("FirmaChofer"));
+                        contenedor.setFacturado(rs.getInt("Facturado"));
+                        contenedor.setTotalRenta(rs.getString("TotalRenta"));
+                        contenedor.setEstado(rs.getString("Estado"));
+                        contenedor.setPais(rs.getString("Pais"));
+                        contenedor.setCarga(rs.getString("Carga"));
+                        contenedor.setCliente(rs.getString("Cliente"));
+                        // contenedor.setOrigenData(rs.getString("OrigenData"));
+                        // contenedor.setEstadoData(rs.getString("EstadoData"));
+                        contenedor.setDias(rs.getInt("Dias"));
+                        contenedor.setFlag(rs.getInt("Flag"));
+                        contenedor.setSello(rs.getString("Sello"));
+
+                        return contenedor;
+                    }
+                });
+
+        // Calcular los vacíos y cargados
         int vacios = 0;
         int cargados = 0;
 
@@ -56,12 +165,30 @@ public class ContenedorPatioServ {
             }
         }
 
+        // Estructura de la respuesta
         Map<String, Object> response = new HashMap<>();
-        response.put("info", Map.of("vacios", vacios, "cargados", cargados));
+        Map<String, Object> info = new HashMap<>();
+        info.put("vacios", vacios);
+        info.put("cargados", cargados);
+        response.put("info", info);
         response.put("contenedores", contenedores);
 
         return response;
     }
+
+    // *** Funciones para manejar el mapeo de los dtos *** //
+    private LocalDateTime safeStringToDate(String dateStr) {
+        if (dateStr == null || dateStr.isEmpty()) {
+            return null;
+        }
+
+        try {
+            return LocalDateTime.parse(dateStr.replace(" ", "T"));
+        } catch (Exception e) {
+            return null; // Return null if the date is invalid
+        }
+    }
+    // ****** //
 
     public Object getContenedorEntrada(Long itinerarioId, String contenedor, Integer tipo) {
         if ((itinerarioId == null || itinerarioId <= 0) && (contenedor == null || contenedor.isEmpty())) {
@@ -139,7 +266,7 @@ public class ContenedorPatioServ {
 
     private ContenedorTipo1DTO mapToContenedorTipo1DTO(P_InventarioExterno entrada) {
         ContenedorTipo1DTO dto = new ContenedorTipo1DTO();
-        dto.setInventarioID(entrada.getInventarioID());
+        dto.setInventarioID(entrada.getInventarioID().longValue());
         dto.setContenedor(entrada.getContenedor());
         // dto.setItinerarioId(entrada.getItinerarioId());
         return dto;
@@ -175,11 +302,17 @@ public class ContenedorPatioServ {
         return itinerarioRepo.findContenedorByItinerarioID(itinerarioID, inventarioID);
     }
 
+    /*
+     * Obtine los contenedores del apartado de Patios Salida del modulo de
+     * combustible
+     * El tipo 1 busca en base al contenedor ingersado y el tipo 2 busca en en base
+     * al itinearioId
+     */
     public List<ContenedorTipo1DTO> getContenedorPatio(String contenedor, Integer tipo, Integer itinerarioId) {
         List<ContenedorTipo1DTO> contenedoresSEND = new ArrayList<>();
 
         if ((esDatoInvalido(itinerarioId) && tipo == 2) || (esDatoInvalido(contenedor) && tipo == 1)) {
-            return contenedoresSEND; // Retorna lista vacía si los datos son inválidos
+            return contenedoresSEND; // Retorna lista vacia si los datos son invalidos
         }
 
         if (tipo == 1) {
@@ -284,14 +417,14 @@ public class ContenedorPatioServ {
                                     row[17] != null ? (Integer) row[17] : 0, // ChoferID
                                     row[18] != null ? (Integer) row[18] : 0, // ClienteID
                                     row[19] != null ? (String) row[19] : "", // Cliente
-                                    row[20] != null ? (Integer) row[20] : 0 // InventarioID
+                                    row[20] != null ? ((Number) row[20]).longValue() : 0L// InventarioID
                             );
                             contenedoresSEND.add(contenedorPatiosDTO);
                         }
                     }
                 }
             } else {
-                // Lógica para cuando no hay entradas
+                // Logica para cuando no hay entradas
                 String queryItinerarioID = "SELECT ItinerarioID FROM itinerarios_tbl WHERE ItinerarioID IN (SELECT ico.ItinerarioID FROM icont_tbl AS ico WHERE ico.Status = true AND (ncontenedor = :contenedor OR Caja = :contenedor)) AND Status = 1";
                 Query itinerarioIDQuery = entityManager.createNativeQuery(queryItinerarioID);
                 itinerarioIDQuery.setParameter("contenedor", contenedor);
@@ -339,14 +472,14 @@ public class ContenedorPatioServ {
                                     row[17] != null ? (Integer) row[17] : 0, // ChoferID
                                     row[18] != null ? (Integer) row[18] : 0, // ClienteID
                                     row[19] != null ? (String) row[19] : "", // Cliente
-                                    row[20] != null ? (Integer) row[20] : 0 // InventarioID
+                                    row[20] != null ? ((Number) row[20]).longValue() : 0L// InventarioID
                             );
                             contenedoresSEND.add(contenedorPatiosDTO);
                         }
 
                     }
                 } else {
-                    return contenedoresSEND; // Retorna lista vacía si no se encuentran datos
+                    return contenedoresSEND; // Retorna lista vacia si no se encuentran datos
                 }
             }
         }
@@ -357,7 +490,7 @@ public class ContenedorPatioServ {
                     AND getInventarioIdSalidaIti(ItinerarioID, InventarioID) IS NULL ORDER BY InventarioID DESC LIMIT 1
                     """;
             Query entradasQuery = entityManager.createNativeQuery(queryEntradas);
-            entradasQuery.setParameter("contenedor", contenedor);
+            entradasQuery.setParameter("itinerarioId", itinerarioId);
             List<Integer> entradas = entradasQuery.getResultList();
 
             if (!entradas.isEmpty()) {
@@ -369,7 +502,7 @@ public class ContenedorPatioServ {
                     salidaQuery.setParameter("entrada", entrada);
                     List<Integer> salidas = salidaQuery.getResultList();
 
-                    if (!salidas.isEmpty()) {
+                    if (salidas.isEmpty()) {
                         String queryContenedor = """
                                 select iti.ItinerarioID,IF(ico.ncontenedor is null or ico.ncontenedor = '',ico.Caja,ico.ncontenedor) as Contenedor,
                                 wo.ClienteFK,ru.origen,getSelloIti(iti.itinerarioId) as Sello, (SELECT Nombre FROM estados_tbl
@@ -377,17 +510,17 @@ public class ContenedorPatioServ {
                                 iti.RutaID,(select RazonSocial from empresas_tbl where EmpresaID = 1) as Carrier, wo.Tamano,
                                 (CASE WHEN PaisID = 1 THEN 'México' WHEN PaisID = 2 THEN 'USA' ELSE 'N/A' END)
                                 AS pais, IF(EstadoCarga = 0, 'Vacio', 'Cargado') AS carga,(SELECT Nombre FROM estados_tbl
-                                WHERE EstadoID = (SELECT PlacasUSA FROM camiones_tbl WHERE camiones_tbl.CamionID = iti.CamionID)) 
+                                WHERE EstadoID = (SELECT PlacasUSA FROM camiones_tbl WHERE camiones_tbl.CamionID = iti.CamionID))
                                 AS estadousa, (SELECT Nombre FROM rutas_tbl WHERE rutas_tbl.RutaID = iti.RutaID) AS ruta,
                                 (SELECT NoEconomico FROM camiones_tbl WHERE camiones_tbl.CamionID = iti.CamionID) AS camion,
-                                (SELECT CONCAT(placas, ' ', placasusa) FROM cajas_tbl WHERE cajas_tbl.CajaID = wo.CajaID) 
-                                AS PlacasChasis, (SELECT CONCAT(placas, ' ', placasusa) FROM camiones_tbl WHERE 
+                                (SELECT CONCAT(placas, ' ', placasusa) FROM cajas_tbl WHERE cajas_tbl.CajaID = wo.CajaID)
+                                AS PlacasChasis, (SELECT CONCAT(placas, ' ', placasusa) FROM camiones_tbl WHERE
                                 camiones_tbl.CamionID = iti.CamionID) AS PlacasUnidad, (SELECT Nombre FROM
                                 choferes_tbl WHERE ChoferID = iti.choferID) AS NombreChofer, (iti.choferID) AS ChoferID,
-                                (wo.ClienteFK) AS ClienteID, (SELECT NComercial FROM clientes_tbl WHERE  clienteID = wo.clienteFK) 
-                                AS cliente, :entrada as InventarioID from itinerarios_tbl iti LEFT join icont_tbl ico 
+                                (wo.ClienteFK) AS ClienteID, (SELECT NComercial FROM clientes_tbl WHERE  clienteID = wo.clienteFK)
+                                AS cliente, :entrada as InventarioID from itinerarios_tbl iti LEFT join icont_tbl ico
                                 ON ico.ItinerarioID = iti.ItinerarioID LEFT join workcontenedores_tbl wo ON wo.WContenedorID = ico.WContID
-                                LEFT join rutas_tbl ru ON ru.RutaID = iti.RutaID here iti.itinerarioId = :itinerarioId
+                                LEFT join rutas_tbl ru ON ru.RutaID = iti.RutaID where iti.itinerarioId = :itinerarioId
                                     """;
                         Query contenedorQuery = entityManager.createNativeQuery(queryContenedor);
                         contenedorQuery.setParameter("itinerarioId", itinerarioId);
@@ -415,7 +548,7 @@ public class ContenedorPatioServ {
                                     row[17] != null ? (Integer) row[17] : 0, // ChoferID
                                     row[18] != null ? (Integer) row[18] : 0, // ClienteID
                                     row[19] != null ? (String) row[19] : "", // Cliente
-                                    row[20] != null ? (Integer) row[20] : 0 // InventarioID
+                                    row[20] != null ? ((Long) row[20]).longValue() : 0L// InventarioID
                             );
                             contenedoresSEND.add(contenedorPatiosDTO);
                         }
