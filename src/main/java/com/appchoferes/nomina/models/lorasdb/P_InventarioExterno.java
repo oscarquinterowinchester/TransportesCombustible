@@ -1,6 +1,6 @@
 package com.appchoferes.nomina.models.lorasdb;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,21 +18,84 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "inventarioexterno_tbl")
 public class P_InventarioExterno {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "InventarioID")
     private Integer InventarioID;
 
-    @Column(name = "Contenedor")
-    private String contenedor;
-
     @Column(name = "ItinerarioID")
-    private Integer itinerarioId;
+    private Integer ItinerarioID;
 
-    @Column(name = "FechaEvento")
-    private Date FechaEvento;
+    @Column(name = "AnteriorID")
+    private Integer AnteriorID;
+    private Integer WContenedorID;
 
-    //@Column(name = "AnteriorID")
-    //private int anteriorID;
+    @Column(name = "Contenedor")
+    private String Contenedor;
+
+    private String PlacasChasis;
+    private String Sello;
+    private Integer SelloDiesel;
+    private Integer PaisID;
+    private Integer EstadoID;
+    private Integer ChoferID;
+    private Integer ClienteID;
+    private Integer UsuarioID;
+    private Integer RutaID;
+    private String NombreChofer;
+    private String EmpresaChofer;
+    private Integer UsuarioEventoID;
+    private String Nota;
+    private Integer EstadoCarga;
+    private Integer TipoEvento;
+    private LocalDateTime FechaEvento;
+    private LocalDateTime Fecha;
+    private Integer PatioID;
+    private String Tamano;
+    private Integer Status;
+    private Integer UsuarioEliminaID;
+    private LocalDateTime FechaElimina;
+    private String camion;
+    private Integer EquipmentProvider;
+    private String EquipmentProviderExt;
+    private String Firmak9;
+
+    @Column(name = "Botando")
+    private Boolean botando;
+
+    private String origen;
+    private Integer camionID;
+    private String destino;
+    private String placasunidad;
+    private String NumeroChasis;
+
+    @Column(name = "Carrier")
+    private String Carrier;
+    
+    private String grade;
+    private String assignedto;
+    private LocalDateTime fechaedicion;
+    private Boolean isCamion;
+    private Integer perfilcobroID;
+    private Boolean isVirtual;
+    private String PlacasChasisUSA;
+    private Integer EstadoUSAID;
+    private String PlacasUnidadUSA;
+    private String EstadoPlacasMex;
+    private String EstadoPlacasUsa;
+    private Integer remolqueEstado;
+    private String remolquePais;
+    private Boolean solochasis;
+    private Integer CreacionUsuarioEventoID;
+    private String licencia;
+    private Integer cajaID;
+    private String chasis;
+    private Boolean isFull;
+    private Integer FullItinerarioBase;
+    private String sellocomplementario;
+    private String FotoSello;
+    private String FirmaGuardia;
+    private String FirmaChofer;
+    private Boolean facturado;
+    private String totalrenta;
+    private Integer Estado;
 }

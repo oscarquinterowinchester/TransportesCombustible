@@ -12,6 +12,7 @@ import com.appchoferes.nomina.models.lorasdb.dtos.BusquedaVisitanteDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.EmpleadoDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.EmpresaDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.PuntosCTPADSalidaDTO;
+import com.appchoferes.nomina.models.lorasdb.dtos.RegistroVisitaDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.TipoVisitante2DTO;
 
 import jakarta.persistence.EntityManager;
@@ -187,6 +188,20 @@ public class PV_RawQueryService {
                             0,
                             (String) obj[3]))
                     .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void completeRegistro(RegistroVisitaDTO registroDTO) {
+        entityManager.createNativeQuery("UPDATE visitor_registros  SET salida = :salida, duracion = :duracion WHERE id = :id")
+                .setParameter("salida", registroDTO.getSalida())
+                .setParameter("duracion", registroDTO.getDuracion())
+                .setParameter("id", registroDTO.getId())
+                .executeUpdate();
+
+        entityManager.createNativeQuery("UPDATE visitor_gafetes SET visitante = NULL WHERE visitante = :visitor AND id = :gafete")
+                .setParameter("visitor", registroDTO.getVisitor())
+                .setParameter("gafete", registroDTO.getGafete())
+                .executeUpdate();
     }
 
 }

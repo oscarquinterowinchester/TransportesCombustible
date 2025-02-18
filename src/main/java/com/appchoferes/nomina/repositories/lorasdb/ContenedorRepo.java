@@ -6,9 +6,11 @@ import java.util.Map;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.appchoferes.nomina.models.lorasdb.Contenedor;
 
+@Repository
 public interface ContenedorRepo extends JpaRepository<Contenedor, Integer> {
     
         // Consulta nativa para obtener el InventarioID
@@ -35,4 +37,11 @@ public interface ContenedorRepo extends JpaRepository<Contenedor, Integer> {
                    "AND getInventarioIdSalidaIti(ItinerarioID, InventarioID) IS NULL " +
                    "ORDER BY InventarioID DESC LIMIT 1", nativeQuery = true)
     List<Map<String, Object>> findInventarioIdByItinerarioId(@Param("itinerarioId") Long itinerarioId);
+
+    @Query(value = "SELECT InventarioID, ItinerarioID FROM inventarioexterno_tbl " +
+               "WHERE contenedor = :contenedor AND TipoEvento = 1 AND STATUS IS TRUE " +
+               "AND getInventarioIdSalida(contenedor, InventarioID) IS NULL " +
+               "ORDER BY InventarioID DESC LIMIT 1", nativeQuery = true)
+List<Map<String, Object>> findInventarioIdAndItinerarioIdByContenedor(@Param("contenedor") String contenedor);
+
 }

@@ -20,10 +20,10 @@ public class P_ContenedorController {
     private ContenedorPatioServ service;
 
     @GetMapping("/getContenedoresPatio")
-   public Map<String, Object> obtenerContenedores(
+    public Map<String, Object> obtenerContenedores(
             @RequestParam Integer patioId,
             @RequestParam Integer usuarioId) {
-        
+
         return service.obtenerContenedores(patioId, usuarioId);
     }
 

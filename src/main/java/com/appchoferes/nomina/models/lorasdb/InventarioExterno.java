@@ -1,12 +1,14 @@
 package com.appchoferes.nomina.models.lorasdb;
 
-import java.util.Date;
+//import java.util.List;
 
+//import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+//import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,10 +27,10 @@ public class InventarioExterno {
     private Integer InventarioID;
 
     @Column(name = "Contenedor")
-    private String contenedor;
+    private String Contenedor;
 
     @Column(name = "ItinerarioID")
-    private Integer itinerarioId;
+    private Integer ItinerarioID;
 
     @Column(name = "placasunidad")
     private String PlacasUnidad;
@@ -82,13 +84,13 @@ public class InventarioExterno {
     private Integer TipoEvento;
 
     @Column(name = "FechaEvento")
-    private Date FechaEvento;
+    private String FechaEvento;
 
     @Column(name = "PatioID")
     private Integer PatioID;
 
     @Column(name = "Tamano")
-    private String Tamano;
+    private Integer Tamano;
 
     @Column(name = "Firmak9")
     private String Firmak9;
@@ -104,4 +106,10 @@ public class InventarioExterno {
 
     @Column(name = "Carrier")
     private String Carrier;
+
+    private String FotoSello;
+    
+    //@OneToMany(mappedBy = "inventarioExterno", cascade = CascadeType.ALL, orphanRemoval = true)
+    //private List<InventarioExternoInspeccion> puntosInspeccion;
+
 }
