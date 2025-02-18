@@ -201,7 +201,7 @@ public class ContenedorPatioServ {
         if (tipo == 1) {
             if (contenedor != null && !contenedor.isEmpty()) {
                 // Buscar InventarioID por contenedor
-                List<Map<String, Object>> entradas = contenedorRepo.findInventarioIdByContenedor(contenedor);
+                List<Map<String, Object>> entradas = contenedorRepo.findInventarioIdAndItinerarioIdByContenedor(contenedor);
 
                 if (!entradas.isEmpty()) {
                     respuesta.put("status", "success");
@@ -292,7 +292,7 @@ public class ContenedorPatioServ {
     @Transactional
     private ContenedorTipo2DTO mapToContenedorTipo2DTO(P_InventarioExterno entrada) {
         ContenedorTipo2DTO dto = new ContenedorTipo2DTO();
-        dto.setItinerarioID(entrada.getInventarioID());
+        dto.setAnteriorID(entrada.getItinerarioID());
         dto.setContenedor(entrada.getContenedor());
         dto.setInventarioID(entrada.getInventarioID()); // Campo adicional para el tipo 2
         // Mapear otros campos según sea necesario

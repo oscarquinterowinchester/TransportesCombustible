@@ -35,5 +35,6 @@ public interface ItinerarioRepo extends JpaRepository<Itinerario, Integer> {
     "LEFT JOIN workcontenedores_tbl wo ON wo.WContenedorID = ico.WContID " +
     "LEFT JOIN rutas_tbl ru ON ru.RutaID = iti.RutaID " +
     "WHERE iti.ItinerarioID = :itinerarioID", nativeQuery = true)
+    
 List<Object[]> findContenedorByItinerarioID(@Param("itinerarioID") int itinerarioID, @Param("inventarioID") int inventarioID);
 }

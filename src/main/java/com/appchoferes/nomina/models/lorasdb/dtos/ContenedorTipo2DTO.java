@@ -5,20 +5,19 @@ import lombok.Data;
 @Data
 public class ContenedorTipo2DTO {
     // Campos de itinerarios_tbl
-    private int itinerarioID;
-    private int camionID;
-    private int rutaID;
-    private int choferID;
-    private int status;
+    private Integer camionID;
+    private Integer rutaID;
+    private Integer choferID;
+    private Integer status;
 
     // Campos de icont_tbl
     private String nContenedor;
     private String caja;
 
     // Campos de inventarioexterno_tbl
-    private int inventarioID;
+    private Integer inventarioID;
     private String contenedor;
-    private int anteriorID;
+    private Integer anteriorID;
 
     // Campos calculados en la consulta SQL
     private String sello;
@@ -29,6 +28,6 @@ public class ContenedorTipo2DTO {
     private String placasChasis;
     private String placasUnidad;
     private String nombreChofer;
-    private int clienteID;
+    private Integer clienteID;
     private String cliente;
 }
