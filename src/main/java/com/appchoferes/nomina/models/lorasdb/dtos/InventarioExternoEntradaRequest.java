@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class InventarioExternoRequest {
+public class InventarioExternoEntradaRequest {
 
     @JsonProperty("Botando")
     private Boolean Botando;

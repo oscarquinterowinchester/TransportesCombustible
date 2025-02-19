@@ -29,11 +29,11 @@ public class P_ContenedorController {
 
     @GetMapping("/getContenedorEntrada")
     public Object getContenedorEntrada(
-            @RequestParam(required = false) Long itinerarioId,
+            @RequestParam(required = false) Long ItinerarioID,
             @RequestParam(required = false) String contenedor,
             @RequestParam Integer tipo) {
 
-        return service.getContenedorEntrada(itinerarioId, contenedor, tipo);
+        return service.getContenedorEntrada(ItinerarioID, contenedor, tipo);
     }
 
     /*
