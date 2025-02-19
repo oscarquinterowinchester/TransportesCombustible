@@ -191,7 +191,7 @@ public class ContenedorPatioServ {
     // ****** //
 
     public Object getContenedorEntrada(Long itinerarioId, String contenedor, Integer tipo) {
-        if ((itinerarioId == null || itinerarioId <= 0) && (contenedor == null || contenedor.isEmpty())) {
+        if ((itinerarioId == null || itinerarioId < 0) && (contenedor == null || contenedor.isEmpty())) {
             return crearRespuestaDatosNoEncontrados();
         }
 
@@ -234,7 +234,7 @@ public class ContenedorPatioServ {
         }
 
         if (tipo == 2) {
-            if (itinerarioId != null && itinerarioId > 0) {
+            if (itinerarioId != null) {
                 // Buscar InventarioID por ItinerarioID
                 List<Map<String, Object>> entrada = contenedorRepo.findInventarioIdByItinerarioId(itinerarioId);
 

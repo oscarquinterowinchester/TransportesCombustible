@@ -71,30 +71,10 @@ public class InventarioExternoService {
     }
 
     public boolean esEntradaDuplicada(String contenedor, Integer itinerarioId) {
-        // Validamos los parámetros
-        if (contenedor == null || itinerarioId == null) {
-            return false; // Si algún parámetro es inválido, no hay entrada duplicada
-        }
+        Integer tipoEvento = 1;
+        List<Integer> entradas = inventarioExternoRepository.findEntrada(contenedor, tipoEvento);
 
-        // Verificamos en la base de datos si ya existe un registro con el contenedor y
-        // itinerarioId
-        List<P_InventarioExterno> entradas = inventarioExternoRepository.findByContenedorAndTipoEvento(contenedor, 1);
-
-        // Si no se encontró ninguna entrada, no hay duplicados
-        if (entradas.isEmpty()) {
-            return false;
-        }
-
-        // Verificamos si existe una entrada relacionada con un itinerario de tipo 2
-        for (P_InventarioExterno entrada : entradas) {
-            List<P_InventarioExterno> salidas = inventarioExternoRepository
-                    .findSalidaByAnteriorID(entrada.getInventarioID());
-            if (salidas.isEmpty()) {
-                return true; // Entrada duplicada encontrada
-            }
-        }
-
-        return false; // No se encontró ninguna entrada duplicada
+        return entradas != null; // No encontro ninguna entrada duplicada
     }
 
 }

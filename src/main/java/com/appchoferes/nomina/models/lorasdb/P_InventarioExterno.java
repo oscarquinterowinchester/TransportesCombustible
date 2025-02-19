@@ -27,6 +27,7 @@ public class P_InventarioExterno {
 
     @Column(name = "AnteriorID")
     private Integer AnteriorID;
+
     private Integer WContenedorID;
 
     @Column(name = "Contenedor")
@@ -48,11 +49,15 @@ public class P_InventarioExterno {
     private Integer EstadoCarga;
     private Integer TipoEvento;
     private LocalDateTime FechaEvento;
+
+    @Column(name = "Fecha", nullable = true)
     private LocalDateTime Fecha;
     private Integer PatioID;
     private String Tamano;
     private Integer Status;
     private Integer UsuarioEliminaID;
+
+    @Column(name = "FechaElimina", nullable = true)
     private LocalDateTime FechaElimina;
     private String camion;
     private Integer EquipmentProvider;
@@ -70,9 +75,11 @@ public class P_InventarioExterno {
 
     @Column(name = "Carrier")
     private String Carrier;
-    
+
     private String grade;
     private String assignedto;
+    
+    @Column(name = "fechaedicion", nullable = true)
     private LocalDateTime fechaedicion;
     private Boolean isCamion;
     private Integer perfilcobroID;
