@@ -27,21 +27,25 @@ public class InventarioExternoService {
         try {
             if (inventario.getFotoSello() != null) {
                 String path = ImageUtil.saveImage(inventario.getFotoSello(), "selloEntrada",
+                        inventario.getInventarioID().toString(),
                         BASE_DIRECTORY + "sellosEntrada/");
                 inventario.setFotoSello(path);
             }
             if (inventario.getFirmaGuardia() != null) {
                 String path = ImageUtil.saveImage(inventario.getFirmaGuardia(), "guardia",
+                        inventario.getInventarioID().toString(),
                         BASE_DIRECTORY + "firmasEntrada/");
                 inventario.setFirmaGuardia(path);
             }
             if (inventario.getFirmaChofer() != null) {
                 String path = ImageUtil.saveImage(inventario.getFirmaChofer(), "chofer",
+                        inventario.getInventarioID().toString(),
                         BASE_DIRECTORY + "firmasEntrada/");
                 inventario.setFirmaChofer(path);
             }
             if (inventario.getFirmak9() != null) {
                 String path = ImageUtil.saveImage(inventario.getFirmak9(), "k9",
+                        inventario.getInventarioID().toString(),
                         BASE_DIRECTORY + "firmasEntrada/");
                 inventario.setFirmak9(path);
             }
@@ -58,7 +62,7 @@ public class InventarioExternoService {
             if (punto.getFotoentrada() != null) {
                 String path;
                 try {
-                    path = ImageUtil.saveImage(punto.getFotoentrada(), "inspeccion_" + punto.getListadoID(),
+                    path = ImageUtil.saveImage(punto.getFotoentrada(), "inspeccion", punto.getListadoID().toString(),
                             BASE_DIRECTORY + "puntosEntrada/");
                     punto.setFotoentrada(path);
                 } catch (Exception e) {

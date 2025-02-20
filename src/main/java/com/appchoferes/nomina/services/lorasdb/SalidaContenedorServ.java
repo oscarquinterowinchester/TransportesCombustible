@@ -30,7 +30,8 @@ public class SalidaContenedorServ {
 
         try {
             if (contenedor.getFirmak9() != null) {
-                String path = ImageUtil.saveImage(contenedor.getFirmak9(), "firmak9_" + contenedor.getInventarioID(),
+                String path = ImageUtil.saveImage(contenedor.getFirmak9(), "firmak9",
+                        contenedor.getInventarioID().toString(),
                         BASE_DIRECTORY + "firmas/");
                 contenedor.setFirmak9(path);
             }
@@ -40,7 +41,7 @@ public class SalidaContenedorServ {
         }
         // Asigamos el tipo de evento 2 para salida de contenedor
         contenedor.setTipoEvento(2);
-        
+
         P_InventarioExterno saveSalida = inventarioExternoRepository.save(contenedor);
         for (InventarioExternoInspeccion punto : puntos) {
             punto.setInventarioSalidaID(saveSalida.getInventarioID());
@@ -48,7 +49,8 @@ public class SalidaContenedorServ {
             if (punto.getFotosalida() != null) {
                 String path;
                 try {
-                    path = ImageUtil.saveImage(punto.getFotosalida(), "inspeccionSalida_" + punto.getListadoID(),
+                    path = ImageUtil.saveImage(punto.getFotosalida(), "inspeccionSalida",
+                            punto.getListadoID().toString(),
                             BASE_DIRECTORY + "puntosSalida/");
                     punto.setFotosalida(path);
                 } catch (Exception e) {
@@ -57,13 +59,12 @@ public class SalidaContenedorServ {
             }
 
             inventarioExternoInspeccionRepository.actualizarInspeccionSalida(
-                punto.getId(), 
-                punto.getInventarioSalidaID(), 
-                punto.getSalida(), 
-                punto.getFechaSalida() != null ? punto.getFechaSalida() : LocalDateTime.now(), 
-                punto.getComentariosalida() != null ? punto.getComentariosalida() : "", 
-                punto.getFotosalida() != null ? punto.getFotosalida() : ""
-            );
+                    punto.getId(),
+                    punto.getInventarioSalidaID(),
+                    punto.getSalida(),
+                    punto.getFechaSalida() != null ? punto.getFechaSalida() : LocalDateTime.now(),
+                    punto.getComentariosalida() != null ? punto.getComentariosalida() : "",
+                    punto.getFotosalida() != null ? punto.getFotosalida() : "");
         }
 
         return saveSalida;

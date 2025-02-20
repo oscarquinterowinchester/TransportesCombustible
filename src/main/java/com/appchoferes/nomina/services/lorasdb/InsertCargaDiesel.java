@@ -25,28 +25,33 @@ public class InsertCargaDiesel {
         // Procesamos las imagenes antes de guardarlas
         if (cargaDiesel.getFotoTanque1() != null) {
             String path = ImageUtil.saveImage(cargaDiesel.getFotoTanque1(), "FotoTanque1",
+                    cargaDiesel.getUnidadID().toString(),
                     BASE_DIRECTORY + "tanques/");
             cargaDiesel.setFotoTanque1(path);
         }
 
         if (cargaDiesel.getFotoTanque2() != null) {
             String path = ImageUtil.saveImage(cargaDiesel.getFotoTanque2(), "FotoTanque2",
+                    cargaDiesel.getUnidadID().toString(),
                     BASE_DIRECTORY + "tanques/");
             cargaDiesel.setFotoTanque2(path);
         }
 
         if (cargaDiesel.getFirma() != null) {
-            String path = ImageUtil.saveImage(cargaDiesel.getFirma(), "Firma", BASE_DIRECTORY + "firmas/");
+            String path = ImageUtil.saveImage(cargaDiesel.getFirma(), "Firma", cargaDiesel.getUsuarioID().toString(),
+                    BASE_DIRECTORY + "firmas/");
             cargaDiesel.setFirma(path);
         }
 
         if (cargaDiesel.getFotoOdometro() != null) {
-            String path = ImageUtil.saveImage(cargaDiesel.getFotoOdometro(), "Odometro", BASE_DIRECTORY + "odometros/");
+            String path = ImageUtil.saveImage(cargaDiesel.getFotoOdometro(), "Odometro",
+                    cargaDiesel.getUnidadID().toString(), BASE_DIRECTORY + "odometros/");
             cargaDiesel.setFotoOdometro(path);
         }
 
         if (cargaDiesel.getFotoSello() != null) {
-            String path = ImageUtil.saveImage(cargaDiesel.getFotoSello(), "Sello", BASE_DIRECTORY + "sellos/");
+            String path = ImageUtil.saveImage(cargaDiesel.getFotoSello(), "Sello", cargaDiesel.getUnidadID().toString(),
+                    BASE_DIRECTORY + "sellos/");
             cargaDiesel.setFotoSello(path);
         }
 
@@ -59,7 +64,8 @@ public class InsertCargaDiesel {
             for (String ticketBase64 : cargaDiesel.getTickets()) {
                 Ticket ticket = new Ticket();
 
-                String path = ImageUtil.saveImage(ticketBase64, "Ticket", BASE_DIRECTORY + "tickets/");
+                String path = ImageUtil.saveImage(ticketBase64, "Ticket", cargaDiesel.getUnidadID().toString(),
+                        BASE_DIRECTORY + "tickets/");
                 ticket.setFoto(path);
 
                 ticket.setCargaID(cargaDiesel.getCargaId());

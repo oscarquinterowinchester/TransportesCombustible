@@ -97,27 +97,33 @@ public class VisitorRegistroService {
         // asiganamos la fecha actual
         visitante.setFecha(LocalDateTime.now());
 
-        //guardamos visitante en la base de datos
+        // guardamos visitante en la base de datos
         visitante = visitanteRepo.save(visitante);
         Long idVisitante = visitante.getId();
 
-        if(visitante.getFoto() != null){
-            String path = ImageUtil.saveImage(visitante.getFoto(), idVisitante + "_foto", BASE_DIRECTORY + "fotos/");
+        if (visitante.getFoto() != null) {
+            String path = ImageUtil.saveImage(visitante.getFoto(), "foto", visitante.getId().toString(),
+                    BASE_DIRECTORY + "fotos/");
             visitante.setFoto(path);
         }
-        if(visitante.getFirma() != null){
-            String path = ImageUtil.saveImage(visitante.getFirma(), idVisitante + "_firma", BASE_DIRECTORY + "frimas/");
+        if (visitante.getFirma() != null) {
+            String path = ImageUtil.saveImage(visitante.getFirma(), "firma", visitante.getId().toString(),
+                    BASE_DIRECTORY + "frimas/");
             visitante.setFirma(path);
         }
-        if(visitante.getIdentificacion() != null){
-            String path = ImageUtil.saveImage(visitante.getIdentificacion(), idVisitante + "_identificacion", BASE_DIRECTORY + "identificaciones/");
+        if (visitante.getIdentificacion() != null) {
+            String path = ImageUtil.saveImage(visitante.getIdentificacion(), "identificacion1",
+                    visitante.getId().toString(),
+                    BASE_DIRECTORY + "identificaciones/");
             visitante.setIdentificacion(path);
         }
-        if(visitante.getIdentificacion2() != null){
-            String path = ImageUtil.saveImage(visitante.getIdentificacion2(), idVisitante + "_identificacion2", BASE_DIRECTORY + "identificaciones/");
+        if (visitante.getIdentificacion2() != null) {
+            String path = ImageUtil.saveImage(visitante.getIdentificacion2(), "identificacion2",
+                    visitante.getId().toString(),
+                    BASE_DIRECTORY + "identificaciones/");
             visitante.setIdentificacion2(path);
         }
-        
+
         // Actualizamos el visitante con sus imagenes
         visitanteRepo.save(visitante);
 
