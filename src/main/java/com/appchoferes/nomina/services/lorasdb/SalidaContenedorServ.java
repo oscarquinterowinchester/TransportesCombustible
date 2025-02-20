@@ -1,7 +1,9 @@
 package com.appchoferes.nomina.services.lorasdb;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +24,8 @@ public class SalidaContenedorServ {
     @Autowired
     private InventarioExternoInspeccionRepository inventarioExternoInspeccionRepository;
 
-    private static final String BASE_DIRECTORY = "/home/drago/work/lorasImagenes/salidas/";
+    public static final String BASE_DIRECTORY = "C:" + File.separator + "TransportesMultiConexion" + File.separator
+            + "imagenes" + File.separator;
 
     @Transactional
     public P_InventarioExterno saveSalidaInventario(P_InventarioExterno contenedor,
@@ -32,7 +35,7 @@ public class SalidaContenedorServ {
             if (contenedor.getFirmak9() != null) {
                 String path = ImageUtil.saveImage(contenedor.getFirmak9(), "firmak9",
                         contenedor.getInventarioID().toString(),
-                        BASE_DIRECTORY + "firmas/");
+                        BASE_DIRECTORY + "firmas" + File.separator);
                 contenedor.setFirmak9(path);
             }
 
@@ -51,7 +54,7 @@ public class SalidaContenedorServ {
                 try {
                     path = ImageUtil.saveImage(punto.getFotosalida(), "inspeccionSalida",
                             punto.getListadoID().toString(),
-                            BASE_DIRECTORY + "puntosSalida/");
+                            BASE_DIRECTORY + "puntosSalida" + File.separator);
                     punto.setFotosalida(path);
                 } catch (Exception e) {
                     throw new RuntimeException("Error al guardar la imagen de salida", e);

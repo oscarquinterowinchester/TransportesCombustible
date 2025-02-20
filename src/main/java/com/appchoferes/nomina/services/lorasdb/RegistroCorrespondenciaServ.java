@@ -1,5 +1,6 @@
 package com.appchoferes.nomina.services.lorasdb;
 
+import java.io.File;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class RegistroCorrespondenciaServ {
 
     @Autowired
     private RegistroCorrespondenciaRepo rCrepo;
+
+    public static final String BASE_DIRECTORY = "C:" + File.separator + "TransportesMultiConexion" + File.separator
+            + "imagenes" + File.separator;
 
     public List<RegistroCorrespondencia> getRegistrosC() {
         List<RegistroCorrespondencia> registrosC = rCrepo.getRegistrosC();
@@ -44,7 +48,7 @@ public class RegistroCorrespondenciaServ {
         // Guardar la firma, cambiar directorio por el del servidor
         if (registroFirma.getFirma() != null) {
             String firmaPath = ImageUtil.saveImage(registroFirma.getFirma(), "firma-entregado",
-                    registroExistente.getId().toString(), "/home/drago/work/lorasImagenes/firmas/");
+                    registroExistente.getId().toString(), BASE_DIRECTORY + "firmas" + File.separator);
             registroExistente.setFirma(firmaPath);
         }
 
