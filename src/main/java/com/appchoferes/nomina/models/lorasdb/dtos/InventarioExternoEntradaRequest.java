@@ -26,6 +26,18 @@ public class InventarioExternoEntradaRequest {
     @JsonProperty("FechaEvento")
     private LocalDateTime FechaEvento;
 
+    @JsonProperty("Firmak9")
+    private String Firmak9;
+
+    @JsonProperty("FotoSello")
+    private String FotoSello;
+
+    @JsonProperty("FirmaChofer")
+    private String FirmaChofer;
+
+    @JsonProperty("FirmaGuardia")
+    private String FirmaGuardia;
+
     @JsonProperty("ItinerarioID")
     private Integer ItinerarioID;
 
@@ -46,18 +58,6 @@ public class InventarioExternoEntradaRequest {
 
     @JsonProperty("Nota")
     private String Nota; 
-
-    @JsonProperty("Firmak9")
-    private String Firmak9;
-
-    @JsonProperty("FotoSello")
-    private String FotoSello;
-
-    @JsonProperty("FirmaChofer")
-    private String FirmaChofer;
-
-    @JsonProperty("FirmaGuardia")
-    private String FirmaGuardia;
 
     @JsonProperty("puntos")
     private List<InventarioExternoInspeccion> puntos;

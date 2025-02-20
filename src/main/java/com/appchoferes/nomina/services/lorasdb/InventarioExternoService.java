@@ -22,7 +22,7 @@ public class InventarioExternoService {
 
     public static final String BASE_DIRECTORY = "/home/drago/work/lorasImagenes/entradas/";
 
-    public P_InventarioExterno saveInventario(P_InventarioExterno inventario,
+    public P_InventarioExterno saveInventarioEntrada(P_InventarioExterno inventario,
             List<InventarioExternoInspeccion> puntos) {
         try {
             if (inventario.getFotoSello() != null) {
@@ -49,6 +49,8 @@ public class InventarioExternoService {
             throw new RuntimeException("Error al guardar las imágenes", e);
         }
 
+        // tipoEvento = 1, para decir que es una entrada
+        inventario.setTipoEvento(1);
         P_InventarioExterno savedInventario = inventarioExternoRepository.save(inventario);
         for (InventarioExternoInspeccion punto : puntos) {
             punto.setInventarioID(savedInventario.getInventarioID());
@@ -71,10 +73,9 @@ public class InventarioExternoService {
     }
 
     public boolean esEntradaDuplicada(String contenedor, Integer itinerarioId) {
-        Integer tipoEvento = 1;
-        List<Integer> entradas = inventarioExternoRepository.findEntrada(contenedor, tipoEvento);
-
-        return entradas != null; // No encontro ninguna entrada duplicada
+        List<Integer> entradas = inventarioExternoRepository.findEntrada(contenedor);
+        System.out.println("Entradas encontradas: " + entradas);
+        return entradas != null && !entradas.isEmpty(); // No encontro ninguna entrada duplicada
     }
 
 }

@@ -22,17 +22,11 @@ public interface InventarioExternoRepository extends JpaRepository<P_InventarioE
         @Query(value = "SELECT InventarioID FROM inventarioexterno_tbl WHERE AnteriorID = :anteriorID AND TipoEvento = 2", nativeQuery = true)
         List<P_InventarioExterno> findSalidaByAnteriorID(@Param("anteriorID") int anteriorID);
 
-        @Query(value = "SELECT IFNULL(InventarioID, 0) AS inventarioId FROM inventarioexterno_tbl \n" + //
-                                "WHERE status IS TRUE AND tipoEvento = :tipoEvento AND AnteriorID = 0 AND \n" + //
-                                "(Contenedor = :contenedor AND ItinerarioID = 10) \n" + //
-                                "AND (\n" + //
-                                "    SELECT InventarioID \n" + //
-                                "    FROM inventarioexterno_tbl\n" + //
-                                "    WHERE status IS TRUE \n" + //
-                                "    AND tipoEvento = :tipoEvento \n" + //
-                                "    AND AnteriorID = InventarioID \n" + //
-                                "    AND (Contenedor = :contenedor AND ItinerarioID = 10)\n" + //
-                                ") IS NULL LIMIT 1;", nativeQuery = true)
-        List<Integer> findEntrada(@Param("contenedor") String contenedor , Integer tipoEvento);
+        @Query(value = "select InventarioID from inventarioexterno_tbl inv where inv.status is true and inv.tipoEvento = 1 "
+                        +
+                        "and inv.AnteriorID is null and (inv.Contenedor = :contenedor or inv.ItinerarioID = 0) AND " +
+                        "(SELECT InventarioID FROM inventarioexterno_tbl WHERE status is true and tipoEvento = 2 " +
+                        "AND AnteriorID = inv.InventarioID AND (Contenedor = :contenedor or ItinerarioID = 0)) is null LIMIT 1", nativeQuery = true)
+        List<Integer> findEntrada(@Param("contenedor") String contenedor);
 
 }

@@ -158,7 +158,7 @@ public class PV_RawQueryService {
     public List<PuntosCTPADSalidaDTO> getPuntosCTPADSalida(Integer id) {
 
         String sql = """
-                    SELECT i.InventarioID, i.ListadoID, 0 as Salida,
+                    SELECT i.id, i.InventarioID, i.ListadoID, 0 as Salida,
                            (SELECT Nombre FROM listadoinspecciones_tbl WHERE ListadoID = i.ListadoID) as Nombre
                     FROM inventarioexternoinspecciones_tbl i
                     WHERE i.InventarioID = :id
@@ -185,8 +185,9 @@ public class PV_RawQueryService {
                     .map(obj -> new PuntosCTPADSalidaDTO(
                             ((Number) obj[0]).intValue(),
                             ((Number) obj[1]).intValue(),
+                            ((Number) obj[2]).intValue(),
                             0,
-                            (String) obj[3]))
+                            (String) obj[4]))
                     .collect(Collectors.toList());
     }
 

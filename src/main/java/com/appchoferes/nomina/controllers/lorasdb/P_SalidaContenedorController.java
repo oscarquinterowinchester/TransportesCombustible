@@ -28,9 +28,8 @@ public class P_SalidaContenedorController {
     public ResponseEntity<?> saveSalidaContenedor(@RequestBody InventarioExternoSalidaRequest request) {
         try {
             P_InventarioExterno inventario = new P_InventarioExterno();
-            inventario.setInventarioID(request.getInventarioID());
             inventario.setItinerarioID(request.getItinerarioID());
-            inventario.setAnteriorID(request.getAnteriorID());
+            inventario.setAnteriorID(request.getInventarioID());
             inventario.setContenedor(request.getContenedor());
             inventario.setPlacasChasis(request.getPlacasChasis());
             inventario.setSello(request.getSello());
@@ -51,6 +50,8 @@ public class P_SalidaContenedorController {
             inventario.setFecha(LocalDateTime.now());
             inventario.setFechaElimina(null);
             inventario.setFechaedicion(LocalDateTime.now());
+
+            inventario.setStatus(1);
 
             // Obtiene el arreglo de puntos de inspección
             List<InventarioExternoInspeccion> inspecciones = request.getPuntos();
