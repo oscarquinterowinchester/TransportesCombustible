@@ -1,5 +1,6 @@
 package com.appchoferes.nomina.services.lorasdb;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,8 @@ import com.appchoferes.nomina.models.lorasdb.P_InventarioExterno;
 import com.appchoferes.nomina.repositories.lorasdb.InventarioExternoInspeccionRepository;
 import com.appchoferes.nomina.repositories.lorasdb.InventarioExternoRepository;
 import com.appchoferes.nomina.utils.ImageUtil;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class SalidaContenedorServ {
@@ -21,6 +24,7 @@ public class SalidaContenedorServ {
 
     private static final String BASE_DIRECTORY = "/home/drago/work/lorasImagenes/salidas/";
 
+    @Transactional
     public P_InventarioExterno saveSalidaInventario(P_InventarioExterno contenedor,
             List<InventarioExternoInspeccion> puntos) {
 
@@ -34,11 +38,12 @@ public class SalidaContenedorServ {
         } catch (Exception e) {
             throw new RuntimeException("Error al guardar las imágenes", e);
         }
-
+        // Asigamos el tipo de evento 2 para salida de contenedor
+        contenedor.setTipoEvento(2);
+        
         P_InventarioExterno saveSalida = inventarioExternoRepository.save(contenedor);
         for (InventarioExternoInspeccion punto : puntos) {
-            punto.setInventarioID(saveSalida.getInventarioID());
-            punto.setEntrada(false);
+            punto.setInventarioSalidaID(saveSalida.getInventarioID());
 
             if (punto.getFotosalida() != null) {
                 String path;
@@ -50,9 +55,17 @@ public class SalidaContenedorServ {
                     throw new RuntimeException("Error al guardar la imagen de salida", e);
                 }
             }
+
+            inventarioExternoInspeccionRepository.actualizarInspeccionSalida(
+                punto.getId(), 
+                punto.getInventarioSalidaID(), 
+                punto.getSalida(), 
+                punto.getFechaSalida() != null ? punto.getFechaSalida() : LocalDateTime.now(), 
+                punto.getComentariosalida() != null ? punto.getComentariosalida() : "", 
+                punto.getFotosalida() != null ? punto.getFotosalida() : ""
+            );
         }
 
-        inventarioExternoInspeccionRepository.saveAll(puntos);
         return saveSalida;
 
     }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PuntosCTPADSalidaDTO {
+    private Integer id;
     private Integer inventarioId;
     private Integer listadoId;
     private Integer salida;

@@ -42,14 +42,14 @@ public class P_InventarioExternoController {
         boolean isDuplicado = inventarioExternoService.esEntradaDuplicada(request.getContenedor(),
                 request.getItinerarioID());
 
-        /*if (isDuplicado) {
+        if (isDuplicado) {
             Map<String, Object> response = new HashMap<>();
             response.put("_estatus", 409); // Codigo personalizado para advertencia
             response.put("message", "Ya hay una entrada con ese contenedor o itinerario");
 
             // Mandamos status 200 para que angular no lo detecte como error
             return ResponseEntity.status(HttpStatus.OK).body(response);
-        }*/
+        }
 
         try {
             // Mapear los datos del request a la entidad P_InventarioExterno
@@ -71,11 +71,14 @@ public class P_InventarioExternoController {
             inventario.setFirmaGuardia(request.getFirmaGuardia());
             inventario.setNota(request.getNota());
 
+            // Asignar Status como 1
+            inventario.setStatus(1);
+
             // Guardar las inspecciones
             List<InventarioExternoInspeccion> inspecciones = request.getPuntos();
 
             // Llamar al servicio para guardar el inventario y las inspecciones
-            P_InventarioExterno savedInventario = inventarioExternoService.saveInventario(inventario, inspecciones);
+            P_InventarioExterno savedInventario = inventarioExternoService.saveInventarioEntrada(inventario, inspecciones);
 
             // Log de la respuesta
             System.out.println("Inventario guardado con ID: " + savedInventario.getInventarioID());

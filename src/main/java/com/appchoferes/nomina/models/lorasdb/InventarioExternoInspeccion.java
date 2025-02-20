@@ -11,15 +11,17 @@ import lombok.Data;
 @Entity
 @Table(name = "inventarioexternoinspecciones_tbl")
 public class InventarioExternoInspeccion {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
     private Integer ItinerarioID;
     private Integer InventarioID;
     private Integer InventarioSalidaID;
     private Integer ListadoID;
-    private Boolean Entrada;
-    private Boolean Salida;
+    private Integer Entrada;
+    private Integer Salida;
     //private LocalDateTime FechaEntrada;
     
     private LocalDateTime FechaSalida;

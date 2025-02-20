@@ -198,15 +198,20 @@ public class ContenedorPatioServ {
         List<Map<String, Object>> contenedoresSEND = new ArrayList<>();
         Map<String, Object> respuesta = new HashMap<>();
 
+        // Buscar si el contenedor ya tiene una entrada registrada
+        boolean tieneEntrada = !inventarioExternoRepository.findEntrada(contenedor).isEmpty();
+
         if (tipo == 1) {
             if (contenedor != null && !contenedor.isEmpty()) {
                 // Buscar InventarioID por contenedor
-                List<Map<String, Object>> entradas = contenedorRepo.findInventarioIdAndItinerarioIdByContenedor(contenedor);
+                List<Map<String, Object>> entradas = contenedorRepo
+                        .findInventarioIdAndItinerarioIdByContenedor(contenedor);
 
                 if (!entradas.isEmpty()) {
                     respuesta.put("status", "success");
                     respuesta.put("message", "Contenedor encontrado");
                     respuesta.put("data", entradas); // Agregar los datos recuperados
+                    respuesta.put("tieneEntrada", tieneEntrada);
                     return respuesta;
                 } else {
                     // Buscar ItinerarioID por contenedor
@@ -222,6 +227,7 @@ public class ContenedorPatioServ {
                                 respuesta.put("status", "success");
                                 respuesta.put("message", "Contenedor encontrado");
                                 respuesta.put("data", contenedoresSEND); // Agregar los datos recuperados
+                                respuesta.put("tieneEntrada", tieneEntrada);
                                 return respuesta;
                             }
                         }
@@ -242,6 +248,7 @@ public class ContenedorPatioServ {
                     respuesta.put("status", "success");
                     respuesta.put("message", "Itinerario encontrado");
                     respuesta.put("data", entrada); // Agregar los datos recuperados
+                    respuesta.put("tieneEntrada", tieneEntrada);
                     return respuesta;
                 } else {
                     // Obtener información de entrada por ItinerarioID
@@ -249,6 +256,7 @@ public class ContenedorPatioServ {
                     respuesta.put("status", "success");
                     respuesta.put("message", "Itinerario encontrado");
                     respuesta.put("data", contenedorInfo); // Agregar los datos recuperados
+                    respuesta.put("tieneEntrada", tieneEntrada);
                     return respuesta;
                 }
             }
