@@ -1,5 +1,6 @@
 package com.appchoferes.nomina.services.lorasdb;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,7 +37,8 @@ public class VisitorRegistroService {
     @Autowired
     private VehiculoRepo vehiculoRepo;
 
-    public static final String BASE_DIRECTORY = "/home/drago/work/lorasImagenes/visitantes/";
+    public static final String BASE_DIRECTORY = "C:" + File.separator + "TransportesMultiConexion" + File.separator
+            + "imagenes" + File.separator;
 
     @Transactional
     public void saveVisit(EmpleadoVisitaDTO empleado, List<VisitanteDTO> visitanteDTOs, VehiculoDTO vehiculoDTO) {
@@ -103,24 +105,24 @@ public class VisitorRegistroService {
 
         if (visitante.getFoto() != null) {
             String path = ImageUtil.saveImage(visitante.getFoto(), "foto", visitante.getId().toString(),
-                    BASE_DIRECTORY + "fotos/");
+                    BASE_DIRECTORY + "fotos" + File.separator);
             visitante.setFoto(path);
         }
         if (visitante.getFirma() != null) {
             String path = ImageUtil.saveImage(visitante.getFirma(), "firma", visitante.getId().toString(),
-                    BASE_DIRECTORY + "frimas/");
+                    BASE_DIRECTORY + "frimas" + File.separator);
             visitante.setFirma(path);
         }
         if (visitante.getIdentificacion() != null) {
             String path = ImageUtil.saveImage(visitante.getIdentificacion(), "identificacion1",
                     visitante.getId().toString(),
-                    BASE_DIRECTORY + "identificaciones/");
+                    BASE_DIRECTORY + "identificaciones" + File.separator);
             visitante.setIdentificacion(path);
         }
         if (visitante.getIdentificacion2() != null) {
             String path = ImageUtil.saveImage(visitante.getIdentificacion2(), "identificacion2",
                     visitante.getId().toString(),
-                    BASE_DIRECTORY + "identificaciones/");
+                    BASE_DIRECTORY + "identificaciones" + File.separator);
             visitante.setIdentificacion2(path);
         }
 
@@ -136,7 +138,7 @@ public class VisitorRegistroService {
 
     public byte[] getImage(Long id, String tipo) throws IOException {
         // Construir la ruta del archivo
-        Path path = Paths.get(BASE_DIRECTORY + tipo + "/" + id + ".jpg");
+        Path path = Paths.get(BASE_DIRECTORY + tipo + File.separator + id + ".jpg");
 
         if (!Files.exists(path)) {
             throw new IOException("Imagen no encontrada: " + path);

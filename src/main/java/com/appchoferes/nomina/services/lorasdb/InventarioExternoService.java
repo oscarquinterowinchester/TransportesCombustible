@@ -1,5 +1,6 @@
 package com.appchoferes.nomina.services.lorasdb;
 
+import java.io.File;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,8 @@ public class InventarioExternoService {
     @Autowired
     private InventarioExternoInspeccionRepository inventarioExternoInspeccionRepository;
 
-    public static final String BASE_DIRECTORY = "/home/drago/work/lorasImagenes/entradas/";
+    public static final String BASE_DIRECTORY = "C:" + File.separator + "TransportesMultiConexion" + File.separator
+            + "imagenes" + File.separator;
 
     public P_InventarioExterno saveInventarioEntrada(P_InventarioExterno inventario,
             List<InventarioExternoInspeccion> puntos) {
@@ -28,25 +30,25 @@ public class InventarioExternoService {
             if (inventario.getFotoSello() != null) {
                 String path = ImageUtil.saveImage(inventario.getFotoSello(), "selloEntrada",
                         inventario.getInventarioID().toString(),
-                        BASE_DIRECTORY + "sellosEntrada/");
+                        BASE_DIRECTORY + "sellosEntrada" + File.separator);
                 inventario.setFotoSello(path);
             }
             if (inventario.getFirmaGuardia() != null) {
                 String path = ImageUtil.saveImage(inventario.getFirmaGuardia(), "guardia",
                         inventario.getInventarioID().toString(),
-                        BASE_DIRECTORY + "firmasEntrada/");
+                        BASE_DIRECTORY + "firmasEntrada" + File.separator);
                 inventario.setFirmaGuardia(path);
             }
             if (inventario.getFirmaChofer() != null) {
                 String path = ImageUtil.saveImage(inventario.getFirmaChofer(), "chofer",
                         inventario.getInventarioID().toString(),
-                        BASE_DIRECTORY + "firmasEntrada/");
+                        BASE_DIRECTORY + "firmasEntrada" + File.separator);
                 inventario.setFirmaChofer(path);
             }
             if (inventario.getFirmak9() != null) {
                 String path = ImageUtil.saveImage(inventario.getFirmak9(), "k9",
                         inventario.getInventarioID().toString(),
-                        BASE_DIRECTORY + "firmasEntrada/");
+                        BASE_DIRECTORY + "firmasEntrada" + File.separator);
                 inventario.setFirmak9(path);
             }
         } catch (Exception e) {
@@ -63,7 +65,7 @@ public class InventarioExternoService {
                 String path;
                 try {
                     path = ImageUtil.saveImage(punto.getFotoentrada(), "inspeccion", punto.getListadoID().toString(),
-                            BASE_DIRECTORY + "puntosEntrada/");
+                            BASE_DIRECTORY + "puntosEntrada" + File.separator);
                     punto.setFotoentrada(path);
                 } catch (Exception e) {
                     throw new RuntimeException("Error al guardar imagenes de entrada", e);
