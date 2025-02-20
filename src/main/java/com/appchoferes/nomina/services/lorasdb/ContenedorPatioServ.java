@@ -243,16 +243,17 @@ public class ContenedorPatioServ {
             if (itinerarioId != null) {
                 // Buscar InventarioID por ItinerarioID
                 List<Map<String, Object>> entrada = contenedorRepo.findInventarioIdByItinerarioId(itinerarioId);
+                List<Map<String, Object>> contenedorInfo = contenedorRepo.getInformacionEntrada(itinerarioId);
 
                 if (!entrada.isEmpty()) {
                     respuesta.put("status", "success");
                     respuesta.put("message", "Itinerario encontrado");
                     respuesta.put("data", entrada); // Agregar los datos recuperados
+                    respuesta.put("contenedorData", contenedorInfo);
                     respuesta.put("tieneEntrada", tieneEntrada);
                     return respuesta;
                 } else {
                     // Obtener información de entrada por ItinerarioID
-                    List<Map<String, Object>> contenedorInfo = contenedorRepo.getInformacionEntrada(itinerarioId);
                     respuesta.put("status", "success");
                     respuesta.put("message", "Itinerario encontrado");
                     respuesta.put("data", contenedorInfo); // Agregar los datos recuperados
