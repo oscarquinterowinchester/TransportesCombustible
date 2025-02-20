@@ -52,7 +52,7 @@ public class P_SalidaContenedorController {
             inventario.setFechaedicion(LocalDateTime.now());
 
             inventario.setStatus(1);
-
+ 
             // Obtiene el arreglo de puntos de inspección
             List<InventarioExternoInspeccion> inspecciones = request.getPuntos();
 
