@@ -11,19 +11,18 @@ import com.appchoferes.nomina.models.lorasdb.dtos.RegistroInicialDTO;
 import com.appchoferes.nomina.repositories.lorasdb.RegistroCorrespondenciaRepo;
 import com.appchoferes.nomina.utils.ImageUtil;
 
-
 @Service
 public class RegistroCorrespondenciaServ {
 
     @Autowired
     private RegistroCorrespondenciaRepo rCrepo;
 
-    public List<RegistroCorrespondencia> getRegistrosC(){
+    public List<RegistroCorrespondencia> getRegistrosC() {
         List<RegistroCorrespondencia> registrosC = rCrepo.getRegistrosC();
         return registrosC;
     }
 
-        public RegistroCorrespondencia saveRegistro(RegistroInicialDTO registroInicial) {
+    public RegistroCorrespondencia saveRegistro(RegistroInicialDTO registroInicial) {
         // Mapear el DTO a la entidad
         RegistroCorrespondencia registro = new RegistroCorrespondencia();
         registro.setUsuario(registroInicial.getUsuario());
@@ -40,11 +39,12 @@ public class RegistroCorrespondenciaServ {
     public RegistroCorrespondencia saveFirma(RegistroFirmaDTO registroFirma) throws Exception {
         // Buscar el registro existente
         RegistroCorrespondencia registroExistente = rCrepo.findById(registroFirma.getId())
-            .orElseThrow(() -> new IllegalArgumentException("Registro no encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("Registro no encontrado"));
 
         // Guardar la firma, cambiar directorio por el del servidor
         if (registroFirma.getFirma() != null) {
-            String firmaPath = ImageUtil.saveImage(registroFirma.getFirma(), "firma-entregado", "/home/drago/work/lorasImagenes/firmas/");
+            String firmaPath = ImageUtil.saveImage(registroFirma.getFirma(), "firma-entregado",
+                    registroExistente.getId().toString(), "/home/drago/work/lorasImagenes/firmas/");
             registroExistente.setFirma(firmaPath);
         }
 
