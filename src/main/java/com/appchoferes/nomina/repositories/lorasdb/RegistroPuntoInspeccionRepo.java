@@ -38,8 +38,8 @@ public interface RegistroPuntoInspeccionRepo extends JpaRepository<RegistroPunto
             FROM 
                 registros_puntos_inspeccion_tbl, usuarios_tbl
             WHERE 
-                fecha_registro >= CURDATE() - INTERVAL (DAYOFWEEK(CURDATE()) - 2) DAY -- Obtener el lunes de esta semana
-                AND fecha_registro < CURDATE() + INTERVAL (8 - DAYOFWEEK(CURDATE())) DAY -- Obtener el domingo de esta semana
+                fecha_registro >= CURDATE() - INTERVAL (DAYOFWEEK(CURDATE()) - 2) DAY
+                AND fecha_registro < CURDATE() + INTERVAL (8 - DAYOFWEEK(CURDATE())) DAY
                 AND usuarios_tbl.UsuarioID = :id_guardia;
         """, nativeQuery = true)
     List<Object[]> findGuardiasConRegistroEnLaSemana(@Param("id_guardia") Integer id_guardia);
