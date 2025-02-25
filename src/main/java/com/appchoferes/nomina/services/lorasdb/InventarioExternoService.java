@@ -22,32 +22,32 @@ public class InventarioExternoService {
     private InventarioExternoInspeccionRepository inventarioExternoInspeccionRepository;
 
     public static final String BASE_DIRECTORY = "C:" + File.separator + "TransportesMultiConexion" + File.separator
-            + "imagenes" + File.separator;
+            + "imagenes" + File.separator + "entradas" + File.separator;
 
     public P_InventarioExterno saveInventarioEntrada(P_InventarioExterno inventario,
             List<InventarioExternoInspeccion> puntos) {
         try {
             if (inventario.getFotoSello() != null) {
                 String path = ImageUtil.saveImage(inventario.getFotoSello(), "selloEntrada",
-                        inventario.getInventarioID().toString(),
+                        inventario.getContenedor(),
                         BASE_DIRECTORY + "sellosEntrada" + File.separator);
                 inventario.setFotoSello(path);
             }
             if (inventario.getFirmaGuardia() != null) {
                 String path = ImageUtil.saveImage(inventario.getFirmaGuardia(), "guardia",
-                        inventario.getInventarioID().toString(),
+                        inventario.getContenedor(),
                         BASE_DIRECTORY + "firmasEntrada" + File.separator);
                 inventario.setFirmaGuardia(path);
             }
             if (inventario.getFirmaChofer() != null) {
                 String path = ImageUtil.saveImage(inventario.getFirmaChofer(), "chofer",
-                        inventario.getInventarioID().toString(),
+                        inventario.getContenedor(),
                         BASE_DIRECTORY + "firmasEntrada" + File.separator);
                 inventario.setFirmaChofer(path);
             }
             if (inventario.getFirmak9() != null) {
                 String path = ImageUtil.saveImage(inventario.getFirmak9(), "k9",
-                        inventario.getInventarioID().toString(),
+                        inventario.getContenedor(),
                         BASE_DIRECTORY + "firmasEntrada" + File.separator);
                 inventario.setFirmak9(path);
             }

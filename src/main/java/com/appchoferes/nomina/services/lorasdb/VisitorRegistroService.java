@@ -110,7 +110,7 @@ public class VisitorRegistroService {
         }
         if (visitante.getFirma() != null) {
             String path = ImageUtil.saveImage(visitante.getFirma(), "firma", visitante.getId().toString(),
-                    BASE_DIRECTORY + "frimas" + File.separator);
+                    BASE_DIRECTORY + "firmas" + File.separator);
             visitante.setFirma(path);
         }
         if (visitante.getIdentificacion() != null) {
