@@ -1,7 +1,5 @@
 package com.appchoferes.nomina.services.lorasdb;
 
-import java.io.File;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,61 +18,77 @@ public class InsertCargaDiesel {
     @Autowired
     private TicketRepository ticketRepository;
 
-    public static final String BASE_DIRECTORY = "C:" + File.separator + "TransportesMultiConexion" + File.separator
-            + "imagenes" + File.separator;
+    public static final String BASE_DIRECTORY = "C:\\TransportesMultiConexion\\imagenes\\";
 
     public CargaDiesel insertarCargaDiesel(CargaDiesel cargaDiesel) throws Exception {
 
-        // Procesamos las imagenes antes de guardarlas
+        // Procesamos las imágenes antes de guardarlas
         if (cargaDiesel.getFotoTanque1() != null) {
-            String path = ImageUtil.saveImage(cargaDiesel.getFotoTanque1(), "FotoTanque1",
-                    cargaDiesel.getUnidadID().toString(),
-                    BASE_DIRECTORY + "tanques" + File.separator);
+            String path = ImageUtil.saveImage(
+                    cargaDiesel.getFotoTanque1(),
+                    "FotoTanque1",
+                    String.valueOf(cargaDiesel.getUnidadID() + "_" + cargaDiesel.getFecha()),
+                    BASE_DIRECTORY + "tanques\\");
             cargaDiesel.setFotoTanque1(path);
         }
 
         if (cargaDiesel.getFotoTanque2() != null) {
-            String path = ImageUtil.saveImage(cargaDiesel.getFotoTanque2(), "FotoTanque2",
-                    cargaDiesel.getUnidadID().toString(),
-                    BASE_DIRECTORY + "tanques" + File.separator);
+            String path = ImageUtil.saveImage(
+                    cargaDiesel.getFotoTanque2(),
+                    "FotoTanque2",
+                    String.valueOf(cargaDiesel.getUnidadID() + "_" + cargaDiesel.getFecha()),
+                    BASE_DIRECTORY + "tanques\\");
             cargaDiesel.setFotoTanque2(path);
         }
 
         if (cargaDiesel.getFirma() != null) {
-            String path = ImageUtil.saveImage(cargaDiesel.getFirma(), "Firma", cargaDiesel.getUsuarioID().toString(),
-                    BASE_DIRECTORY + "firmas" + File.separator);
+            String path = ImageUtil.saveImage(
+                    cargaDiesel.getFirma(),
+                    "Firma",
+                    String.valueOf(cargaDiesel.getUnidadID() + "_" + cargaDiesel.getFecha()),
+                    BASE_DIRECTORY + "firmas\\");
             cargaDiesel.setFirma(path);
         }
 
         if (cargaDiesel.getFotoOdometro() != null) {
-            String path = ImageUtil.saveImage(cargaDiesel.getFotoOdometro(), "Odometro",
-                    cargaDiesel.getUnidadID().toString(), BASE_DIRECTORY + "odometros" + File.separator);
+            String path = ImageUtil.saveImage(
+                    cargaDiesel.getFotoOdometro(),
+                    "Odometro",
+                    String.valueOf(cargaDiesel.getUnidadID() + "_" + cargaDiesel.getFecha()),
+                    BASE_DIRECTORY + "odometros\\");
             cargaDiesel.setFotoOdometro(path);
         }
 
         if (cargaDiesel.getFotoSello() != null) {
-            String path = ImageUtil.saveImage(cargaDiesel.getFotoSello(), "Sello", cargaDiesel.getUnidadID().toString(),
-                    BASE_DIRECTORY + "sellos" + File.separator);
+            String path = ImageUtil.saveImage(
+                    cargaDiesel.getFotoSello(),
+                    "Sello",
+                    String.valueOf(cargaDiesel.getUnidadID() + "_" + cargaDiesel.getFecha()),
+                    BASE_DIRECTORY + "sellos\\");
             cargaDiesel.setFotoSello(path);
         }
 
-        // Guarda carga principal
+        // Guarda carga principal y obtiene el objeto con el ID autogenerado
         CargaDiesel saveCargaDiesel = combustibleCargasDieselRepository.save(cargaDiesel);
 
         // Inserta los tickets asociados
-        if (cargaDiesel.getTickets() != null && !cargaDiesel.getTickets().isEmpty()) {
+        if (saveCargaDiesel.getTickets() != null && !saveCargaDiesel.getTickets().isEmpty()) {
             // Recibe la imagen en Base64
-            for (String ticketBase64 : cargaDiesel.getTickets()) {
+            for (String ticketBase64 : saveCargaDiesel.getTickets()) {
                 Ticket ticket = new Ticket();
 
-                String path = ImageUtil.saveImage(ticketBase64, "Ticket", cargaDiesel.getUnidadID().toString(),
-                        BASE_DIRECTORY + "tickets" + File.separator);
+                String path = ImageUtil.saveImage(ticketBase64, "Ticket",
+                        cargaDiesel.getUnidadID().toString() + "_" + cargaDiesel.getFechaString(),
+                        BASE_DIRECTORY + "tickets\\");
                 ticket.setFoto(path);
 
                 ticket.setCargaID(cargaDiesel.getCargaId());
                 ticketRepository.save(ticket);
             }
         }
+
+        // Ahora actualizamos la entidad con los paths correctos
+        combustibleCargasDieselRepository.save(saveCargaDiesel);
 
         return saveCargaDiesel;
     }

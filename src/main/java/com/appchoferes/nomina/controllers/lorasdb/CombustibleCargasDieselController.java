@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.appchoferes.nomina.models.lorasdb.CargaDiesel;
-import com.appchoferes.nomina.models.lorasdb.dtos.CargasDieselDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.HistorialAnteriorDTO;
 import com.appchoferes.nomina.services.lorasdb.CombustibleCargasDieselService;
 import com.appchoferes.nomina.services.lorasdb.InsertCargaDiesel;
@@ -29,13 +28,6 @@ public class CombustibleCargasDieselController {
 
     @Autowired
     private InsertCargaDiesel insertCargaDiesel;
-
-    /*@GetMapping("/historial-cargas")
-    public List<CargasDieselDTO> getHistorial(
-            @RequestParam("id") Long id,
-            @RequestParam("tipo") Integer tipo) {
-        return combustibleCargasDieselService.getHistorialCargas(id, tipo);
-    }*/
 
     @GetMapping("/historial-anterior")
     public List<HistorialAnteriorDTO> getHistorialAnterior(

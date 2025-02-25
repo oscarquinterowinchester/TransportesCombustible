@@ -53,7 +53,7 @@ public class SalidaContenedorServ {
                 String path;
                 try {
                     path = ImageUtil.saveImage(punto.getFotosalida(), "inspeccionSalida",
-                            punto.getListadoID().toString(),
+                            punto.getId().toString(),
                             BASE_DIRECTORY + "puntosSalida" + File.separator);
                     punto.setFotosalida(path);
                 } catch (Exception e) {

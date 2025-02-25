@@ -19,7 +19,7 @@ public class ImageUtil {
 
         // Crear archivo de imagen
         String fileName = prefix + "_" + id + ".jpg";
-        String filePath = directory + File.separator + fileName;
+        String filePath = directory + fileName;
 
         // Guarda la imagen en el disco
         try (FileOutputStream fos = new FileOutputStream(new File(filePath))) {
