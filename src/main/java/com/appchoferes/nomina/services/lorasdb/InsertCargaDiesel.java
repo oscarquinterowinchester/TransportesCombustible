@@ -64,7 +64,7 @@ public class InsertCargaDiesel {
                     cargaDiesel.getFotoSello(),
                     "Sello",
                     String.valueOf(cargaDiesel.getUnidadID() + "_" + cargaDiesel.getFecha()),
-                    BASE_DIRECTORY + "sellos\\");
+                    BASE_DIRECTORY + "sellos//");
             cargaDiesel.setFotoSello(path);
         }
 

@@ -62,18 +62,18 @@ public class PV_RawQueryService {
      */
     public List<BusquedaVisitanteDTO> buscarVisitantes(String word) {
         String sql = """
-                    SELECT v.id, v.nombre, v.empresa AS empresaID, v.tipo AS tipo_visitante, 0 AS visto,
-                        (SELECT e.nombre FROM visitor_empresas e WHERE e.id = v.empresa) AS empresa,
-                        (SELECT t.nombre FROM visitor_tipo_visitantes t WHERE t.id = v.tipo) AS tipo,
-                        v.fecha AS last, v.id AS exist,
-                        IF(v.foto IS NOT NULL, v.foto, 'img/nopic.png') AS foto,
-                        'img/noid.png' AS identificacion
-                    FROM visitor_visitantes v
-                    WHERE v.id > 0
-                    AND v.id NOT IN (SELECT r.visitanteID FROM visitor_registros r WHERE r.salida IS NULL)
-                    AND (:word IS NULL OR v.nombre LIKE :word)
-                    ORDER BY v.nombre
-                """;
+                SELECT v.id, v.nombre, v.empresa AS empresaID, v.tipo AS tipo_visitante, 0 AS visto,
+                       (SELECT e.nombre FROM visitor_empresas e WHERE e.id = v.empresa) AS empresa,
+                       (SELECT t.nombre FROM visitor_tipo_visitantes t WHERE t.id = v.tipo) AS tipo,
+                       v.fecha AS last, v.id AS exist,
+                       IF(v.foto IS NOT NULL, v.foto, 'img/nopic.png') AS foto,
+                       'img/noid.png' AS identificacion
+                FROM visitor_visitantes v
+                WHERE v.id > 0
+                AND NOT EXISTS (SELECT 1 FROM visitor_registros r WHERE r.visitanteID = v.id AND r.salida IS NULL)
+                AND (:word IS NULL OR v.nombre LIKE :word)
+                ORDER BY v.nombre;
+                                """;
 
         Query query = entityManager.createNativeQuery(sql);
         query.setParameter("word", word);
@@ -182,24 +182,28 @@ public class PV_RawQueryService {
         }
 
         return result.stream()
-                    .map(obj -> new PuntosCTPADSalidaDTO(
-                            ((Number) obj[0]).intValue(),
-                            ((Number) obj[1]).intValue(),
-                            ((Number) obj[2]).intValue(),
-                            0,
-                            (String) obj[4]))
-                    .collect(Collectors.toList());
+                .map(obj -> new PuntosCTPADSalidaDTO(
+                        ((Number) obj[0]).intValue(),
+                        ((Number) obj[1]).intValue(),
+                        ((Number) obj[2]).intValue(),
+                        0,
+                        (String) obj[4]))
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public void completeRegistro(RegistroVisitaDTO registroDTO) {
-        entityManager.createNativeQuery("UPDATE visitor_registros  SET salida = :salida, duracion = :duracion WHERE id = :id")
+        entityManager
+                .createNativeQuery(
+                        "UPDATE visitor_registros  SET salida = :salida, duracion = :duracion WHERE id = :id")
                 .setParameter("salida", registroDTO.getSalida())
                 .setParameter("duracion", registroDTO.getDuracion())
                 .setParameter("id", registroDTO.getId())
                 .executeUpdate();
 
-        entityManager.createNativeQuery("UPDATE visitor_gafetes SET visitante = NULL WHERE visitante = :visitor AND id = :gafete")
+        entityManager
+                .createNativeQuery(
+                        "UPDATE visitor_gafetes SET visitante = NULL WHERE visitante = :visitor AND id = :gafete")
                 .setParameter("visitor", registroDTO.getVisitor())
                 .setParameter("gafete", registroDTO.getGafete())
                 .executeUpdate();
