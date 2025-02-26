@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .requestMatchers("/auth/**").permitAll() // Permite acceso público a rutas de autenticación
+                .requestMatchers("/auth/**", "/imagenes/**").permitAll() // Permite acceso público a rutas de autenticación
                 .anyRequest().authenticated() // Protege todas las demás rutas
                 .and()
                 .exceptionHandling()
