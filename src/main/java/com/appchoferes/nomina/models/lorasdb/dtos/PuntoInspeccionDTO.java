@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class PuntoInspeccionDTO {
     private Integer id;
-    private String estado;
+    private Integer estado;
 }

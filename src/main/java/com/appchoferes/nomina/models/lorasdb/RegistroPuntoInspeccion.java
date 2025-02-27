@@ -1,6 +1,13 @@
 package com.appchoferes.nomina.models.lorasdb;
 
-import jakarta.persistence.*;
+import java.util.Date;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 @Data
@@ -10,17 +17,22 @@ public class RegistroPuntoInspeccion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
 
-    @Column(name = "estado")
+    @Column(name = "punto", nullable = false)
+    private int punto;
+
+    @Column(name = "estado", nullable = false)
     private String estado;
 
-    @Column(name = "punto")
-    private Integer punto;
+    @Column(name = "fecha_registro", nullable = false)
+    private Date fechaRegistro;
 
-    @Column(name = "id_inspeccion")
-    private Integer idInspeccion;
+    @Column(name = "id_inspeccion", nullable = false)
+    private int idInspeccion;
 
-    @Column(name = "tipo_inspeccion")
-    private Integer tipoInspeccion;
+    @Column(name = "tipo_inspeccion", nullable = false)
+    private int tipoInspeccion;
+    
 }
+

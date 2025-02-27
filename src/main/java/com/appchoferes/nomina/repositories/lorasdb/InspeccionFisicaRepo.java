@@ -13,7 +13,13 @@ import com.appchoferes.nomina.models.lorasdb.InspeccionFisica;
 @Repository
 public interface InspeccionFisicaRepo extends JpaRepository<InspeccionFisica, Integer> {
 
-    @Query("SELECT i FROM InspeccionFisica i WHERE i.guardia = :Guardia AND DATE(i.fecha) = :fecha")
-    List<InspeccionFisica> findByGuardiaAndFecha(@Param("Guardia") Integer guardia, @Param("fecha") Date fecha);
-    
+    /*
+     * @Query("SELECT i FROM InspeccionFisica i WHERE i.guardia = :Guardia AND DATE(i.fecha) = :fecha"
+     * )
+     * List<InspeccionFisica> findByGuardiaAndFecha(@Param("Guardia") Integer
+     * guardia, @Param("fecha") Date fecha);
+     */
+
+    InspeccionFisica findByGuardiaAndFecha(int guardia, Date fecha);
+
 }

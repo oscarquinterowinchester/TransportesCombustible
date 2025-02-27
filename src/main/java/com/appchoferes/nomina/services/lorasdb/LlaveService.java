@@ -8,10 +8,8 @@ import com.appchoferes.nomina.models.lorasdb.dtos.LlaveRequest;
 import com.appchoferes.nomina.repositories.lorasdb.LlavesRepository;
 import com.appchoferes.nomina.utils.ImageUtil;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 @Service
 public class LlaveService {
@@ -19,7 +17,7 @@ public class LlaveService {
     @Autowired
     private LlavesRepository llaveRepository;
 
-    public static final String BASE_DIRECTORY = "/home/drago/work/lorasImagenes/";
+    public static final String BASE_DIRECTORY = "C:\\TransportesMultiConexion\\imagenes\\";
 
     public void registrarLlave(LlaveRequest llaveRequest) throws Exception {
 
@@ -28,7 +26,7 @@ public class LlaveService {
                     llaveRequest.getFirma(),
                     "Firma",
                     String.valueOf(llaveRequest.getCamionID() + "_" + llaveRequest.getFecha()),
-                    BASE_DIRECTORY + "firmas/");
+                    BASE_DIRECTORY + "firmas\\");
             llaveRequest.setFirma(path);
         }
 
