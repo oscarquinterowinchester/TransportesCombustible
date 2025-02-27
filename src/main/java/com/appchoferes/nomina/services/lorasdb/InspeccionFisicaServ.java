@@ -2,74 +2,54 @@ package com.appchoferes.nomina.services.lorasdb;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Calendar;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.appchoferes.nomina.models.lorasdb.InspeccionFisica;
 import com.appchoferes.nomina.models.lorasdb.RegistroPuntoInspeccion;
-import com.appchoferes.nomina.models.lorasdb.dtos.ListaInspeccionRequest;
+import com.appchoferes.nomina.models.lorasdb.dtos.PuntoInspeccionDTO;
 import com.appchoferes.nomina.repositories.lorasdb.InspeccionFisicaRepo;
 import com.appchoferes.nomina.repositories.lorasdb.RegistroPuntoInspeccionRepo;
 
 @Service
 public class InspeccionFisicaServ {
-    
+
     @Autowired
     private InspeccionFisicaRepo inspFisicaRepo;
 
     @Autowired
     private RegistroPuntoInspeccionRepo regPuntoInsRepo;
 
-    public void saveListaInspeccion(ListaInspeccionRequest request) {
-        Integer guardia = request.getGuardia();
-        String nota = request.getNota();
-    
-        if (guardia == null) {
-            throw new IllegalArgumentException("El campo 'guardia' no puede ser null");
+    public String saveListaInspeccion(Map<String, PuntoInspeccionDTO> listaPuntos, int guardia, String nota) {
+        Date fecha = new Date();
+        InspeccionFisica inspeccion = inspFisicaRepo.findByGuardiaAndFecha(guardia, fecha);
+
+        // Crear una nueva inspección si no existe
+        if (inspeccion == null) {
+            inspeccion = new InspeccionFisica();
+            inspeccion.setGuardia(guardia);
+            inspeccion.setFecha(fecha);
+            inspeccion.setNota(nota);
+            inspFisicaRepo.save(inspeccion);
         }
-    
-        // Obtener solo la parte de la fecha sin la hora
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        Date fechaActual = calendar.getTime();
-    
-        // Buscar inspecciones en la misma fecha y guardia
-        List<InspeccionFisica> result = inspFisicaRepo.findByGuardiaAndFecha(guardia, fechaActual);
-        Integer tipo;
-        Integer idInspeccion;
-    
-        if (result.isEmpty()) {
-            tipo = 1;
-            InspeccionFisica nuevaInspeccionFisica = new InspeccionFisica();
-            nuevaInspeccionFisica.setGuardia(guardia);
-            nuevaInspeccionFisica.setNota(nota);
-            nuevaInspeccionFisica.setFecha(new Date()); // Guarda con hora actual
-            InspeccionFisica savedInspeccionFisica = inspFisicaRepo.save(nuevaInspeccionFisica);
-            idInspeccion = savedInspeccionFisica.getId();
-        } else {
-            tipo = 2;
-            idInspeccion = result.get(0).getId();
+
+        // Recorrer el mapa de puntos
+        for (Map.Entry<String, PuntoInspeccionDTO> entry : listaPuntos.entrySet()) {
+            String clave = entry.getKey(); // Ejemplo: "ladoEste", "ladoOeste", etc.
+            PuntoInspeccionDTO punto = entry.getValue(); // Objeto PuntoInspeccionDTO
+
+            // Crear y guardar el registro de punto de inspección
+            RegistroPuntoInspeccion registro = new RegistroPuntoInspeccion();
+            registro.setPunto(punto.getId());
+            registro.setEstado(String.valueOf(punto.getEstado()));
+            registro.setFechaRegistro(fecha);
+            registro.setIdInspeccion(inspeccion.getId());
+            registro.setTipoInspeccion(inspeccion == null ? 1 : 2);
+            regPuntoInsRepo.save(registro);
         }
-    
-        // Verificar si 'listaPuntos' es null o está vacía
-        if (request.getListaPuntos() != null) {
-            request.getListaPuntos().forEach(punto -> {
-                RegistroPuntoInspeccion registro = new RegistroPuntoInspeccion();
-                registro.setEstado(punto.getEstado());
-                registro.setPunto(punto.getId());
-                registro.setIdInspeccion(idInspeccion);
-                registro.setTipoInspeccion(tipo);
-                regPuntoInsRepo.save(registro);
-            });
-        } else {
-            // Manejar el caso en que 'listaPuntos' sea null o vacía
-            throw new IllegalArgumentException("El campo 'listaPuntos' no puede ser null o vacío.");
-        }
+
+        return "{\"message\":\"Inspección guardada exitosamente.\"}";
     }
-    
 }

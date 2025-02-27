@@ -1,10 +1,6 @@
 package com.appchoferes.nomina.controllers.lorasdb;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,21 +16,16 @@ public class V_InspeccionFisicaController {
     @Autowired
     private InspeccionFisicaServ inspeccionFisicaService;
 
-@PostMapping("/saveListaInspeccion")
-public ResponseEntity<?> saveListaInspeccion(@RequestBody ListaInspeccionRequest request) {
-    try {
-        inspeccionFisicaService.saveListaInspeccion(request);
-        
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Inspección guardada exitosamente.");
-        return ResponseEntity.ok(response);  // Respuesta JSON
-        
-    } catch (Exception e) {
-        Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", "Error en el servidor: " + e.getMessage());
-        return ResponseEntity.status(500).body(errorResponse);
-    }
-}
+    @PostMapping("/saveListaInspeccion")
+    public String saveListaInspeccion(@RequestBody ListaInspeccionRequest request) {
+        // Verificar que los datos lleguen correctamente
+        System.out.println("Guardia: " + request.getGuardia());
+        System.out.println("Nota: " + request.getNota());
+        System.out.println("ListaPuntos: " + request.getListaPuntos());
 
-    
+        // Llamar al servicio con el mapa de puntos
+        return inspeccionFisicaService.saveListaInspeccion(request.getListaPuntos(), request.getGuardia(),
+                request.getNota());
+    }
+
 }

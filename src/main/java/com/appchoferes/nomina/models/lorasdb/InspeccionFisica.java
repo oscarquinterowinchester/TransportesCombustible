@@ -13,17 +13,17 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "inspecciones_fisicas_tbl")
 public class InspeccionFisica {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "guardia")
+    @Column(name = "guardia", nullable = false)
     private Integer guardia;
 
-    @Column(name = "nota")
-    private String nota;
-
-    @Column(name = "fecha")
+    @Column(name = "fecha", nullable = false)
     private Date fecha;
+
+    @Column(name = "nota", length = 350, nullable = false)
+    private String nota;
 }
