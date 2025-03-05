@@ -92,44 +92,53 @@ public class VisitorRegistroService {
         }
     }
 
+    @Transactional
     public Long saveVisitanteAndVehiculo(VisitanteVehiculoRequest request) throws Exception {
         VisitorVisitante visitante = request.getVisitante();
         Vehiculo vehiculo = request.getVehiculo();
 
-        // asiganamos la fecha actual
+        // Guardamos las imágenes temporalmente antes de asignar null
+        String fotoBase64 = visitante.getFoto();
+        String firmaBase64 = visitante.getFirma();
+        String identificacionBase64 = visitante.getIdentificacion();
+        String identificacion2Base64 = visitante.getIdentificacion2();
+
+        // Asignamos la fecha actual
         visitante.setFecha(LocalDateTime.now());
 
-        // guardamos visitante en la base de datos
+        // Evitamos que se guarden imágenes en la primera inserción
+        visitante.setFoto(null);
+        visitante.setFirma(null);
+        visitante.setIdentificacion(null);
+        visitante.setIdentificacion2(null);
+
+        // Guardamos visitante en la base de datos (sin imágenes)
         visitante = visitanteRepo.save(visitante);
         Long idVisitante = visitante.getId();
 
-        if (visitante.getFoto() != null) {
-            String path = ImageUtil.saveImage(visitante.getFoto(), "foto", visitante.getId().toString(),
+        // Guardamos las imágenes y actualizamos en la BD usando métodos específicos
+        if (fotoBase64 != null) {
+            String path = ImageUtil.saveImage(fotoBase64, "foto", idVisitante.toString(),
                     BASE_DIRECTORY + "fotos" + File.separator);
-            visitante.setFoto(path);
+            visitanteRepo.updateFoto(path, idVisitante);
         }
-        if (visitante.getFirma() != null) {
-            String path = ImageUtil.saveImage(visitante.getFirma(), "firma", visitante.getId().toString(),
+        if (firmaBase64 != null) {
+            String path = ImageUtil.saveImage(firmaBase64, "firma", idVisitante.toString(),
                     BASE_DIRECTORY + "firmas" + File.separator);
-            visitante.setFirma(path);
+            visitanteRepo.updateFirma(path, idVisitante);
         }
-        if (visitante.getIdentificacion() != null) {
-            String path = ImageUtil.saveImage(visitante.getIdentificacion(), "identificacion1",
-                    visitante.getId().toString(),
+        if (identificacionBase64 != null) {
+            String path = ImageUtil.saveImage(identificacionBase64, "identificacion1", idVisitante.toString(),
                     BASE_DIRECTORY + "identificaciones" + File.separator);
-            visitante.setIdentificacion(path);
+            visitanteRepo.updateIdentificacion(path, idVisitante);
         }
-        if (visitante.getIdentificacion2() != null) {
-            String path = ImageUtil.saveImage(visitante.getIdentificacion2(), "identificacion2",
-                    visitante.getId().toString(),
+        if (identificacion2Base64 != null) {
+            String path = ImageUtil.saveImage(identificacion2Base64, "identificacion2", idVisitante.toString(),
                     BASE_DIRECTORY + "identificaciones" + File.separator);
-            visitante.setIdentificacion2(path);
+            visitanteRepo.updateIdentificacion2(path, idVisitante);
         }
 
-        // Actualizamos el visitante con sus imagenes
-        visitanteRepo.save(visitante);
-
-        // Insertar vehiculo con id del visitantes
+        // Insertamos vehículo con ID del visitante
         vehiculo.setVisitante(idVisitante.intValue());
         vehiculoRepo.save(vehiculo);
 
