@@ -28,5 +28,5 @@ public class ContenedorTipo1DTO {
     private Integer ChoferID;
     private Integer ClienteID;
     private String Cliente;
-    private Long InventarioID;
+    private Integer InventarioID;
 }

@@ -29,4 +29,19 @@ public interface InventarioExternoRepository extends JpaRepository<P_InventarioE
                         "AND AnteriorID = inv.InventarioID AND (Contenedor = :contenedor or ItinerarioID = 0)) is null LIMIT 1", nativeQuery = true)
         List<Integer> findEntrada(@Param("contenedor") String contenedor);
 
+        @Query(value = "SELECT getItinerarioRemolque(:contenedor) as ItinerarioID", nativeQuery = true)
+        Integer getItinerarioRemolque(@Param("contenedor") String contenedor);
+
+        @Query(value = "CALL getInformacionSalida(:itinerarioID)", nativeQuery = true)
+        List<Object[]> getInformacionSalida(@Param("itinerarioID") int itinerarioID);
+
+        @Query(value = "CALL getDatosInventarioExterno(:inventarioID)", nativeQuery = true)
+        List<Object[]> getDatosInventarioExterno(@Param("inventarioID") int inventarioID);
+
+        @Query(value = "CALL getDatosSalidaComplejo(:itinerarioID)", nativeQuery = true)
+        List<Object[]> getDatosSalidaComplejo(@Param("itinerarioID") int itinerarioID);
+
+        @Query(value = "CALL getDatosConEntrada(:itinerarioID)", nativeQuery = true)
+        List<Object[]> getDatosConEntrada(@Param("itinerarioID") int itinerarioID);
+
 }
