@@ -21,10 +21,7 @@ public interface ContenedorRepo extends JpaRepository<Contenedor, Integer> {
     List<Map<String, Object>> findInventarioIdByContenedor(@Param("contenedor") String contenedor);
 
     // Consulta nativa para obtener el ItinerarioID
-    @Query(value = "SELECT ItinerarioID FROM itinerarios_tbl " +
-                   "WHERE ItinerarioID IN (SELECT ico.ItinerarioID FROM icont_tbl AS ico " +
-                   "WHERE ico.Status = true AND (ncontenedor = :contenedor OR Caja = :contenedor)) " +
-                   "AND Status = 1", nativeQuery = true)
+    @Query(value = "SELECT getItinerarioRemolque(:contenedor) as ItinerarioID;", nativeQuery = true)
     List<Map<String, Object>> findItinerarioIdByContenedor(@Param("contenedor") String contenedor);
 
     // Consulta nativa para obtener información de entrada
