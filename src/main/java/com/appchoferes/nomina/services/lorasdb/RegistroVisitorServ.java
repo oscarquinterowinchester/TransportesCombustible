@@ -29,14 +29,24 @@ public class RegistroVisitorServ {
 
     private RegistroHistorialDTO mapearARegistroHistorialDTO(Object[] resultado) {
         return new RegistroHistorialDTO(
-                ((Number) resultado[0]).longValue(), // id
-                ((Timestamp) resultado[1]).toLocalDateTime(), // fecha
-                (String) resultado[2], // foto
-                (String) resultado[3], // firma
-                (String) resultado[4], // identificacion
-                (String) resultado[5], // identificacion2
-                (String) resultado[6], // compania
-                ((Number) resultado[7]).intValue() // completado
+                resultado[0] != null ? ((Number) resultado[0]).longValue() : null, // id
+                resultado[1] != null ? ((Timestamp) resultado[1]).toLocalDateTime() : null, // fecha
+                (String) resultado[11], // foto (índice 11)
+                (String) resultado[12], // firma (índice 12)
+                (String) resultado[13], // identificación (índice 13)
+                (String) resultado[14], // identificación2 (índice 14)
+                (String) resultado[15], // compañía (índice 15)
+                resultado[16] != null ? ((Number) resultado[16]).intValue() : null, // completado (índice 16)
+                resultado[2] != null ? ((Timestamp) resultado[2]).toLocalDateTime() : null, // entrada (índice 2)
+                (String) resultado[3], // asunto (índice 3)
+                (String) resultado[17], // nombre (nombreVisitante) (índice 17)
+                resultado[4] != null ? ((Number) resultado[4]).intValue() : null, // visitanteID (índice 4)
+                (String) resultado[5], // gafete (índice 5)
+                (String) resultado[6], // vehículo (índice 6)
+                resultado[7] != null ? ((Timestamp) resultado[7]).toLocalDateTime() : null, // salida (índice 7)
+                (String) resultado[8], // empleado (índice 8)
+                (String) resultado[9], // duración (índice 9)
+                resultado[10] != null ? (Boolean) resultado[10] : null // archivoGenerado (índice 10)
         );
     }
 

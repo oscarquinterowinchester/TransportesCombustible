@@ -59,6 +59,30 @@ public class InventarioExternoEntradaRequest {
     @JsonProperty("Nota")
     private String Nota; 
 
+    @JsonProperty("PlacasChasis")
+    private String PlacasChasis; 
+
+    @JsonProperty("estadomex")
+    private String estadomex; 
+
+    @JsonProperty("estadousa")
+    private String estadousa; 
+
+    @JsonProperty("NombreChofer")
+    private String NombreChofer; 
+
+    @JsonProperty("camion")
+    private String camion; 
+
+    @JsonProperty("origen")
+    private String origen; 
+
+    @JsonProperty("pais")
+    private String pais; 
+
+    @JsonProperty("PlacasUnidad")
+    private String PlacasUnidad; 
+
     @JsonProperty("puntos")
     private List<InventarioExternoInspeccion> puntos;
 

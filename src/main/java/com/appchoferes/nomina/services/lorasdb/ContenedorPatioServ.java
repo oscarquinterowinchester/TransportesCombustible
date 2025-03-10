@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -188,8 +189,8 @@ public class ContenedorPatioServ {
             return null; // Return null if the date is invalid
         }
     }
-    // ****** //
 
+    // ****** //
     public Object getContenedorEntrada(Long itinerarioId, String contenedor, Integer tipo) {
         if ((itinerarioId == null || itinerarioId < 0) && (contenedor == null || contenedor.isEmpty())) {
             return crearRespuestaDatosNoEncontrados();
@@ -208,10 +209,30 @@ public class ContenedorPatioServ {
                         .findInventarioIdAndItinerarioIdByContenedor(contenedor);
 
                 if (!entradas.isEmpty()) {
+                    // Fusionar datos de entradas con contenedorInfo
+                    List<Map<String, Object>> combinedDataList = new ArrayList<>();
+
+                    for (Map<String, Object> entrada : entradas) {
+                        Map<String, Object> combinedData = new HashMap<>();
+                        combinedData.putAll(entrada); // Agregar datos de entradas
+
+                        // Obtener ItinerarioID de la entrada actual
+                        Long itiId = ((Number) entrada.get("ItinerarioID")).longValue();
+
+                        // Buscar información adicional del contenedor usando ItinerarioID
+                        List<Map<String, Object>> contenedorInfo = contenedorRepo.getInformacionEntrada(itiId);
+
+                        if (!contenedorInfo.isEmpty()) {
+                            combinedData.putAll(contenedorInfo.get(0)); // Fusionar datos de contenedorInfo
+                        }
+
+                        combinedData.put("tieneEntrada", tieneEntrada); // Agregar el campo tieneEntrada
+                        combinedDataList.add(combinedData); // Agregar a la lista de datos combinados
+                    }
+
                     respuesta.put("status", "success");
                     respuesta.put("message", "Contenedor encontrado");
-                    respuesta.put("data", entradas); // Agregar los datos recuperados
-                    respuesta.put("tieneEntrada", tieneEntrada);
+                    respuesta.put("data", combinedDataList); // Agregar los datos fusionados
                     return respuesta;
                 } else {
                     // Buscar ItinerarioID por contenedor
@@ -223,11 +244,16 @@ public class ContenedorPatioServ {
                             List<Map<String, Object>> contenedorInfo = contenedorRepo.getInformacionEntrada(itiId);
 
                             if (!contenedorInfo.isEmpty()) {
-                                contenedoresSEND.add(contenedorInfo.get(0));
+                                // Fusionar contenedorInfo con los datos existentes en data
+                                Map<String, Object> combinedData = new HashMap<>();
+                                combinedData.putAll(contenedorInfo.get(0));
+                                combinedData.put("tieneEntrada", tieneEntrada);
+
                                 respuesta.put("status", "success");
                                 respuesta.put("message", "Contenedor encontrado");
-                                respuesta.put("data", contenedoresSEND); // Agregar los datos recuperados
-                                respuesta.put("tieneEntrada", tieneEntrada);
+                                respuesta.put("data", Collections.singletonList(combinedData)); // Agregar los datos
+                                                                                                // fusionados en una
+                                                                                                // lista
                                 return respuesta;
                             }
                         }
@@ -245,20 +271,27 @@ public class ContenedorPatioServ {
                 List<Map<String, Object>> entrada = contenedorRepo.findInventarioIdByItinerarioId(itinerarioId);
                 List<Map<String, Object>> contenedorInfo = contenedorRepo.getInformacionEntrada(itinerarioId);
 
-                if (!entrada.isEmpty()) {
+                if (!entrada.isEmpty() || !contenedorInfo.isEmpty()) {
+                    // Fusionar contenedorInfo con los datos existentes en data
+                    Map<String, Object> combinedData = new HashMap<>();
+
+                    if (!entrada.isEmpty()) {
+                        combinedData.putAll(entrada.get(0)); // Agregar datos de entrada
+                    }
+
+                    if (!contenedorInfo.isEmpty()) {
+                        combinedData.putAll(contenedorInfo.get(0)); // Agregar datos de contenedorInfo
+                    }
+
+                    combinedData.put("tieneEntrada", tieneEntrada); // Agregar el campo tieneEntrada
+
                     respuesta.put("status", "success");
                     respuesta.put("message", "Itinerario encontrado");
-                    respuesta.put("data", entrada); // Agregar los datos recuperados
-                    respuesta.put("contenedorData", contenedorInfo);
-                    respuesta.put("tieneEntrada", tieneEntrada);
+                    respuesta.put("data", Collections.singletonList(combinedData)); // Agregar los datos fusionados en
+                                                                                    // una lista
                     return respuesta;
                 } else {
-                    // Obtener información de entrada por ItinerarioID
-                    respuesta.put("status", "success");
-                    respuesta.put("message", "Itinerario encontrado");
-                    respuesta.put("data", contenedorInfo); // Agregar los datos recuperados
-                    respuesta.put("tieneEntrada", tieneEntrada);
-                    return respuesta;
+                    return crearRespuestaDatosNoEncontrados();
                 }
             }
         }
@@ -331,10 +364,9 @@ public class ContenedorPatioServ {
 
         if (tipo == 1) {
             // Lógica para tipo 1
-            String sql = "SELECT InventarioID FROM inventarioexterno_tbl WHERE contenedor = :contenedor AND TipoEvento = 1 ORDER BY InventarioID DESC";
+            String sql = "SELECT InventarioID FROM inventarioexterno_tbl WHERE contenedor = :contenedor AND TipoEvento = 1 ORDER BY InventarioID DESC Limit 1";
             Query query = entityManager.createNativeQuery(sql);
             query.setParameter("contenedor", contenedor);
-            query.setMaxResults(1);
             List<Integer> entradas = query.getResultList();
 
             if (!entradas.isEmpty()) {
@@ -347,7 +379,7 @@ public class ContenedorPatioServ {
                     List<Long> salidas = querySalida.getResultList();
 
                     if (salidas.isEmpty()) {
-                        String sqlItinerario = "SELECT getItinerarioRemolque(:contenedor) as ItinerarioID;";
+                        String sqlItinerario = "SELECT getItinerarioRemolque(:contenedor) as ItinerarioID";
                         Query queryItinerario = entityManager.createNativeQuery(sqlItinerario);
                         queryItinerario.setParameter("contenedor", contenedor);
                         List<Integer> itinerarioIDs = queryItinerario.getResultList();
@@ -376,7 +408,7 @@ public class ContenedorPatioServ {
                     }
                 }
             } else {
-                String sqlItinerario = "SELECT getItinerarioRemolque(:contenedor) FROM dual";
+                String sqlItinerario = "SELECT getItinerarioRemolque(:contenedor) as ItinerarioID";
                 Query queryItinerario = entityManager.createNativeQuery(sqlItinerario);
                 queryItinerario.setParameter("contenedor", contenedor);
                 List<Integer> itinerarioIDs = queryItinerario.getResultList();
@@ -400,19 +432,18 @@ public class ContenedorPatioServ {
             String sqlEntrada = "SELECT i.InventarioID FROM inventarioexterno_tbl i " +
                     "WHERE i.ItinerarioID = :itinerarioID AND i.TipoEvento = 1 " +
                     "AND getInventarioIdSalidaIti(i.ItinerarioID, i.InventarioID) IS NULL " +
-                    "ORDER BY i.InventarioID DESC";
+                    "ORDER BY i.InventarioID DESC limit 1";
             Query queryEntrada = entityManager.createNativeQuery(sqlEntrada);
             queryEntrada.setParameter("itinerarioID", itinerarioId);
-            queryEntrada.setMaxResults(1);
-            List<Long> entradas = queryEntrada.getResultList();
+            List<Integer> entradas = queryEntrada.getResultList();
 
             if (!entradas.isEmpty()) {
-                Long entrada = entradas.get(0);
+                Integer entrada = entradas.get(0);
                 String sqlSalida = "SELECT i.InventarioID FROM inventarioexterno_tbl i " +
                         "WHERE i.AnteriorID = :anteriorID AND i.TipoEvento = 2";
                 Query querySalida = entityManager.createNativeQuery(sqlSalida);
                 querySalida.setParameter("anteriorID", entrada);
-                List<Long> salidas = querySalida.getResultList();
+                List<Integer> salidas = querySalida.getResultList();
 
                 if (salidas.isEmpty()) {
                     String sqlContenedor = "call getDatosSalidaComplejo(:itinerarioID)";
@@ -433,26 +464,27 @@ public class ContenedorPatioServ {
         ContenedorTipo1DTO dto = new ContenedorTipo1DTO();
 
         // Mapeo de los campos según el orden de la consulta
-        dto.setItinerarioID((Integer) resultado[0]); // ItinerarioID
-        dto.setContenedor((String) resultado[1]); // Contenedor
-        dto.setClienteFK((Integer) resultado[2]); // ClienteFK
-        dto.setOrigen((String) resultado[3]); // origen
-        dto.setSello((String) resultado[4]); // Sello
-        dto.setEstadoMex((String) resultado[5]); // estadomex
-        dto.setRutaID((Integer) resultado[6]); // RutaID
-        dto.setCarrier((String) resultado[7]); // Carrier
-        dto.setTamano((String) resultado[8]); // Tamano
-        dto.setPais((String) resultado[9]); // pais
-        dto.setCarga((String) resultado[10]); // carga
-        dto.setEstadoUSA((String) resultado[11]); // estadousa
-        dto.setRuta((String) resultado[12]); // ruta
-        dto.setCamion((String) resultado[13]); // camion
-        dto.setPlacasChasis((String) resultado[14]); // PlacasChasis
-        dto.setPlacasUnidad((String) resultado[15]); // PlacasUnidad
-        dto.setNombreChofer((String) resultado[16]); // NombreChofer
-        dto.setChoferID((Integer) resultado[17]); // ChoferID
-        dto.setClienteID((Integer) resultado[18]); // ClienteID
-        dto.setCliente((String) resultado[19]); // cliente
+        dto.setInventarioID((Integer) resultado[0]); // InventarioID de entrada
+        dto.setItinerarioID((Integer) resultado[1]); // ItinerarioID
+        dto.setContenedor((String) resultado[2]); // Contenedor
+        dto.setClienteFK((Integer) resultado[3]); // ClienteFK
+        dto.setOrigen((String) resultado[4]); // origen
+        dto.setSello((String) resultado[5]); // Sello
+        dto.setEstadoMex((String) resultado[6]); // estadomex
+        dto.setRutaID((Integer) resultado[7]); // RutaID
+        dto.setCarrier((String) resultado[8]); // Carrier
+        dto.setTamano((String) resultado[9]); // Tamano
+        dto.setPais((String) resultado[10]); // pais
+        dto.setCarga((String) resultado[11]); // carga
+        dto.setEstadoUSA((String) resultado[12]); // estadousa
+        dto.setRuta((String) resultado[13]); // ruta
+        dto.setCamion((String) resultado[14]); // camion
+        dto.setPlacasChasis((String) resultado[15]); // PlacasChasis
+        dto.setPlacasUnidad((String) resultado[16]); // PlacasUnidad
+        dto.setNombreChofer((String) resultado[17]); // NombreChofer
+        dto.setChoferID((Integer) resultado[18]); // ChoferID
+        dto.setClienteID((Integer) resultado[19]); // ClienteID
+        dto.setCliente((String) resultado[20]); // cliente
 
         return dto;
     }

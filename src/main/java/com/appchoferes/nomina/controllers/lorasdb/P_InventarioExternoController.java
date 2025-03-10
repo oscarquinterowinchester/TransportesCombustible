@@ -70,6 +70,13 @@ public class P_InventarioExternoController {
             inventario.setFirmaChofer(request.getFirmaChofer());
             inventario.setFirmaGuardia(request.getFirmaGuardia());
             inventario.setNota(request.getNota());
+            inventario.setAnteriorID(0);
+            inventario.setCamion(request.getCamion());
+            inventario.setNombreChofer(request.getNombreChofer());
+            inventario.setPlacasChasis(request.getPlacasChasis());
+            inventario.setEstadoPlacasMex(request.getEstadomex());
+            inventario.setEstadoPlacasUsa(request.getEstadousa());
+            inventario.setOrigen(request.getOrigen());
 
             // Asignar Status como 1
             inventario.setStatus(1);

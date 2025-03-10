@@ -155,7 +155,7 @@ public class PV_RawQueryService {
     }
 
     @Transactional
-    public List<PuntosCTPADSalidaDTO> getPuntosCTPADSalida(Integer id) {
+    public List<PuntosCTPADSalidaDTO>  getPuntosCTPADSalida(Integer id) {
 
         String sql = """
                     SELECT i.id, i.InventarioID, i.ListadoID, 0 as Salida,

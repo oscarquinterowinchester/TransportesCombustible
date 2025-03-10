@@ -2,6 +2,8 @@ package com.appchoferes.nomina.models.lorasdb;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,21 +35,40 @@ public class P_InventarioExterno {
     @Column(name = "Contenedor")
     private String Contenedor;
 
+    @Column(name = "PlacasChasis")
+    @JsonProperty("PlacasChasis")
     private String PlacasChasis;
+
     private String Sello;
     private Integer SelloDiesel;
     private Integer PaisID;
     private Integer EstadoID;
+
+    @Column(name = "ChoferID")
+    @JsonProperty("ChoferID")
     private Integer ChoferID;
+
+    @Column(name = "ClienteID")
+    @JsonProperty("ClienteID")
     private Integer ClienteID;
+
     private Integer UsuarioID;
+
     private Integer RutaID;
+
+    @Column(name = "NombreChofer")
+    @JsonProperty("NombreChofer")
     private String NombreChofer;
     private String EmpresaChofer;
     private Integer UsuarioEventoID;
     private String Nota;
+
+    @Column(name = "EstadoCarga")
+    @JsonProperty("carga")
     private Integer EstadoCarga;
     private Integer TipoEvento;
+
+    @JsonProperty("FechaEvento")
     private LocalDateTime FechaEvento;
 
     @Column(name = "Fecha", nullable = true)
@@ -59,6 +80,9 @@ public class P_InventarioExterno {
 
     @Column(name = "FechaElimina", nullable = true)
     private LocalDateTime FechaElimina;
+
+    @Column(name = "camion")
+    @JsonProperty("camion")
     private String camion;
     private Integer EquipmentProvider;
     private String EquipmentProviderExt;
@@ -70,15 +94,19 @@ public class P_InventarioExterno {
     private String origen;
     private Integer camionID;
     private String destino;
+
+    @Column(name = "placasunidad")
+    @JsonProperty("PlacasUnidad")
     private String placasunidad;
     private String NumeroChasis;
 
     @Column(name = "Carrier")
+    @JsonProperty("Carrier")
     private String Carrier;
 
     private String grade;
     private String assignedto;
-    
+
     @Column(name = "fechaedicion", nullable = true)
     private LocalDateTime fechaedicion;
     private Boolean isCamion;
@@ -87,7 +115,13 @@ public class P_InventarioExterno {
     private String PlacasChasisUSA;
     private Integer EstadoUSAID;
     private String PlacasUnidadUSA;
+
+    @Column(name = "EstadoPlacasMex")
+    @JsonProperty("estadomex")
     private String EstadoPlacasMex;
+
+    @Column(name = "EstadoPlacasUsa")
+    @JsonProperty("estadousa")
     private String EstadoPlacasUsa;
     private Integer remolqueEstado;
     private String remolquePais;

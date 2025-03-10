@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 
 @Data
@@ -18,4 +19,14 @@ public class RegistroHistorialDTO {
     private String identificacion2;
     private String compania;
     private Integer completado;
+    private LocalDateTime entrada;
+    private String asunto;
+    private String nombre;
+    private Integer visitanteID;
+    private String gafete;
+    private String vehiculo;
+    private LocalDateTime salida;
+    private String empleado;
+    private String duracion;
+    private Boolean archivoGenerado;
 }

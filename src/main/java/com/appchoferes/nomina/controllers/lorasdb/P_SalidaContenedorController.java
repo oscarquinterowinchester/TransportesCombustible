@@ -51,8 +51,21 @@ public class P_SalidaContenedorController {
             inventario.setFechaElimina(null);
             inventario.setFechaedicion(LocalDateTime.now());
 
+            // Validación y conversión del campo "carga"
+            String carga = request.getCarga();
+            int estadoCarga;
+            if ("Cargado".equalsIgnoreCase(carga)) {
+                estadoCarga = 1;
+            } else if ("Vacio".equalsIgnoreCase(carga)) {
+                estadoCarga = 0;
+            } else {
+                // Si el valor no es válido, lanzar una excepción
+                throw new IllegalArgumentException("El valor de 'carga' debe ser 'Cargado' o 'Vacio'");
+            }
+            inventario.setEstadoCarga(estadoCarga); // Asignar el valor convertido
+
             inventario.setStatus(1);
- 
+
             // Obtiene el arreglo de puntos de inspección
             List<InventarioExternoInspeccion> inspecciones = request.getPuntos();
 
@@ -61,7 +74,12 @@ public class P_SalidaContenedorController {
             System.out.println("Salida guardada con inventarioID: " + savedSalida.getInventarioID());
             return new ResponseEntity<>(savedSalida, HttpStatus.CREATED);
 
+        } catch (IllegalArgumentException e) {
+            // Capturar excepción específica para valores inválidos de "carga"
+            e.printStackTrace();
+            return new ResponseEntity<>(Map.of("message", e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+            // Capturar cualquier otra excepción
             e.printStackTrace();
             return new ResponseEntity<>(Map.of("message", "Error interno del servidor"),
                     HttpStatus.INTERNAL_SERVER_ERROR);
