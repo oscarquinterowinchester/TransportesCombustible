@@ -25,6 +25,7 @@ public class S3Service {
     private String bucketName;
 
     private final S3Client s3Client;
+
     private final S3Presigner s3Presigner;
 
     @Autowired

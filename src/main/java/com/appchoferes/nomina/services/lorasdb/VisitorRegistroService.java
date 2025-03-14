@@ -102,11 +102,14 @@ public class VisitorRegistroService {
         VisitorVisitante visitante = request.getVisitante();
         Vehiculo vehiculo = request.getVehiculo();
 
+        // Extraer imágenes en Base64 una sola vez
+        Map<String, String> imagenesBase64 = extraerImagenesVisitante(visitante);
+
         // Guardar visitante sin imágenes
         Long idVisitante = guardarVisitanteSinImagenes(visitante);
 
         // Subir imágenes y actualizar visitante
-        subirYActualizarImagenesVisitante(visitante, idVisitante);
+        subirYActualizarImagenesVisitante(imagenesBase64, idVisitante);
 
         // Guardar vehículo asociado al visitante
         guardarVehiculo(vehiculo, idVisitante);
@@ -115,9 +118,6 @@ public class VisitorRegistroService {
     }
 
     private Long guardarVisitanteSinImagenes(VisitorVisitante visitante) {
-        // Extraer imágenes en Base64
-        Map<String, String> imagenesBase64 = extraerImagenesVisitante(visitante);
-
         // Establecer la fecha actual
         visitante.setFecha(LocalDateTime.now());
 
@@ -145,10 +145,7 @@ public class VisitorRegistroService {
         visitante.setIdentificacion2(null);
     }
 
-    private void subirYActualizarImagenesVisitante(VisitorVisitante visitante, Long idVisitante) {
-        // Extraer imágenes en Base64
-        Map<String, String> imagenesBase64 = extraerImagenesVisitante(visitante);
-
+    private void subirYActualizarImagenesVisitante(Map<String, String> imagenesBase64, Long idVisitante) {
         // Subir imágenes a S3 y obtener las rutas
         Map<String, String> rutasImagenes = subirImagenesAS3(idVisitante, imagenesBase64);
 
