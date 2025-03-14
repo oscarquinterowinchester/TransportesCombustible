@@ -1,12 +1,10 @@
 package com.appchoferes.nomina.services.lorasdb;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +17,7 @@ import com.appchoferes.nomina.models.lorasdb.dtos.VisitanteDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.VisitanteVehiculoRequest;
 import com.appchoferes.nomina.repositories.lorasdb.VehiculoRepo;
 import com.appchoferes.nomina.repositories.lorasdb.VisitorVisitanteRepo;
-import com.appchoferes.nomina.utils.ImageUtil;
+import com.appchoferes.nomina.utils.S3Service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -37,8 +35,14 @@ public class VisitorRegistroService {
     @Autowired
     private VehiculoRepo vehiculoRepo;
 
-    public static final String BASE_DIRECTORY = "C:" + File.separator + "TransportesMultiConexion" + File.separator
-            + "imagenes" + File.separator;
+    @Autowired
+    private S3Service s3Service;
+
+    private static final Map<String, String> CARPETAS_IMG = Map.of(
+            "foto", "/fotos",
+            "firma", "/firmas",
+            "identificacion1", "/identificaciones",
+            "identificacion2", "/identificaciones");
 
     @Transactional
     public void saveVisit(EmpleadoVisitaDTO empleado, List<VisitanteDTO> visitanteDTOs, VehiculoDTO vehiculoDTO) {
@@ -93,67 +97,94 @@ public class VisitorRegistroService {
     }
 
     @Transactional
-    public Long saveVisitanteAndVehiculo(VisitanteVehiculoRequest request) throws Exception {
+    public Long saveVisitantesAndVehiculo(VisitanteVehiculoRequest request) throws Exception {
+        // Extraer datos del request
         VisitorVisitante visitante = request.getVisitante();
         Vehiculo vehiculo = request.getVehiculo();
 
-        // Guardamos las imágenes temporalmente antes de asignar null
-        String fotoBase64 = visitante.getFoto();
-        String firmaBase64 = visitante.getFirma();
-        String identificacionBase64 = visitante.getIdentificacion();
-        String identificacion2Base64 = visitante.getIdentificacion2();
+        // Guardar visitante sin imágenes
+        Long idVisitante = guardarVisitanteSinImagenes(visitante);
 
-        // Asignamos la fecha actual
-        visitante.setFecha(LocalDateTime.now());
+        // Subir imágenes y actualizar visitante
+        subirYActualizarImagenesVisitante(visitante, idVisitante);
 
-        // Evitamos que se guarden imágenes en la primera inserción
-        visitante.setFoto(null);
-        visitante.setFirma(null);
-        visitante.setIdentificacion(null);
-        visitante.setIdentificacion2(null);
-
-        // Guardamos visitante en la base de datos (sin imágenes)
-        visitante = visitanteRepo.save(visitante);
-        Long idVisitante = visitante.getId();
-
-        // Guardamos las imágenes y actualizamos en la BD usando métodos específicos
-        if (fotoBase64 != null) {
-            String path = ImageUtil.saveImage(fotoBase64, "foto", idVisitante.toString(),
-                    BASE_DIRECTORY + "fotos" + File.separator);
-            visitanteRepo.updateFoto(path, idVisitante);
-        }
-        if (firmaBase64 != null) {
-            String path = ImageUtil.saveImage(firmaBase64, "firma", idVisitante.toString(),
-                    BASE_DIRECTORY + "firmas" + File.separator);
-            visitanteRepo.updateFirma(path, idVisitante);
-        }
-        if (identificacionBase64 != null) {
-            String path = ImageUtil.saveImage(identificacionBase64, "identificacion1", idVisitante.toString(),
-                    BASE_DIRECTORY + "identificaciones" + File.separator);
-            visitanteRepo.updateIdentificacion(path, idVisitante);
-        }
-        if (identificacion2Base64 != null) {
-            String path = ImageUtil.saveImage(identificacion2Base64, "identificacion2", idVisitante.toString(),
-                    BASE_DIRECTORY + "identificaciones" + File.separator);
-            visitanteRepo.updateIdentificacion2(path, idVisitante);
-        }
-
-        // Insertamos vehículo con ID del visitante
-        vehiculo.setVisitante(idVisitante.intValue());
-        vehiculoRepo.save(vehiculo);
+        // Guardar vehículo asociado al visitante
+        guardarVehiculo(vehiculo, idVisitante);
 
         return idVisitante;
     }
 
-    public byte[] getImage(Long id, String tipo) throws IOException {
-        // Construir la ruta del archivo
-        Path path = Paths.get(BASE_DIRECTORY + tipo + File.separator + id + ".jpg");
+    private Long guardarVisitanteSinImagenes(VisitorVisitante visitante) {
+        // Extraer imágenes en Base64
+        Map<String, String> imagenesBase64 = extraerImagenesVisitante(visitante);
 
-        if (!Files.exists(path)) {
-            throw new IOException("Imagen no encontrada: " + path);
-        }
+        // Establecer la fecha actual
+        visitante.setFecha(LocalDateTime.now());
 
-        return Files.readAllBytes(path);
+        // Limpiar imágenes del objeto para no guardarlas en la base de datos
+        limpiarImagenesVisitante(visitante);
+
+        // Guardar visitante en la base de datos (sin imágenes)
+        visitante = visitanteRepo.save(visitante);
+        return visitante.getId();
+    }
+
+    private Map<String, String> extraerImagenesVisitante(VisitorVisitante visitante) {
+        Map<String, String> imagenes = new HashMap<>();
+        imagenes.put("foto", visitante.getFoto());
+        imagenes.put("firma", visitante.getFirma());
+        imagenes.put("identificacion1", visitante.getIdentificacion());
+        imagenes.put("identificacion2", visitante.getIdentificacion2());
+        return imagenes;
+    }
+
+    private void limpiarImagenesVisitante(VisitorVisitante visitante) {
+        visitante.setFoto(null);
+        visitante.setFirma(null);
+        visitante.setIdentificacion(null);
+        visitante.setIdentificacion2(null);
+    }
+
+    private void subirYActualizarImagenesVisitante(VisitorVisitante visitante, Long idVisitante) {
+        // Extraer imágenes en Base64
+        Map<String, String> imagenesBase64 = extraerImagenesVisitante(visitante);
+
+        // Subir imágenes a S3 y obtener las rutas
+        Map<String, String> rutasImagenes = subirImagenesAS3(idVisitante, imagenesBase64);
+
+        // Actualizar las rutas de las imágenes en la base de datos
+        actualizarRutasEnBaseDeDatos(idVisitante, rutasImagenes);
+    }
+
+    private Map<String, String> subirImagenesAS3(Long idVisitante, Map<String, String> imagenesBase64) {
+        Map<String, String> rutasImagenes = new HashMap<>();
+        imagenesBase64.forEach((key, value) -> {
+            if (value != null) {
+                // Obtiene la carpeta específica para cada tipo de imagen
+                String carpeta = CARPETAS_IMG.get(key);
+                String ruta;
+                try {
+                    // Sube la imagen a la carpeta correspondiente
+                    ruta = s3Service.uploadFile("visitantes" + carpeta, key, String.valueOf(idVisitante), value);
+                    rutasImagenes.put(key, ruta);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        return rutasImagenes;
+    }
+
+    private void actualizarRutasEnBaseDeDatos(Long idVisitante, Map<String, String> rutasImagenes) {
+        visitanteRepo.updateFoto(rutasImagenes.get("foto"), idVisitante);
+        visitanteRepo.updateFirma(rutasImagenes.get("firma"), idVisitante);
+        visitanteRepo.updateIdentificacion(rutasImagenes.get("identificacion1"), idVisitante);
+        visitanteRepo.updateIdentificacion2(rutasImagenes.get("identificacion2"), idVisitante);
+    }
+
+    private void guardarVehiculo(Vehiculo vehiculo, Long idVisitante) {
+        vehiculo.setVisitante(idVisitante.intValue());
+        vehiculoRepo.save(vehiculo);
     }
 
 }

@@ -1,7 +1,9 @@
 package com.appchoferes.nomina.services.lorasdb;
 
-import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +12,7 @@ import com.appchoferes.nomina.models.lorasdb.InventarioExternoInspeccion;
 import com.appchoferes.nomina.models.lorasdb.P_InventarioExterno;
 import com.appchoferes.nomina.repositories.lorasdb.InventarioExternoInspeccionRepository;
 import com.appchoferes.nomina.repositories.lorasdb.InventarioExternoRepository;
-import com.appchoferes.nomina.utils.ImageUtil;
+import com.appchoferes.nomina.utils.S3Service;
 
 @Service
 public class InventarioExternoService {
@@ -21,67 +23,106 @@ public class InventarioExternoService {
     @Autowired
     private InventarioExternoInspeccionRepository inventarioExternoInspeccionRepository;
 
-    public static final String BASE_DIRECTORY = "C:" + File.separator + "TransportesMultiConexion" + File.separator
-            + "imagenes" + File.separator + "entradas" + File.separator;
+    @Autowired
+    private S3Service s3Service;
+
+    private static final Map<String, String> CARPETAS_IMG = Map.of(
+            "fotoSello", "/sellos",
+            "firmaGuardia", "/firmas",
+            "firmaChofer", "/firmas",
+            "firmak9", "/firmas");
 
     public P_InventarioExterno saveInventarioEntrada(P_InventarioExterno inventario,
-            List<InventarioExternoInspeccion> puntos) {
-        try {
-            if (inventario.getFotoSello() != null) {
-                String path = ImageUtil.saveImage(inventario.getFotoSello(), "selloEntrada",
-                        inventario.getContenedor(),
-                        BASE_DIRECTORY + "sellosEntrada" + File.separator);
-                inventario.setFotoSello(path);
-            }
-            if (inventario.getFirmaGuardia() != null) {
-                String path = ImageUtil.saveImage(inventario.getFirmaGuardia(), "guardia",
-                        inventario.getContenedor(),
-                        BASE_DIRECTORY + "firmasEntrada" + File.separator);
-                inventario.setFirmaGuardia(path);
-            }
-            if (inventario.getFirmaChofer() != null) {
-                String path = ImageUtil.saveImage(inventario.getFirmaChofer(), "chofer",
-                        inventario.getContenedor(),
-                        BASE_DIRECTORY + "firmasEntrada" + File.separator);
-                inventario.setFirmaChofer(path);
-            }
-            if (inventario.getFirmak9() != null) {
-                String path = ImageUtil.saveImage(inventario.getFirmak9(), "k9",
-                        inventario.getContenedor(),
-                        BASE_DIRECTORY + "firmasEntrada" + File.separator);
-                inventario.setFirmak9(path);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Error al guardar las imágenes", e);
-        }
+            List<InventarioExternoInspeccion> puntos) throws Exception {
 
-        // tipoEvento = 1, para decir que es una entrada
+        Map<String, String> imagenesBase64 = extraerImagenesBase64(inventario);
+
+        limpiarImagenes(inventario);
+
+        // establecemos el tipo de evento como entrada
         inventario.setTipoEvento(1);
-        P_InventarioExterno savedInventario = inventarioExternoRepository.save(inventario);
-        for (InventarioExternoInspeccion punto : puntos) {
-            punto.setInventarioID(savedInventario.getInventarioID());
+
+        // guarda inventario en la base de datos sin imagenes
+        P_InventarioExterno saveInventario = inventarioExternoRepository.save(inventario);
+
+        // sube las imagenes a S3 y obtiene las rutas
+        Map<String, String> rutasImagenes = subirImagenesAS3(saveInventario.getInventarioID(), imagenesBase64);
+
+        // actualiza los campos de la base de datos con las rutas de S3
+        actualizarRutasEnLaBaseDeDatos(inventario.getInventarioID(), rutasImagenes);
+
+        procesarPuntosInspeccion(puntos, saveInventario.getInventarioID());
+
+        return inventario;
+
+    }
+
+    private Map<String, String> extraerImagenesBase64(P_InventarioExterno inventario) {
+        Map<String, String> imagenes = new HashMap<>();
+        imagenes.put("fotoSello", inventario.getFotoSello());
+        imagenes.put("firmaGuardia", inventario.getFirmaGuardia());
+        imagenes.put("firmaChofer", inventario.getFirmaChofer());
+        imagenes.put("firmak9", inventario.getFirmak9());
+        return imagenes;
+    }
+
+    private void limpiarImagenes(P_InventarioExterno inventario) {
+        inventario.setFotoSello(null);
+        inventario.setFirmaGuardia(null);
+        inventario.setFirmaChofer(null);
+        inventario.setFirmak9(null);
+    }
+
+    private Map<String, String> subirImagenesAS3(Integer inventarioId, Map<String, String> imagenesBase64) {
+        Map<String, String> rutasImagenes = new HashMap<>();
+        imagenesBase64.forEach((key, value) -> {
+            if (value != null) {
+                String carpeta = CARPETAS_IMG.get(key);
+                String ruta;
+                try {
+                    ruta = s3Service.uploadFile("patios/entradas" + carpeta, key, String.valueOf(inventarioId), value);
+                    rutasImagenes.put(key, ruta);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        return rutasImagenes;
+    }
+
+    private void actualizarRutasEnLaBaseDeDatos(Integer inventarioId, Map<String, String> rutasImagenes) {
+        inventarioExternoRepository.actualizarInventario(
+                rutasImagenes.get("fotoSello"),
+                rutasImagenes.get("firmaGuardia"),
+                rutasImagenes.get("firmaChofer"),
+                rutasImagenes.get("firmak9"),
+                inventarioId);
+    }
+
+    private void procesarPuntosInspeccion(List<InventarioExternoInspeccion> puntos, Integer inventarioId) {
+        puntos.forEach(punto -> {
+            punto.setInventarioID(inventarioId);
 
             if (punto.getFotoentrada() != null) {
                 String path;
                 try {
-                    path = ImageUtil.saveImage(punto.getFotoentrada(), "inspeccion", punto.getListadoID().toString(),
-                            BASE_DIRECTORY + "puntosEntrada" + File.separator);
+                    path = s3Service.uploadFile("patios/entradas/inspeccionEntrada", "punto",
+                            punto.getListadoID() + "_" + inventarioId.toString(), punto.getFotoentrada());
                     punto.setFotoentrada(path);
-                } catch (Exception e) {
-                    throw new RuntimeException("Error al guardar imagenes de entrada", e);
-                }
 
+                } catch (IOException e) {
+                    throw new RuntimeException("Error al subir la imagen de inspeccion", e);
+                }
             }
-        }
+        });
 
         inventarioExternoInspeccionRepository.saveAll(puntos);
-        return savedInventario;
     }
 
     public boolean esEntradaDuplicada(String contenedor, Integer itinerarioId) {
         List<Integer> entradas = inventarioExternoRepository.findEntrada(contenedor);
         System.out.println("Entradas encontradas: " + entradas);
-        return entradas != null && !entradas.isEmpty(); // No encontro ninguna entrada duplicada
+        return entradas != null && !entradas.isEmpty(); // No encontro ninguna
     }
 
 }

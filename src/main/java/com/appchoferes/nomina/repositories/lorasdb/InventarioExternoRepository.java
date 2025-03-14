@@ -3,11 +3,14 @@ package com.appchoferes.nomina.repositories.lorasdb;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.appchoferes.nomina.models.lorasdb.P_InventarioExterno;
+
+import jakarta.transaction.Transactional;
 
 @Repository
 public interface InventarioExternoRepository extends JpaRepository<P_InventarioExterno, Integer> {
@@ -43,5 +46,29 @@ public interface InventarioExternoRepository extends JpaRepository<P_InventarioE
 
         @Query(value = "CALL getDatosConEntrada(:itinerarioID)", nativeQuery = true)
         List<Object[]> getDatosConEntrada(@Param("itinerarioID") int itinerarioID);
+
+        @Transactional
+        @Modifying
+        @Query(value = "UPDATE inventarioexterno_tbl " +
+                        "SET FotoSello = :fotoSello, " +
+                        "FirmaGuardia = :firmaGuardia, " +
+                        "FirmaChofer = :firmaChofer, " +
+                        "FirmaK9 = :firmak9 " +
+                        "WHERE InventarioID = :inventarioId", nativeQuery = true)
+        void actualizarInventario(
+                        @Param("fotoSello") String fotoSello,
+                        @Param("firmaGuardia") String firmaGuardia,
+                        @Param("firmaChofer") String firmaChofer,
+                        @Param("firmak9") String firmak9,
+                        @Param("inventarioId") Integer inventarioId);
+
+        @Transactional
+        @Modifying
+        @Query(value = "UPDATE inventarioexterno_tbl " +
+                        "SET FirmaK9 = :firmaK9 " +
+                        "WHERE InventarioID = :inventarioId", nativeQuery = true)
+        void actualizarInventarioSalida(
+                        @Param("firmaK9") String firmaK9,
+                        @Param("inventarioId") Integer inventarioId);
 
 }

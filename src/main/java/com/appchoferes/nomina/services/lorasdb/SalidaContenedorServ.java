@@ -1,6 +1,6 @@
 package com.appchoferes.nomina.services.lorasdb;
 
-import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,7 +11,7 @@ import com.appchoferes.nomina.models.lorasdb.InventarioExternoInspeccion;
 import com.appchoferes.nomina.models.lorasdb.P_InventarioExterno;
 import com.appchoferes.nomina.repositories.lorasdb.InventarioExternoInspeccionRepository;
 import com.appchoferes.nomina.repositories.lorasdb.InventarioExternoRepository;
-import com.appchoferes.nomina.utils.ImageUtil;
+import com.appchoferes.nomina.utils.S3Service;
 
 import jakarta.transaction.Transactional;
 
@@ -24,43 +24,50 @@ public class SalidaContenedorServ {
     @Autowired
     private InventarioExternoInspeccionRepository inventarioExternoInspeccionRepository;
 
-    public static final String BASE_DIRECTORY = "C:" + File.separator + "TransportesMultiConexion" + File.separator
-            + "imagenes" + File.separator;
+    @Autowired
+    private S3Service s3Service;
 
     @Transactional
     public P_InventarioExterno saveSalidaInventario(P_InventarioExterno contenedor,
-            List<InventarioExternoInspeccion> puntos) {
-
-        try {
-            if (contenedor.getFirmak9() != null) {
-                String path = ImageUtil.saveImage(contenedor.getFirmak9(), "firmak9",
-                        contenedor.getInventarioID().toString(),
-                        BASE_DIRECTORY + "firmas" + File.separator);
-                contenedor.setFirmak9(path);
-            }
-
-        } catch (Exception e) {
-            throw new RuntimeException("Error al guardar las imágenes", e);
-        }
-        // Asigamos el tipo de evento 2 para salida de contenedor
+            List<InventarioExternoInspeccion> puntos) throws Exception {
+        // Establece el tipo de evento como salida
         contenedor.setTipoEvento(2);
 
-        P_InventarioExterno saveSalida = inventarioExternoRepository.save(contenedor);
-        for (InventarioExternoInspeccion punto : puntos) {
-            punto.setInventarioSalidaID(saveSalida.getInventarioID());
+        // Guarda el inventario en la base de datos (sin la firma k9)
+        P_InventarioExterno savedInventario = inventarioExternoRepository.save(contenedor);
+
+        // Sube la firma k9 a S3 y actualiza el inventario en la base de datos
+        if (contenedor.getFirmak9() != null) {
+            String path = subirFirmak9AS3(savedInventario.getInventarioID(), contenedor.getFirmak9());
+            savedInventario.setFirmak9(path);
+            inventarioExternoRepository.save(savedInventario); // Actualiza el inventario con la ruta de la firma k9
+        }
+
+        // Procesa los puntos de inspección
+        procesarPuntosInspeccionSalida(puntos, savedInventario.getInventarioID());
+
+        return savedInventario;
+    }
+
+    private String subirFirmak9AS3(Integer inventarioID, String firmak9Base64) throws IOException {
+        return s3Service.uploadFile("patios/salidas/firmas", "firmak9", inventarioID.toString(), firmak9Base64);
+    }
+
+    private void procesarPuntosInspeccionSalida(List<InventarioExternoInspeccion> puntos, Integer inventarioID) {
+        puntos.forEach(punto -> {
+            punto.setInventarioSalidaID(inventarioID);
 
             if (punto.getFotosalida() != null) {
-                String path;
                 try {
-                    path = ImageUtil.saveImage(punto.getFotosalida(), "inspeccionSalida",
-                            punto.getId().toString(),
-                            BASE_DIRECTORY + "puntosSalida" + File.separator);
+                    String path = s3Service.uploadFile("patios/salidas/inspeccionSalida", "fotosalida",
+                            punto.getId() + "_" + inventarioID, punto.getFotosalida());
                     punto.setFotosalida(path);
-                } catch (Exception e) {
-                    throw new RuntimeException("Error al guardar la imagen de salida", e);
+                } catch (IOException e) {
+                    throw new RuntimeException("Error al subir la imagen de salida", e);
                 }
             }
 
+            // Actualiza la inspección en la base de datos
             inventarioExternoInspeccionRepository.actualizarInspeccionSalida(
                     punto.getId(),
                     punto.getInventarioSalidaID(),
@@ -68,10 +75,7 @@ public class SalidaContenedorServ {
                     punto.getFechaSalida() != null ? punto.getFechaSalida() : LocalDateTime.now(),
                     punto.getComentariosalida() != null ? punto.getComentariosalida() : "",
                     punto.getFotosalida() != null ? punto.getFotosalida() : "");
-        }
-
-        return saveSalida;
-
+        });
     }
 
 }

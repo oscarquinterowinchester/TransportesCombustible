@@ -1,6 +1,5 @@
 package com.appchoferes.nomina.services.lorasdb;
 
-import java.io.File;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,7 @@ import com.appchoferes.nomina.models.lorasdb.RegistroCorrespondencia;
 import com.appchoferes.nomina.models.lorasdb.dtos.RegistroFirmaDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.RegistroInicialDTO;
 import com.appchoferes.nomina.repositories.lorasdb.RegistroCorrespondenciaRepo;
-import com.appchoferes.nomina.utils.ImageUtil;
+import com.appchoferes.nomina.utils.S3Service;
 
 @Service
 public class RegistroCorrespondenciaServ {
@@ -18,8 +17,8 @@ public class RegistroCorrespondenciaServ {
     @Autowired
     private RegistroCorrespondenciaRepo rCrepo;
 
-    public static final String BASE_DIRECTORY = "C:" + File.separator + "TransportesMultiConexion" + File.separator
-            + "imagenes" + File.separator;
+    @Autowired
+    private S3Service s3Service;
 
     public List<RegistroCorrespondencia> getRegistrosC() {
         List<RegistroCorrespondencia> registrosC = rCrepo.getRegistrosC();
@@ -47,8 +46,8 @@ public class RegistroCorrespondenciaServ {
 
         // Guardar la firma, cambiar directorio por el del servidor
         if (registroFirma.getFirma() != null) {
-            String firmaPath = ImageUtil.saveImage(registroFirma.getFirma(), "firma-entregado",
-                    registroExistente.getId().toString(), BASE_DIRECTORY + "firmas" + File.separator);
+            String firmaPath = s3Service.uploadFile("patios/registro/firmas", "firmaEntregado",
+                    registroExistente.getId().toString(), registroExistente.getFirma());
             registroExistente.setFirma(firmaPath);
         }
 

@@ -170,6 +170,13 @@
             <artifactId>jakarta.persistence-api</artifactId>
             <version>3.1.0</version>
         </dependency>
+        <!-- amazon config -->
+<dependency>
+    <groupId>software.amazon.awssdk</groupId>
+    <artifactId>s3</artifactId>
+    <version>2.20.0</version> <!-- Usa la última versión disponible -->
+</dependency>
+
     </dependencies>
 
     <build>

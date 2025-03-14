@@ -19,14 +19,15 @@ public class P_RegistroVisitorController {
     private RegistroVisitorServ registroService;
 
     @GetMapping("/getRegistrosHistorial")
-    public ResponseEntity<List<RegistroHistorialDTO>> getRegistrosHistorial(
+    public ResponseEntity<List<RegistroPendientesDTO>> getRegistrosHistorial(
             @RequestParam(required = false) Long id,
             @RequestParam(required = false) String inicio,
             @RequestParam(required = false) String finalDate) {
         LocalDateTime inicioDateTime = inicio != null ? LocalDateTime.parse(inicio + "T00:00:00") : null;
         LocalDateTime finalDateTime = finalDate != null ? LocalDateTime.parse(finalDate + "T23:59:59") : null;
 
-        List<RegistroHistorialDTO> registros = registroService.getRegistrosHistorial(id, inicioDateTime, finalDateTime);
+        List<RegistroPendientesDTO> registros = registroService.getRegistrosPendientes(id, inicioDateTime,
+                finalDateTime);
         return ResponseEntity.ok(registros);
     }
 

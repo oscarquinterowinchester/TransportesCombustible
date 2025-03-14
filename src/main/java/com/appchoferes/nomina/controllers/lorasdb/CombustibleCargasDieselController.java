@@ -43,7 +43,7 @@ public class CombustibleCargasDieselController {
             System.out.println("Datos recibidos en el controlador: " + cargaDiesel);
 
             // Llamada al servicio
-            CargaDiesel resultado = insertCargaDiesel.insertarCargaDiesel(cargaDiesel);
+            CargaDiesel resultado = insertCargaDiesel.insertaCargaDiesel(cargaDiesel);
 
             System.out.println("CargaDiesel devuelta por el servicio: " + cargaDiesel);
 

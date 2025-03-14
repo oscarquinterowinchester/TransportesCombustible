@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.appchoferes.nomina.models.lorasdb.Llaves;
 import com.appchoferes.nomina.models.lorasdb.dtos.LlaveRequest;
 import com.appchoferes.nomina.repositories.lorasdb.LlavesRepository;
-import com.appchoferes.nomina.utils.ImageUtil;
+import com.appchoferes.nomina.utils.S3Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,16 +17,14 @@ public class LlaveService {
     @Autowired
     private LlavesRepository llaveRepository;
 
-    public static final String BASE_DIRECTORY = "C:\\TransportesMultiConexion\\imagenes\\";
+    @Autowired
+    private S3Service s3Service;
 
     public void registrarLlave(LlaveRequest llaveRequest) throws Exception {
 
         if (llaveRequest.getFirma() != null) {
-            String path = ImageUtil.saveImage(
-                    llaveRequest.getFirma(),
-                    "Firma",
-                    String.valueOf(llaveRequest.getCamionID() + "_" + llaveRequest.getFecha()),
-                    BASE_DIRECTORY + "firmas\\");
+            String path = s3Service.uploadFile("patios/llaves/firmas", "Firma",
+                    llaveRequest.getCamionID() + "_" + llaveRequest.getFecha(), llaveRequest.getFirma());
             llaveRequest.setFirma(path);
         }
 

@@ -67,7 +67,7 @@ public class V_VisitanteController {
     @PostMapping("/saveVisitante")
     public ResponseEntity<Long> saveVisitanteAndVehiculo(@RequestBody VisitanteVehiculoRequest request) {
         try {
-            Long idVisitante = visitorService.saveVisitanteAndVehiculo(request);
+            Long idVisitante = visitorService.saveVisitantesAndVehiculo(request);
             return ResponseEntity.ok(idVisitante);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
@@ -75,7 +75,7 @@ public class V_VisitanteController {
     }
 
     // obtener la imagen asociada al visitante
-    @GetMapping("/getImg/{id}")
+    /*@GetMapping("/getImg/{id}")
     public ResponseEntity<byte[]> getImg(@PathVariable Long id) {
         try {
             byte[] image = visitorService.getImage(id, "foto"); // Cambia "foto" por el tipo necesario
@@ -83,7 +83,7 @@ public class V_VisitanteController {
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }
+    }*/
 
     // guardar registro de salida del visitante
     @GetMapping("/completeRegistro")
