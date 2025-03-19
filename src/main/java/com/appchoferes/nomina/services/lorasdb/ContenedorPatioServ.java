@@ -200,7 +200,7 @@ public class ContenedorPatioServ {
         Map<String, Object> respuesta = new HashMap<>();
 
         // Buscar si el contenedor ya tiene una entrada registrada
-        boolean tieneEntrada = !inventarioExternoRepository.findEntrada(contenedor).isEmpty();
+        boolean tieneEntrada = false;
 
         if (tipo == 1) {
             if (contenedor != null && !contenedor.isEmpty()) {
@@ -226,10 +226,11 @@ public class ContenedorPatioServ {
                             combinedData.putAll(contenedorInfo.get(0)); // Fusionar datos de contenedorInfo
                         }
 
-                        combinedData.put("tieneEntrada", tieneEntrada); // Agregar el campo tieneEntrada
                         combinedDataList.add(combinedData); // Agregar a la lista de datos combinados
                     }
 
+                    tieneEntrada = true;
+                    respuesta.put("tieneEntrada", tieneEntrada);
                     respuesta.put("status", "success");
                     respuesta.put("message", "Contenedor encontrado");
                     respuesta.put("data", combinedDataList); // Agregar los datos fusionados
@@ -355,11 +356,14 @@ public class ContenedorPatioServ {
      * El tipo 1 busca en base al contenedor ingersado y el tipo 2 busca en en base
      * al itinearioId
      */
-    public List<ContenedorTipo1DTO> getContenedorPatio(String contenedor, Integer tipo, Integer itinerarioId) {
+    public Map<String, Object> getContenedorPatio(String contenedor, Integer tipo, Integer itinerarioId) {
         List<ContenedorTipo1DTO> contenedoresSEND = new ArrayList<>();
+        Map<String, Object> response = new HashMap<>();
 
         if ((esDatoInvalido(itinerarioId) && tipo == 2) || (esDatoInvalido(contenedor) && tipo == 1)) {
-            return contenedoresSEND; // Retorna lista vacía si los datos son inválidos
+            response.put("contenedores", contenedoresSEND);
+            response.put("tieneEntrada", false);
+            return response; // Retorna lista vacía si los datos son inválidos
         }
 
         if (tipo == 1) {
@@ -398,34 +402,11 @@ public class ContenedorPatioServ {
                             }
                         }
                     } else {
-                        String sqlContenedorB = "call getDatosInventarioExterno(:inventarioID)";
-                        Query queryContenedorB = entityManager.createNativeQuery(sqlContenedorB);
-                        queryContenedorB.setParameter("inventarioID", entrada);
-                        List<Object[]> resultados = queryContenedorB.getResultList();
-                        for (Object[] resultado : resultados) {
-                            contenedoresSEND.add(mapToContenedorTipo1DTO(resultado));
-                        }
+                        response.put("tieneEntrada", false); // No tiene entradas
                     }
                 }
             } else {
-                String sqlItinerario = "SELECT getItinerarioRemolque(:contenedor) as ItinerarioID";
-                Query queryItinerario = entityManager.createNativeQuery(sqlItinerario);
-                queryItinerario.setParameter("contenedor", contenedor);
-                List<Integer> itinerarioIDs = queryItinerario.getResultList();
-
-                if (!itinerarioIDs.isEmpty()) {
-                    for (Integer iti : itinerarioIDs) {
-                        if (iti != null) {
-                            String sqlContenedorB = "call getDatosSalidaComplejo(:itinerarioID)";
-                            Query queryContenedorB = entityManager.createNativeQuery(sqlContenedorB);
-                            queryContenedorB.setParameter("itinerarioID", iti);
-                            List<Object[]> resultados = queryContenedorB.getResultList();
-                            for (Object[] resultado : resultados) {
-                                contenedoresSEND.add(mapToContenedorTipo1DTO(resultado));
-                            }
-                        }
-                    }
-                }
+                response.put("tieneEntrada", false); // No tiene entradas
             }
         } else if (tipo == 2) {
             // Lógica para tipo 2
@@ -453,11 +434,17 @@ public class ContenedorPatioServ {
                     for (Object[] resultado : resultados) {
                         contenedoresSEND.add(mapToContenedorTipo1DTO(resultado));
                     }
+                    response.put("tieneEntrada", false); // No tiene entradas
+                } else {
+                    response.put("tieneEntrada", true); // Tiene entradas
                 }
+            } else {
+                response.put("tieneEntrada", false); // No tiene entradas
             }
         }
 
-        return contenedoresSEND;
+        response.put("contenedores", contenedoresSEND);
+        return response;
     }
 
     private ContenedorTipo1DTO mapToContenedorTipo1DTO(Object[] resultado) {

@@ -48,7 +48,7 @@ public class P_ContenedorController {
      */
 
     @GetMapping("/getContenedorPatio")
-    public List<ContenedorTipo1DTO> getContenedorPatio(
+    public Map<String, Object> getContenedorPatio(
             @RequestParam String contenedor,
             @RequestParam Integer tipo,
             @RequestParam(required = false) Integer itinerarioId) {
