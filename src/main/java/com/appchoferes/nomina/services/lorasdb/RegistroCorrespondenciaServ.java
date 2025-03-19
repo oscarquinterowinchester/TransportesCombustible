@@ -11,6 +11,8 @@ import com.appchoferes.nomina.models.lorasdb.dtos.RegistroInicialDTO;
 import com.appchoferes.nomina.repositories.lorasdb.RegistroCorrespondenciaRepo;
 import com.appchoferes.nomina.utils.S3Service;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class RegistroCorrespondenciaServ {
 
@@ -39,6 +41,7 @@ public class RegistroCorrespondenciaServ {
         return rCrepo.save(registro);
     }
 
+    @Transactional
     public RegistroCorrespondencia saveFirma(RegistroFirmaDTO registroFirma) throws Exception {
         // Buscar el registro existente
         RegistroCorrespondencia registroExistente = rCrepo.findById(registroFirma.getId())
@@ -47,12 +50,8 @@ public class RegistroCorrespondenciaServ {
         // Guardar la firma, cambiar directorio por el del servidor
         if (registroFirma.getFirma() != null) {
             String firmaPath = s3Service.uploadFile("patios/registro/firmas", "firmaEntregado",
-                    registroExistente.getId().toString(), registroExistente.getFirma());
-            registroExistente.setFirma(firmaPath);
-        }
-
-        if (registroFirma.getFecha() != null) {
-            registroExistente.setFechaEntrega(registroFirma.getFecha());
+                    registroExistente.getId().toString(), registroFirma.getFirma());
+            rCrepo.actualizarRegistro(registroFirma.getFecha(), firmaPath,registroExistente.getId());
         }
 
         // Guardar el registro actualizado
