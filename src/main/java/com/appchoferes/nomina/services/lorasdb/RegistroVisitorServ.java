@@ -38,6 +38,8 @@ public class RegistroVisitorServ {
                 "visitantes/identificaciones");
         String fotoUrl = firmarUrl(resultado[18] != null ? resultado[18].toString() : null, "visitantes/fotos");
 
+        String firmaUrl = firmarUrl(resultado[19] != null ? resultado[19].toString() : null, "visitantes/firmas");
+
         return new RegistroPendientesDTO(
                 resultado[0] instanceof Number ? ((Number) resultado[0]).longValue() : null, // id
                 resultado[1] instanceof Timestamp ? ((Timestamp) resultado[1]).toLocalDateTime() : null, // entrada
@@ -59,7 +61,7 @@ public class RegistroVisitorServ {
                 resultado[16] instanceof Number ? ((Number) resultado[16]).longValue() : null, // gafeteID
                 resultado[17] instanceof Number ? ((Number) resultado[17]).longValue() : null, // patioID
                 fotoUrl, // foto (URL firmada)
-                resultado[19] != null ? resultado[19].toString() : null, // firmaVisitante
+                firmaUrl, // firmaVisitante (URL firmada)
                 identificacion2Url, // identificacion2 (URL firmada)
                 resultado[21] != null ? resultado[21].toString() : null, // compania
                 resultado[22] instanceof Number ? ((Number) resultado[22]).intValue() : null // completado
