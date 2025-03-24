@@ -10,6 +10,18 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+/* 
+ * IMPORTANTE: Este JdbcTemplate está configurado para la base de datos principal (transportesintdb).
+ * Si se reutiliza en otros componentes sin especificar la fuente de datos adecuada, 
+ * todas las consultas se ejecutarán sobre transportesintdb en lugar de la base de datos correcta.
+ * 
+ * Para evitar errores, asegúrate de:
+ * - Definir un JdbcTemplate específico para cada base de datos que necesites utilizar.
+ * - Usar la anotación @Qualifier al inyectar JdbcTemplate en otros componentes 
+ *   para asegurarte de que se está usando la fuente de datos correcta.
+ */
+
+
 @Configuration
 public class jdbcTemplateConfig {
 

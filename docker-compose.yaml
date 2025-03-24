@@ -1,0 +1,19 @@
+services:
+  app:
+    container_name: transportes
+    build: .
+    image: trade_webservice:2.0
+    working_dir: /opt/app
+    command: ["java", "-jar", "app.jar"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - "./docs:/opt/app/docs:rw"
+    ports:
+      - '8080:8080'
+    networks:
+      - trade-network
+
+networks:
+  trade-network:
+    driver: bridge
