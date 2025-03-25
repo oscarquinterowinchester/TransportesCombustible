@@ -32,7 +32,7 @@ public class ChoferService {
     }
 
     // Metodo para recuperar choferes del modulo Patios
-    // Se toma la misma clase de Chofer para los modulos de choferes
+    // Se toma la misma clase de Chofer para los modulos de combustible 
     // y patios
     public List<Chofer> getChoferesPatios(){
         List<Chofer> choferesPatios = choferRepository.getChoferesPatios();

@@ -87,7 +87,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(
                                 claims.getBody().getSubject(), // Username
                                 null, // No necesitas credenciales aquí
-                                null // Roles o permisos, si los tienes
+                                null // Roles o permisos, si los tienes 
                         );
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);

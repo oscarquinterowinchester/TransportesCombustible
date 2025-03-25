@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.appchoferes.nomina.models.lorasdb.dtos.ContenedorPatiosDTO;
 import com.appchoferes.nomina.models.lorasdb.dtos.ContenedorTipo1DTO;
 import com.appchoferes.nomina.repositories.lorasdb.ContenedorRepo;
-import com.appchoferes.nomina.repositories.lorasdb.InventarioExternoRepository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -24,9 +23,6 @@ public class ContenedorPatioServ {
 
     @Autowired
     private ContenedorRepo contenedorRepo;
-
-    @Autowired
-    private InventarioExternoRepository inventarioExternoRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
