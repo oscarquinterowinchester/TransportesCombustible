@@ -13,22 +13,18 @@ import com.appchoferes.nomina.models.lorasdb.RegistroPuntoInspeccion;
 public interface RegistroPuntoInspeccionRepo extends JpaRepository<RegistroPuntoInspeccion, Integer> {
 
     @Query(value = """
-                SELECT
-            WEEKDAY(fecha_registro) AS dia_semana,
-            HOUR(fecha_registro) AS hora,
-            GROUP_CONCAT(id) AS ids,
-            GROUP_CONCAT(punto) AS puntos,
-            GROUP_CONCAT(estado) AS estados
-            FROM
-                registros_puntos_inspeccion_tbl
-            WHERE
-                fecha_registro >= CURDATE() - INTERVAL (DAYOFWEEK(CURDATE()) - 2) DAY
-                AND fecha_registro < CURDATE() + INTERVAL (8 - DAYOFWEEK(CURDATE())) DAY
-            GROUP BY
-                dia_semana, hora
-            ORDER BY
-                dia_semana, hora
-                """, nativeQuery = true)
+            SELECT
+                WEEKDAY(CONVERT_TZ(fecha_registro, '+00:00', '-06:00')) AS dia_semana,
+                HOUR(CONVERT_TZ(fecha_registro, '+00:00', '-06:00')) AS hora,
+                GROUP_CONCAT(id) AS ids,
+                GROUP_CONCAT(punto) AS puntos,
+                GROUP_CONCAT(estado) AS estados
+            FROM registros_puntos_inspeccion_tbl
+            WHERE fecha_registro >= CONVERT_TZ(CURDATE() - INTERVAL (DAYOFWEEK(CURDATE()) - 2) DAY, '+00:00', '-06:00')
+            AND fecha_registro < CONVERT_TZ(CURDATE() + INTERVAL (8 - DAYOFWEEK(CURDATE())) DAY, '+00:00', '-06:00')
+            GROUP BY dia_semana, hora
+            ORDER BY dia_semana, hora;
+                            """, nativeQuery = true)
     List<Object[]> findPuntosSemana();
 
     @Query(value = """

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,12 +154,21 @@ public class ContenedorPatioServ {
                     // Buscar ItinerarioID por contenedor
                     List<Map<String, Object>> itinerarios = contenedorRepo.findItinerarioIdByContenedor(contenedor);
 
-                    if (!itinerarios.isEmpty()) {
-                        for (Map<String, Object> itinerario : itinerarios) {
+                    // Validación mejorada (cambios mínimos)
+                    if (itinerarios == null || itinerarios.stream().allMatch(Objects::isNull)) {
+                        return crearRespuestaDatosNoEncontrados();
+                    }
+
+                    for (Map<String, Object> itinerario : itinerarios) {
+                        if (itinerario == null || itinerario.get("ItinerarioID") == null) {
+                            continue; // Saltar elementos nulos o sin ItinerarioID
+                        }
+
+                        try {
                             Long itiId = ((Number) itinerario.get("ItinerarioID")).longValue();
                             List<Map<String, Object>> contenedorInfo = contenedorRepo.getInformacionEntrada(itiId);
 
-                            if (!contenedorInfo.isEmpty()) {
+                            if (contenedorInfo != null && !contenedorInfo.isEmpty()) {
                                 // Fusionar contenedorInfo con los datos existentes en data
                                 Map<String, Object> combinedData = new HashMap<>();
                                 combinedData.putAll(contenedorInfo.get(0));
@@ -166,14 +176,12 @@ public class ContenedorPatioServ {
 
                                 respuesta.put("status", "success");
                                 respuesta.put("message", "Contenedor encontrado");
-                                respuesta.put("data", Collections.singletonList(combinedData)); // Agregar los datos
-                                                                                                // fusionados en una
-                                                                                                // lista
+                                respuesta.put("data", Collections.singletonList(combinedData));
                                 return respuesta;
                             }
+                        } catch (Exception e) {
+                            continue; // Continuar con el siguiente itinerario si hay error
                         }
-                    } else {
-                        return crearRespuestaDatosNoEncontrados();
                     }
                 }
             }
