@@ -40,7 +40,7 @@ public class P_InventarioExterno {
     private String PlacasChasis;
 
     private String Sello;
-    private Integer SelloDiesel;
+    private Boolean SelloDiesel;
     private Integer PaisID;
     private Integer EstadoID;
 

@@ -191,32 +191,51 @@ public class ContenedorPatioServ {
         if (tipo == 2) {
             if (itinerarioId != null) {
                 // Buscar InventarioID por ItinerarioID
-                List<Map<String, Object>> entrada = contenedorRepo.findInventarioIdByItinerarioId(itinerarioId);
+                String equipoEncontrado = contenedorRepo.findContenedorByItinnerario(itinerarioId);
+                List<Map<String, Object>> entradas = contenedorRepo
+                        .findInventarioIdAndItinerarioIdByContenedor(equipoEncontrado);
                 List<Map<String, Object>> contenedorInfo = contenedorRepo.getInformacionEntrada(itinerarioId);
 
-                if (!entrada.isEmpty() || !contenedorInfo.isEmpty()) {
-                    // Fusionar contenedorInfo con los datos existentes en data
+                if (!entradas.isEmpty()) {
+                    // Fusionar datos de entradas con contenedorInfo (similar a tipo == 1)
+                    List<Map<String, Object>> combinedDataList = new ArrayList<>();
+
+                    for (Map<String, Object> entrada : entradas) {
+                        Map<String, Object> combinedData = new HashMap<>();
+                        combinedData.putAll(entrada); // Agregar datos de entradas
+
+                        // Obtener ItinerarioID de la entrada actual
+                        Long itiId = ((Number) entrada.get("ItinerarioID")).longValue();
+
+                        // Buscar información adicional del contenedor usando ItinerarioID
+                        List<Map<String, Object>> infoAdicional = contenedorRepo.getInformacionEntrada(itiId);
+
+                        if (!infoAdicional.isEmpty()) {
+                            combinedData.putAll(infoAdicional.get(0)); // Fusionar datos adicionales
+                        }
+
+                        combinedDataList.add(combinedData);
+                    }
+
+                    tieneEntrada = true;
+                    respuesta.put("tieneEntrada", tieneEntrada);
+                    respuesta.put("status", "success");
+                    respuesta.put("message", "Equipo encontrado con entrada existente");
+                    respuesta.put("data", combinedDataList);
+                    return respuesta;
+                } else if (!contenedorInfo.isEmpty()) {
+                    // Caso cuando no hay entradas pero sí información del contenedor
                     Map<String, Object> combinedData = new HashMap<>();
-
-                    if (!entrada.isEmpty()) {
-                        combinedData.putAll(entrada.get(0)); // Agregar datos de entrada
-                    }
-
-                    if (!contenedorInfo.isEmpty()) {
-                        combinedData.putAll(contenedorInfo.get(0)); // Agregar datos de contenedorInfo
-                    }
-
-                    combinedData.put("tieneEntrada", tieneEntrada); // Agregar el campo tieneEntrada
+                    combinedData.putAll(contenedorInfo.get(0));
+                    combinedData.put("tieneEntrada", tieneEntrada);
 
                     respuesta.put("status", "success");
-                    respuesta.put("message", "Itinerario encontrado");
-                    respuesta.put("data", Collections.singletonList(combinedData)); // Agregar los datos fusionados en
-                                                                                    // una lista
+                    respuesta.put("message", "Información del equipo encontrada");
+                    respuesta.put("data", Collections.singletonList(combinedData));
                     return respuesta;
-                } else {
-                    return crearRespuestaDatosNoEncontrados();
                 }
             }
+            return crearRespuestaDatosNoEncontrados();
         }
 
         return crearRespuestaDatosNoEncontrados();
@@ -237,55 +256,69 @@ public class ContenedorPatioServ {
         }
 
         if (tipo == 1) {
-            // Lógica para tipo 1
-            String sql = "SELECT InventarioID FROM inventarioexterno_tbl WHERE contenedor = :contenedor AND TipoEvento = 1 ORDER BY InventarioID DESC Limit 1";
+            // Lógica para tipo 1 optimizada
+            String sql = "SELECT InventarioID FROM inventarioexterno_tbl WHERE contenedor = :contenedor AND TipoEvento = 1 ORDER BY InventarioID DESC LIMIT 1";
             Query query = entityManager.createNativeQuery(sql);
             query.setParameter("contenedor", contenedor);
             List<Integer> entradas = query.getResultList();
 
-            if (!entradas.isEmpty()) {
-                for (Integer entrada : entradas) {
-                    String sqlSalida = "SELECT i.InventarioID FROM inventarioexterno_tbl i " +
-                            "WHERE i.contenedor = :contenedor AND i.AnteriorID = :anteriorID AND i.TipoEvento = 2";
-                    Query querySalida = entityManager.createNativeQuery(sqlSalida);
-                    querySalida.setParameter("contenedor", contenedor);
-                    querySalida.setParameter("anteriorID", entrada);
-                    List<Long> salidas = querySalida.getResultList();
+            if (entradas.isEmpty()) {
+                response.put("tieneEntrada", false);
+            } else {
+                Integer entrada = entradas.get(0); // Este es el InventarioID que necesitamos
 
-                    if (salidas.isEmpty()) {
-                        String sqlItinerario = "SELECT getItinerarioRemolque(:contenedor) as ItinerarioID";
-                        Query queryItinerario = entityManager.createNativeQuery(sqlItinerario);
-                        queryItinerario.setParameter("contenedor", contenedor);
-                        List<Integer> itinerarioIDs = queryItinerario.getResultList();
+                String sqlSalida = "SELECT i.InventarioID FROM inventarioexterno_tbl i " +
+                        "WHERE i.contenedor = :contenedor AND i.AnteriorID = :anteriorID AND i.TipoEvento = 2";
+                Query querySalida = entityManager.createNativeQuery(sqlSalida);
+                querySalida.setParameter("contenedor", contenedor);
+                querySalida.setParameter("anteriorID", entrada);
+                List<Long> salidas = querySalida.getResultList();
 
-                        if (!itinerarioIDs.isEmpty()) {
-                            for (Integer iti : itinerarioIDs) {
-                                if (iti != null) {
-                                    String sqlContenedorB = "call getDatosSalidaComplejo(:itinerarioID)";
-                                    Query queryContenedorB = entityManager.createNativeQuery(sqlContenedorB);
-                                    queryContenedorB.setParameter("itinerarioID", iti);
-                                    List<Object[]> resultados = queryContenedorB.getResultList();
-                                    for (Object[] resultado : resultados) {
-                                        contenedoresSEND.add(mapToContenedorTipo1DTO(resultado));
-                                    }
-                                }
+                if (salidas.isEmpty()) {
+                    // Usamos el valor de 'entrada' en lugar de 703
+                    String sqlItinerario = "SELECT getItinerarioRemolque(:contenedor) as ItinerarioID";
+                    Query queryItinerario = entityManager.createNativeQuery(sqlItinerario);
+                    queryItinerario.setParameter("contenedor", contenedor);
+                    // queryItinerario.setParameter("inventarioID", entrada); // Aquí usamos el
+                    // Obtener el resultado de la consulta
+                    Object itinerarioRes = queryItinerario.getSingleResult();
+                    Integer itinerarioID = itinerarioRes != null ? ((Number) itinerarioRes).intValue() : null;
+
+                    if (itinerarioID != null) {
+                        String sqlContenedorB = "call getDatosSalidaComplejo(:itinerarioID)";
+                        Query queryContenedorB = entityManager.createNativeQuery(sqlContenedorB);
+                        queryContenedorB.setParameter("itinerarioID", itinerarioID);
+                        List<Object[]> resultados = queryContenedorB.getResultList();
+
+                        for (Object[] resultado : resultados) {
+                            if (resultado != null) {
+                                contenedoresSEND.add(mapToContenedorTipo1DTO(resultado));
                             }
                         }
+                        response.put("tieneEntrada", true);
                     } else {
-                        response.put("tieneEntrada", false); // No tiene entradas
+                        response.put("tieneEntrada", false);
                     }
+                } else {
+                    response.put("tieneEntrada", false);
                 }
-            } else {
-                response.put("tieneEntrada", false); // No tiene entradas
             }
-        } else if (tipo == 2) {
+
+        }
+
+        else if (tipo == 2)
+
+        {
+            // Lógica para buscar el contenedor en base al itinerario
+            String sqlContenedorEntrada = "select Caja from icont_tbl where ItinerarioID= :itinerarioId and status=1  order by icontID  limit 1;";
+            Query queryContenedorEntrada = entityManager.createNativeQuery(sqlContenedorEntrada);
+            queryContenedorEntrada.setParameter("itinerarioId", itinerarioId);
+            List<String> contenedorEntrada = queryContenedorEntrada.getResultList();
+
             // Lógica para tipo 2
-            String sqlEntrada = "SELECT i.InventarioID FROM inventarioexterno_tbl i " +
-                    "WHERE i.ItinerarioID = :itinerarioID AND i.TipoEvento = 1 " +
-                    "AND getInventarioIdSalidaIti(i.ItinerarioID, i.InventarioID) IS NULL " +
-                    "ORDER BY i.InventarioID DESC limit 1";
+            String sqlEntrada = "select InventarioID from inventarioexterno_tbl where Contenedor = :contenedor and AnteriorID = 0 and TipoEvento = 1 order by InventarioID desc limit 1;";
             Query queryEntrada = entityManager.createNativeQuery(sqlEntrada);
-            queryEntrada.setParameter("itinerarioID", itinerarioId);
+            queryEntrada.setParameter("contenedor", contenedorEntrada);
             List<Integer> entradas = queryEntrada.getResultList();
 
             if (!entradas.isEmpty()) {
@@ -297,6 +330,7 @@ public class ContenedorPatioServ {
                 List<Integer> salidas = querySalida.getResultList();
 
                 if (salidas.isEmpty()) {
+                    // No hay salida registrada - el contenedor está en patio
                     String sqlContenedor = "call getDatosSalidaComplejo(:itinerarioID)";
                     Query queryContenedor = entityManager.createNativeQuery(sqlContenedor);
                     queryContenedor.setParameter("itinerarioID", itinerarioId);
@@ -304,12 +338,12 @@ public class ContenedorPatioServ {
                     for (Object[] resultado : resultados) {
                         contenedoresSEND.add(mapToContenedorTipo1DTO(resultado));
                     }
-                    response.put("tieneEntrada", false); // No tiene entradas
+                    response.put("tieneEntrada", true); // Tiene entrada y no tiene salida
                 } else {
-                    response.put("tieneEntrada", true); // Tiene entradas
+                    response.put("tieneEntrada", false); // Tiene entrada pero ya salió
                 }
             } else {
-                response.put("tieneEntrada", false); // No tiene entradas
+                response.put("tieneEntrada", false); // No tiene entradas registradas
             }
         }
 

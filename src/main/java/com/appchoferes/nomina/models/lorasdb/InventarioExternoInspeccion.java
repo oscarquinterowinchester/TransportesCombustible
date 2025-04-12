@@ -19,6 +19,8 @@ public class InventarioExternoInspeccion {
     private Integer ItinerarioID;
     private Integer InventarioID;
     private Integer InventarioSalidaID;
+    
+    @JsonProperty("listadoId")
     private Integer ListadoID;
     private Integer Entrada;
     private Integer Salida;

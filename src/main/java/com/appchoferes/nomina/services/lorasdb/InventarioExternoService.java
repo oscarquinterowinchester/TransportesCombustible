@@ -27,7 +27,7 @@ public class InventarioExternoService {
     private S3Service s3Service;
 
     private static final Map<String, String> CARPETAS_IMG = Map.of(
-            "fotoSello", "/sellos",
+            //"fotoSello", "/sellos",
             "firmaGuardia", "/firmas",
             "firmaChofer", "/firmas",
             "firmak9", "/firmas");
@@ -59,7 +59,7 @@ public class InventarioExternoService {
 
     private Map<String, String> extraerImagenesBase64(P_InventarioExterno inventario) {
         Map<String, String> imagenes = new HashMap<>();
-        imagenes.put("fotoSello", inventario.getFotoSello());
+        //imagenes.put("fotoSello", inventario.getFotoSello());
         imagenes.put("firmaGuardia", inventario.getFirmaGuardia());
         imagenes.put("firmaChofer", inventario.getFirmaChofer());
         imagenes.put("firmak9", inventario.getFirmak9());
@@ -102,6 +102,7 @@ public class InventarioExternoService {
     private void procesarPuntosInspeccion(List<InventarioExternoInspeccion> puntos, Integer inventarioId) {
         puntos.forEach(punto -> {
             punto.setInventarioID(inventarioId);
+            punto.setEntrada(1);
 
             if (punto.getFotoentrada() != null) {
                 String path;

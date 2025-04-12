@@ -62,6 +62,7 @@ public class P_InventarioExternoController {
             inventario.setItinerarioID(request.getItinerarioID());
             inventario.setPatioID(request.getPatioID());
             inventario.setSello(request.getSello());
+            inventario.setSelloDiesel(request.getSelloDiesel());
             inventario.setUsuarioEventoID(request.getUsuarioEventoID());
             inventario.setUsuarioID(request.getUsuarioID());
             inventario.setWContenedorID(request.getWContenedorID());
@@ -71,12 +72,15 @@ public class P_InventarioExternoController {
             inventario.setFirmaGuardia(request.getFirmaGuardia());
             inventario.setNota(request.getNota());
             inventario.setAnteriorID(0);
+            inventario.setWContenedorID(request.getWContenedorID());
             inventario.setCamion(request.getCamion());
             inventario.setNombreChofer(request.getNombreChofer());
             inventario.setPlacasChasis(request.getPlacasChasis());
             inventario.setEstadoPlacasMex(request.getEstadomex());
             inventario.setEstadoPlacasUsa(request.getEstadousa());
             inventario.setOrigen(request.getOrigen());
+            inventario.setChoferID(request.getChoferID());
+            inventario.setClienteID(request.getClienteID());
 
             // Asignar Status como 1
             inventario.setStatus(1);
