@@ -43,6 +43,10 @@ public class P_SalidaContenedorController {
             inventario.setOrigen(request.getOrigen());
             inventario.setCarrier(request.getCarrier());
             inventario.setTamano(request.getTamano());
+            inventario.setSelloDiesel(request.getSelloDiesel());
+            inventario.setWContenedorID(request.getWContenedorId());
+            inventario.setCamionID(request.getCamionId());
+            inventario.setPatioID(request.getPatioId());
 
             // Asegurar que otras fechas tengan valores válidos
             inventario

@@ -43,14 +43,20 @@ public class SalidasEquipoService {
          // Si el destino del equipo es el patio donde se encuentra
          if (equipoInfo.getDestino().equals(patioId)) {
             // Obtener la informacion de check entrada
-            List<Object[]> checkEntradaRaw = salidasEquipoRepository.getUltimoInvenatarioEntrada(equipoInfo.getCamionId(), patioId);
-            List<EquipoSalidaInfoDto> checkEntrada = convertToEquipoInfoDto(checkEntradaRaw); // Mapeamos la respuesta
+            List<Object[]> checkSalidaRaw = salidasEquipoRepository
+                  .getUltimoInvenatarioEntrada(equipoInfo.getCamionId(), patioId);
+            List<EquipoSalidaInfoDto> checkSalida = convertToEquipoInfoDto(checkSalidaRaw); // Mapeamos la respuesta
 
-            if (!checkEntrada.isEmpty()) {
-               EquipoSalidaInfoDto check = checkEntrada.get(0);
+            if (!checkSalida.isEmpty()) {
+               EquipoSalidaInfoDto check = checkSalida.get(0);
                if (check.getAnterior() > 0) {
+                  response.setEstatus(15);
+                  response.setMensaje("Este camion no se encuentra en este patio");
+               }else {
                   response.setEstatus(20);
                   response.setMensaje("Driver move encontrado");
+                  equipoInfo.setInventarioID(check.getInventarioID());
+
                   response.setInfo(equipoInfo);
 
                   // Obtener las inspecciones y mapearlas
@@ -58,24 +64,14 @@ public class SalidasEquipoService {
                   List<InspeccionSalidaDto> inspecciones = convertToInspeccionSalidaDto(inspeccionesRaw);
 
                   response.setInspeccion(inspecciones);
-               } else {
-                  response.setEstatus(15);
-                  response.setMensaje("Este camion se encuentra en este patio actualmente");
                }
             } else {
-               response.setEstatus(20);
-               response.setMensaje("Driver move encontrado");
-               response.setInfo(equipoInfo);
-
-               // Obtener las inspecciones y mapearlas
-               List<Object[]> inspeccionesRaw = salidasEquipoRepository.getInspeccionSalida(itinerarioId);
-               List<InspeccionSalidaDto> inspecciones = convertToInspeccionSalidaDto(inspeccionesRaw);
-
-               response.setInspeccion(inspecciones);
+               response.setEstatus(15);
+               response.setMensaje("Este camion no se encuentra en este patio");
             }
          } else {
             response.setEstatus(10);
-            response.setMensaje("El destino del viaje no es al patio donde se encuentra");
+            response.setMensaje("El origen del viaje no es al patio donde se encuentra");
          }
       } else {
          response.setEstatus(5);

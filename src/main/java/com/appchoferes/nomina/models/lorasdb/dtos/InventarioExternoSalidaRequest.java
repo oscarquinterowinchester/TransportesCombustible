@@ -12,28 +12,53 @@ import lombok.Data;
 public class InventarioExternoSalidaRequest {
 
 
+    @JsonProperty("InventarioID")
     private Integer InventarioID;
 
-    @JsonProperty("itinerarioID")
+    @JsonProperty("ItinerarioID")
     private Integer ItinerarioID;
     private Integer AnteriorID;
     private String Contenedor;
+
+    @JsonProperty("PlacasChasis")
     private String PlacasChasis;
+    
+    @JsonProperty("Sello")
     private String Sello;
     private Integer ChoferID;
     private Integer ClienteID;
     private Integer RutaID;
+
+    @JsonProperty("wContenedorId")
+    private Integer wContenedorId;
+    
+    @JsonProperty("NombreChofer")
     private String NombreChofer;
     private LocalDateTime FechaEvento;
+    
+    @JsonProperty("Unidad")
     private String camion;
 
     @JsonProperty("Firmak9")
     private String Firmak9;
+    
     private String origen;
     private String Carrier;
     private String Tamano;
-    private String carga;
 
+    private Integer destino;
+
+    @JsonProperty("camionID")
+    private Integer camionId;
+
+    @JsonProperty("patioId")
+    private Integer patioId;
+
+    @JsonProperty("selloDiesel")
+    private Boolean selloDiesel;
+    
+    @JsonProperty("el")
+    private String carga;
 
     private List<InventarioExternoInspeccion> puntos;
 
